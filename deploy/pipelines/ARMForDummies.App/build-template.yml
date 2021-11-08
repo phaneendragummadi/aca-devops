@@ -1,0 +1,65 @@
+parameters:
+   BuildConfiguration: Release
+   TargetFramework: netcoreapp2.2
+
+stages:
+- stage: Build
+  jobs:
+  - job: DotNetCore
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore Packages'
+      inputs:
+        command: restore
+        projects: 'src\ArmForDummies.App\ArmForDummies.App.sln'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Build and Package Application'
+      inputs:
+        command: publish
+        publishWebProjects: false
+        projects: 'src\ArmForDummies.App\ArmForDummies.App\ArmForDummies.App.csproj'
+        arguments: '--configuration ${{ parameters.BuildConfiguration }} --framework ${{ parameters.TargetFramework }}'
+        zipAfterPublish: True
+        modifyOutputPath: false
+
+    - task: CopyFiles@2
+      displayName: 'Copy Application Package'
+      inputs:
+        SourceFolder: '$(Build.SourcesDirectory)\src\ArmForDummies.App\ArmForDummies.App\bin\${{ parameters.BuildConfiguration }}\${{ parameters.TargetFramework }}'
+        Contents: '**\*.zip'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)\Packages'
+
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Artifacts'
+      inputs:
+        path: '$(Build.ArtifactStagingDirectory)\Packages'
+        artifact: Api
+
+
+  - job: Publish_Resources
+    pool:
+      name: 'Hosted VS2017'
+    steps:
+    - task: CopyFiles@2
+      displayName: 'Copy ARM Templates'
+      inputs:
+        SourceFolder: 'src\ArmForDummies.App\ArmForDummies.Resources\Templates'
+        Contents: |
+         *.json
+         !**local**
+        TargetFolder: '$(Build.ArtifactStagingDirectory)\Templates'
+
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish ARM Templates'
+      inputs:
+        path: '$(Build.ArtifactStagingDirectory)\Templates'
+        artifact: Resources
+
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Scripts'
+      inputs:
+        path: deploy/scripts
+        artifact: Scripts

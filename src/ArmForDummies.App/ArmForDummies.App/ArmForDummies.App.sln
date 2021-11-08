@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29009.5
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArmForDummies.App", "ArmForDummies.App\ArmForDummies.App.csproj", "{7DE1DB54-E448-47F5-A551-46377525F193}"
+EndProject
+Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "ArmForDummies.Resources", "ArmForDummies.Resources\ArmForDummies.Resources.deployproj", "{3AACAD5C-C411-47D6-842A-8A333CB3F35C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7DE1DB54-E448-47F5-A551-46377525F193}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DE1DB54-E448-47F5-A551-46377525F193}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DE1DB54-E448-47F5-A551-46377525F193}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DE1DB54-E448-47F5-A551-46377525F193}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3AACAD5C-C411-47D6-842A-8A333CB3F35C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3AACAD5C-C411-47D6-842A-8A333CB3F35C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3AACAD5C-C411-47D6-842A-8A333CB3F35C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3AACAD5C-C411-47D6-842A-8A333CB3F35C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6193D201-493A-4B26-88D3-715AF68896C5}
+	EndGlobalSection
+EndGlobal
