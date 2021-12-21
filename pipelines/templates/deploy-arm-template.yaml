@@ -57,4 +57,17 @@ steps:
     csmParametersFile: '${{parameters.artifactFolder}}/arm/armtemplate.parameters.json'
     deploymentMode: 'Incremental'
     deploymentOutputs: 'ArmOutputs'
-  
+- task: AzureResourceManagerTemplateDeployment@3
+  displayName: 'Deploy ARM storage template on ${{parameters.resourceGroupName}}'
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: '${{parameters.azureResourceManagerConnection}}'
+    subscriptionId: '${{parameters.subscriptionId}}'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: '${{parameters.resourceGroupName}}'
+    location: '${{parameters.location}}'
+    templateLocation: 'Linked artifact'
+    csmFile: '${{parameters.artifactFolder}}/arm/storage.json'
+    csmParametersFile: '${{parameters.artifactFolder}}/arm/storage.parameters.json'
+    deploymentMode: 'Incremental'
+    deploymentOutputs: 'ArmOutputs'

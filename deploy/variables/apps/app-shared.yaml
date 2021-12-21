@@ -2,4 +2,6 @@ variables:
   - name: Azure.ResourceGroup.Name
     value: yaml-introduction-demo
   - name: Api.Name
-    value: $(App.Environment.Code)-devops
+    value: $(App.Environment.Code)-devops-demo
+  - name: Storage.SkuName
+    value: Standard_LRS
