@@ -22,9 +22,9 @@ parameters:
   - Debug
 
 variables:
-- template: ./variables/environments/environment-shared.yaml
-- template: ./variables/release-information.yaml
-- template: ./variables/apps/app-shared.yaml
+- template: /deploy/variables/environments/environment-shared.yaml
+- template: /deploy/variables/release-information.yaml
+- template: /deploy/variables/apps/app-shared.yaml
 - name: Pipeline.Version
   value: $(Artifact.Version)-$(Build.BuildNumber) 
 - name: Artifact.Version
@@ -48,8 +48,8 @@ stages:
   displayName: 'Deploy to Development'
   dependsOn: preparation
   variables:
-    - template: ./variables/environments/environment-dev.yaml
-    - template: ./variables/apps/app-dev.yaml
+    - template: /deploy/variables/environments/environment-dev.yaml
+    - template: /deploy/variables/apps/app-dev.yaml
   jobs:
   - deployment: deploy_to_dev
     displayName: 'Deploy to DEV'
