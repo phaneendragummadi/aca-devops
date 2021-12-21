@@ -44,16 +44,16 @@ stages:
           Write-Host "##vso[build.updatebuildnumber]$(Pipeline.Version)"
           Write-Host "Pipeline version is '$(Pipeline.Version)'"
         displayName: 'Change pipeline version $(Pipeline.Version)'
-- stage: deploy_acceptance
-  displayName: 'Deploy to Acceptance'
+- stage: deploy_development
+  displayName: 'Deploy to Development'
   dependsOn: preparation
   variables:
-    - template: ./variables/environments/environment-acc.yaml
-    - template: ./variables/apps/app-acc.yaml
+    - template: ./variables/environments/environment-dev.yaml
+    - template: ./variables/apps/app-dev.yaml
   jobs:
-  - deployment: deploy_to_acc
-    displayName: 'Deploy to ACC'
-    environment: DevOps Skeleton (Acceptance)
+  - deployment: deploy_to_dev
+    displayName: 'Deploy to DEV'
+    environment: DEV
     strategy:
       runOnce:
         deploy:
@@ -68,17 +68,64 @@ stages:
               resourceGroupName: $(Azure.ResourceGroup.Name)
               location: $(Azure.ResourceGroup.Location)
               loggingLevel: ${{ parameters.loggingLevel }}
-
+- stage: deploy_test
+  displayName: 'Deploy to Test'
+  dependsOn: deploy_development
+  variables:
+    - template: ./variables/environments/environment-tst.yaml
+    - template: ./variables/apps/app-tst.yaml
+  jobs:
+  - deployment: deploy_to_tst
+    displayName: 'Deploy to TST'
+    environment: TST
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: 'package_build'
+            artifact: 'artifact'
+            displayName: Download Artifact
+          - template: ./templates/deploy-arm-template.yaml
+            parameters:
+              azureResourceManagerConnection: $(Azure.ServiceConnection.Name)
+              subscriptionId: $(Azure.Subscription.Id)
+              resourceGroupName: $(Azure.ResourceGroup.Name)
+              location: $(Azure.ResourceGroup.Location)
+              loggingLevel: ${{ parameters.loggingLevel }}
+- stage: deploy_acc
+  displayName: 'Deploy to Acceptance'
+  dependsOn: deploy_development
+  variables:
+    - template: ./variables/environments/environment-acc.yaml
+    - template: ./variables/apps/app-acc.yaml
+  jobs:
+  - deployment: deploy_to_acc
+    displayName: 'Deploy to ACC'
+    environment: ACC
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: 'package_build'
+            artifact: 'artifact'
+            displayName: Download Artifact
+          - template: ./templates/deploy-arm-template.yaml
+            parameters:
+              azureResourceManagerConnection: $(Azure.ServiceConnection.Name)
+              subscriptionId: $(Azure.Subscription.Id)
+              resourceGroupName: $(Azure.ResourceGroup.Name)
+              location: $(Azure.ResourceGroup.Location)
+              loggingLevel: ${{ parameters.loggingLevel }}
 - stage: deploy_production
   displayName: 'Deploy to Production'
-  dependsOn: deploy_acceptance
+  dependsOn: deploy_acc
   variables:
     - template: ./variables/environments/environment-prd.yaml
     - template: ./variables/apps/app-prd.yaml
   jobs:
   - deployment: deploy_to_prd
     displayName: 'Deploy to PRD'
-    environment: DevOps Skeleton (Production)
+    environment: PRD
     strategy:
       runOnce:
         deploy:

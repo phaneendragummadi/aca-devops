@@ -1,5 +1,5 @@
 variables:
   - name: Azure.ResourceGroup.Name
-    value: az-devops-$(App.Environment.Code)
+    value: yaml-introduction-demo
   - name: Api.Name
     value: $(App.Environment.Code)-devops
