@@ -64,6 +64,8 @@ stages:
         Contents: |
           armtemplate.json
           armtemplate.parameters.json
+          storage.json
+          storage.parameters.json
         TargetFolder: '$(Build.ArtifactStagingDirectory)/artifact/arm'
 
     - task: PublishPipelineArtifact@1
