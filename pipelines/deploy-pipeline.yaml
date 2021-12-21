@@ -94,7 +94,7 @@ stages:
               loggingLevel: ${{ parameters.loggingLevel }}
 - stage: deploy_acc
   displayName: 'Deploy to Acceptance'
-  dependsOn: deploy_development
+  dependsOn: deploy_test
   variables:
     - template: ./variables/environments/environment-acc.yaml
     - template: ./variables/apps/app-acc.yaml
