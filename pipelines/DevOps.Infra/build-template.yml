@@ -1,0 +1,29 @@
+#parameters:
+
+stages:
+- stage: Build
+  jobs:
+  - job: Publish_Resources
+    pool:
+      name: Hosted VS2017
+    steps:
+    - task: CopyFiles@2
+      displayName: 'Copy ARM Templates'
+      inputs:
+        SourceFolder: 'src\Infrastructure\Yaml_Introduction.Infra\Templates'
+        Contents: |
+         *.json
+         !**local**
+        TargetFolder: '$(Build.ArtifactStagingDirectory)\Templates'
+
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish ARM Templates'
+      inputs:
+        path: '$(Build.ArtifactStagingDirectory)\Templates'
+        artifact: Resources
+
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Scripts'
+      inputs:
+        path: deploy/scripts
+        artifact: Scripts

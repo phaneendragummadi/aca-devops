@@ -1,0 +1,5 @@
+variables:
+  - name: Azure.ResourceGroup.Name
+    value: az-devops-$(App.Environment.Code)
+  - name: Api.Name
+    value: $(App.Environment.Code)-devops
