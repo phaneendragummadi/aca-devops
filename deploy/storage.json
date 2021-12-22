@@ -2,6 +2,9 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "Application.Name": {
+      "type": "string"
+    },
     "Application.Environment": {
       "type": "string"
     },
@@ -35,7 +38,7 @@
     }
   },
   "variables": {
-    "StorageAccountName": "[concat(parameters('Application.Environment'), 'storage','demo')]",
+    "StorageAccountName": "[concat(tolower(replace(parameters('Application.Name'),'-','')), 'storage')]",
     "StorageAccountResourceId": "[resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName'))]",
     "Tags": {
       "environment": "[parameters('Application.Environment')]",
