@@ -93,7 +93,7 @@ steps:
       
 #          ## Creates a standard pipeline variable
 #          Write-Output "##vso[task.setvariable variable=$keyName;]$value"
-      		
+#     		
 #          ## Creates an output variable
 #          Write-Output "##vso[task.setvariable variable=$keyName;isOutput=true]$value"
 #      	}
