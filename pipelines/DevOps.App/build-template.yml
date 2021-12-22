@@ -13,14 +13,14 @@ stages:
       displayName: 'Restore Packages'
       inputs:
         command: restore
-        projects: 'src\Application\Yaml_Introduction.App.sln'
+        projects: 'src\Application\Devops.App.sln'
 
     - task: DotNetCoreCLI@2
       displayName: 'Build and Package Application'
       inputs:
         command: publish
         publishWebProjects: false
-        projects: 'src\Application\Yaml_Introduction.App\Yaml_Introduction.App.csproj'
+        projects: 'src\Application\Devops.App\Devops.App.csproj'
         arguments: '--configuration ${{ parameters.BuildConfiguration }} --framework ${{ parameters.TargetFramework }}'
         zipAfterPublish: True
         modifyOutputPath: false
@@ -28,7 +28,7 @@ stages:
     - task: CopyFiles@2
       displayName: 'Copy Application Package'
       inputs:
-        SourceFolder: '$(Build.SourcesDirectory)\src\Application\Yaml_Introduction.App\bin\${{ parameters.BuildConfiguration }}\${{ parameters.TargetFramework }}'
+        SourceFolder: '$(Build.SourcesDirectory)\src\Application\Devops.App\bin\${{ parameters.BuildConfiguration }}\${{ parameters.TargetFramework }}'
         Contents: '**\*.zip'
         TargetFolder: '$(Build.ArtifactStagingDirectory)\Packages'
 
@@ -46,7 +46,7 @@ stages:
     - task: CopyFiles@2
       displayName: 'Copy ARM Templates'
       inputs:
-        SourceFolder: 'src\Application\Yaml_Introduction.Resources\Templates'
+        SourceFolder: 'src\Application\DevOps.Resources\Templates'
         Contents: |
          *.json
          !**local**

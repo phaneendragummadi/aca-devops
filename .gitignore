@@ -350,3 +350,4 @@ MigrationBackup/
 .ionide/
 /deploy/scripts/TODO.txt
 /deploy/app-service-plan.parameters.local.json
+/deploy/app-service.parameters.local.json
