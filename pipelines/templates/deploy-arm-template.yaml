@@ -70,7 +70,27 @@ steps:
     csmFile: '${{parameters.artifactFolder}}/arm/storage.json'
     csmParametersFile: '${{parameters.artifactFolder}}/arm/storage.parameters.json'
     deploymentMode: 'Incremental'
-    deploymentOutputs: 'ArmOutputs'
+    deploymentOutputs: storage_outputs
+
+- task: AzurePowerShell@5
+  inputs:
+    azureSubscription: 'TrainingAccountSP'
+    ScriptType: 'InlineScript'
+    Inline: |
+      ## database_arm is already a pipeline variable returned via the ARM deployment
+      	## task's deploymentOutputs attribute
+      	$armOutputObj = $env:storage_outputs | convertfrom-json
+      	$armOutputObj.PSObject.Properties | ForEach-Object {
+          $keyname = $_.Name
+          $value = $_.Value.value
+      
+          ## Creates a standard pipeline variable
+          Write-Output "##vso[task.setvariable variable=$keyName;]$value"
+      		
+          ## Creates an output variable
+          Write-Output "##vso[task.setvariable variable=$keyName;isOutput=true]$value"
+      	}
+
 - task: AzureResourceManagerTemplateDeployment@3
   displayName: 'Deploy ARM keyvault template on ${{parameters.resourceGroupName}}'
   inputs:
@@ -84,22 +104,7 @@ steps:
     csmFile: '${{parameters.artifactFolder}}/arm/key-vault.json'
     csmParametersFile: '${{parameters.artifactFolder}}/arm/key-vault.parameters.json'
     deploymentMode: 'Incremental'
-    deploymentOutputs: 'ArmOutputs'
-- task: AzureResourceManagerTemplateDeployment@3
-  displayName: 'Deploy ARM sqlsvrdb template on ${{parameters.resourceGroupName}}'
-  inputs:
-    deploymentScope: 'Resource Group'
-    azureResourceManagerConnection: '${{parameters.azureResourceManagerConnection}}'
-    subscriptionId: '${{parameters.subscriptionId}}'
-    action: 'Create Or Update Resource Group'
-    resourceGroupName: '${{parameters.resourceGroupName}}'
-    location: '${{parameters.location}}'
-    templateLocation: 'Linked artifact'
-    csmFile: '${{parameters.artifactFolder}}/arm/sql.json'
-    csmParametersFile: '${{parameters.artifactFolder}}/arm/sql.parameters.json'
-    deploymentMode: 'Incremental'
-    deploymentOutputs: database_arm   
-
+    deploymentOutputs: keyvault_outputs
 - task: AzurePowerShell@5
   inputs:
     azureSubscription: 'TrainingAccountSP'
@@ -107,7 +112,7 @@ steps:
     Inline: |
       ## database_arm is already a pipeline variable returned via the ARM deployment
       	## task's deploymentOutputs attribute
-      	$armOutputObj = $env:database_arm | convertfrom-json
+      	$armOutputObj = $env:keyvault_outputs | convertfrom-json
       	$armOutputObj.PSObject.Properties | ForEach-Object {
           $keyname = $_.Name
           $value = $_.Value.value
@@ -118,3 +123,28 @@ steps:
           ## Creates an output variable
           Write-Output "##vso[task.setvariable variable=$keyName;isOutput=true]$value"
       	}
+- task: AzureKeyVault@1
+  inputs:
+    azureSubscription: 'TrainingAccountSP'
+    KeyVaultName: 'dev-keyvaultdemo'
+    SecretsFilter: '*'
+    RunAsPreJob: true
+
+- task: SqlAzureDacpacDeployment@1
+  displayName: 'Execute Azure SQL : InlineSqlTask'
+  inputs:
+    azureSubscription: 'TrainingAccountSP'
+    AuthenticationType: 'server'
+    ServerName: 'sqlsvrdemo'
+    DatabaseName: 'sqldbdemo'
+    SqlUsername: 'sqluser'
+    SqlPassword: $(adminPassword)
+    deployType: 'InlineSqlTask'
+    SqlInline: |
+      USE [main]
+        GO
+        IF NOT EXISTS (SELECT name FROM main.sys.databases WHERE name = N'DatabaseExample')
+        CREATE DATABASE [DatabaseExample]
+        GO
+    IpDetectionMethod: AutoDetect@3 
+
