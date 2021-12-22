@@ -26,7 +26,8 @@ parameters:
   values:
   - Pipeline
   - Debug
-
+  BuildConfiguration: Release
+  TargetFramework: netcoreapp3.1
 pool:
   vmImage: 'windows-latest'
 
