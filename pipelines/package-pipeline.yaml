@@ -66,8 +66,8 @@ stages:
           armtemplate.parameters.json
           storage.json
           storage.parameters.json
-          sql.json
-          sql.parameters.json
+          app-service-plan.json
+          app-service-plan.parameters.json
           key-vault.json
           key-vault.parameters.json
         TargetFolder: '$(Build.ArtifactStagingDirectory)/artifact/arm'

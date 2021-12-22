@@ -7,6 +7,8 @@ variables:
     value: Standard_LRS
   - name: Keyvault.SkuName
     value: Standard
+  - name: AppSvcPlan.SkuName
+    value: S1
   - name: Infra.DevOps.ObjectId
     value: $(DevOps.ObjectId) 
   - name: Infra.DevOps.TenantId

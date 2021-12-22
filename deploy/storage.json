@@ -35,7 +35,7 @@
     }
   },
   "variables": {
-    "StorageAccountName": "[concat('infra',parameters('Application.Environment'), 'storage','demo')]",
+    "StorageAccountName": "[concat(parameters('Application.Environment'), 'storage','demo')]",
     "StorageAccountResourceId": "[resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName'))]",
     "Tags": {
       "environment": "[parameters('Application.Environment')]",
