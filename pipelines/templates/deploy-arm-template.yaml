@@ -90,7 +90,7 @@ steps:
           ## Creates an output variable
           Write-Output "##vso[task.setvariable variable=$keyName;isOutput=true]$value"
       	}
-
+    azurePowerShellVersion: LatestVersion
 - task: AzureResourceManagerTemplateDeployment@3
   displayName: 'Deploy ARM keyvault template on ${{parameters.resourceGroupName}}'
   inputs:
@@ -123,6 +123,7 @@ steps:
           ## Creates an output variable
           Write-Output "##vso[task.setvariable variable=$keyName;isOutput=true]$value"
       	}
+    azurePowerShellVersion: LatestVersion
 - task: cboroson-WriteSecrets@1
   inputs:
     ConnectedServiceName: 'TrainingAccountSP'
