@@ -30,7 +30,7 @@
       "value": "#{Infra.DevOps.ObjectId}#"
     },
     "Keyvault.TenantId": {
-      "value":  "#{Infra.DevOps.TenantId}"
+      "value": "#{Infra.DevOps.TenantId}#"
     }
   }
 }
