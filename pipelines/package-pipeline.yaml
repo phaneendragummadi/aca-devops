@@ -26,8 +26,15 @@ parameters:
   values:
   - Pipeline
   - Debug
-  BuildConfiguration: Release
-  TargetFramework: netcoreapp3.1
+- name: buildConfiguration
+  displayName: Build Configuration
+  type: string
+  default: Release
+- name: targetFramework
+  displayName: Target Framework
+  type: string
+  default: netcoreapp3.1
+
 pool:
   vmImage: 'windows-latest'
 
@@ -71,14 +78,14 @@ stages:
         command: publish
         publishWebProjects: false
         projects: 'src\Application\Devops.App\Devops.App.csproj'
-        arguments: '--configuration ${{ parameters.BuildConfiguration }} --framework ${{ parameters.TargetFramework }}'
+        arguments: '--configuration ${{ parameters.buildConfiguration }} --framework ${{ parameters.targetFramework }}'
         zipAfterPublish: True
         modifyOutputPath: false
 
     - task: CopyFiles@2
       displayName: 'Copy Application Package'
       inputs:
-        SourceFolder: '$(Build.SourcesDirectory)\src\Application\Devops.App\bin\${{ parameters.BuildConfiguration }}\${{ parameters.TargetFramework }}'
+        SourceFolder: '$(Build.SourcesDirectory)\src\Application\Devops.App\bin\${{ parameters.buildConfiguration }}\${{ parameters.targetFramework }}'
         Contents: '**\*.zip'
         TargetFolder: '$(Build.ArtifactStagingDirectory)\Packages'
 
