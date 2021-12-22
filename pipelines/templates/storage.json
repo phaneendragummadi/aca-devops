@@ -62,6 +62,10 @@
     }
 	],
   "outputs": {
+    "storageAccountName": {
+      "type": "string",
+      "value": "[variables('storageAccountName')]"
+    },
     "Infra.StorageAccount.Name": {
       "type": "string",
       "value": "[variables('storageAccountName')]"
