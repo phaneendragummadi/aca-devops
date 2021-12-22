@@ -66,6 +66,10 @@ stages:
           armtemplate.parameters.json
           storage.json
           storage.parameters.json
+          sql.json
+          sql.parameters.json
+          key-vault.json
+          key-vault.parameters.json
         TargetFolder: '$(Build.ArtifactStagingDirectory)/artifact/arm'
 
     - task: PublishPipelineArtifact@1

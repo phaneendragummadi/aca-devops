@@ -1,0 +1,103 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Application.Environment": {
+      "type": "string"
+    },
+    "Application.Version": {
+      "type": "string"
+    },
+    "Release.Name": {
+      "type": "string"
+    },
+    "Release.RequestedFor": {
+      "type": "string"
+    },
+    "Release.SourceCodeBranch": {
+      "type": "string"
+    },
+    "Release.TriggerType": {
+      "type": "string"
+    },
+    "Release.Url": {
+      "type": "string"
+    },
+    "Keyvault.SkuName": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": [
+        "Standard",
+        "Premium"
+      ],
+      "metadata": {
+        "description": "Provide the pricing tier of the key vault."
+      }
+    },
+    "Keyvault.ObjectId": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "keyVaultName": "[concat(parameters('Application.Environment'), '-keyvault','demo')]",
+    "keyVaultResourceId": "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]",
+    "Tags": {
+      "environment": "[parameters('Application.Environment')]",
+      "version": "[parameters('Application.Version')]",
+      "releaseName": "[parameters('Release.Name')]",
+      "createdBy": "[parameters('Release.Url')]",
+      "branch": "[parameters('Release.SourceCodeBranch')]",
+      "triggeredBy": "[parameters('Release.RequestedFor')]",
+      "triggerType": "[parameters('Release.TriggerType')]"
+    }
+  },
+  "resources": [
+    {
+      "apiVersion": "2018-02-14",
+      "location": "[resourceGroup().location]",
+      "name": "[variables('keyVaultName')]",
+      "properties": {
+        "tenantId": "[subscription().tenantId]",
+        "sku": {
+          "name": "[parameters('Keyvault.SkuName')]",
+          "family": "A"
+        },
+        "enabledForTemplateDeployment": true,
+        "accessPolicies": []
+      },
+      "tags": "[variables('Tags')]",
+      "type": "Microsoft.KeyVault/vaults"
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/accessPolicies",
+      "name": "[concat(variables('keyVaultName'), '/add')]",
+      "apiVersion": "2018-02-14",
+      "properties": {
+        "accessPolicies": [
+          {
+            "tenantId": "[subscription().tenantId]",
+            "objectId": "[parameters('Keyvault.ObjectId')]",
+            "permissions": {
+              "keys": [ "list", "get" ],
+              "secrets": [ "list", "get" ]
+            }
+          }
+        ]
+      },
+      "tags": "[variables('Tags')]",
+      "dependsOn": [
+        "[variables('keyVaultResourceId')]"
+      ]
+    }
+  ],
+  "outputs": {
+    "Infra.KeyVault.Id": {
+      "type": "string",
+      "value": "[variables('keyVaultResourceId')]"
+    },
+    "Infra.KeyVault.Name": {
+      "type": "string",
+      "value": "[variables('keyVaultName')]"
+    }
+  }
+}

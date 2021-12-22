@@ -71,3 +71,50 @@ steps:
     csmParametersFile: '${{parameters.artifactFolder}}/arm/storage.parameters.json'
     deploymentMode: 'Incremental'
     deploymentOutputs: 'ArmOutputs'
+- task: AzureResourceManagerTemplateDeployment@3
+  displayName: 'Deploy ARM keyvault template on ${{parameters.resourceGroupName}}'
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: '${{parameters.azureResourceManagerConnection}}'
+    subscriptionId: '${{parameters.subscriptionId}}'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: '${{parameters.resourceGroupName}}'
+    location: '${{parameters.location}}'
+    templateLocation: 'Linked artifact'
+    csmFile: '${{parameters.artifactFolder}}/arm/key-vault.json'
+    csmParametersFile: '${{parameters.artifactFolder}}/arm/key-vault.parameters.json'
+    deploymentMode: 'Incremental'
+    deploymentOutputs: 'ArmOutputs'
+- task: AzureResourceManagerTemplateDeployment@3
+  displayName: 'Deploy ARM sqlsvrdb template on ${{parameters.resourceGroupName}}'
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: '${{parameters.azureResourceManagerConnection}}'
+    subscriptionId: '${{parameters.subscriptionId}}'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: '${{parameters.resourceGroupName}}'
+    location: '${{parameters.location}}'
+    templateLocation: 'Linked artifact'
+    csmFile: '${{parameters.artifactFolder}}/arm/sql.json'
+    csmParametersFile: '${{parameters.artifactFolder}}/arm/sql.parameters.json'
+    deploymentMode: 'Incremental'
+    deploymentOutputs: database_arm   
+
+- task: AzurePowerShell@5
+  inputs:
+    azureSubscription: 'TrainingAccountSP'
+    ScriptType: 'InlineScript'
+    Inline: |
+      ## database_arm is already a pipeline variable returned via the ARM deployment
+      	## task's deploymentOutputs attribute
+      	$armOutputObj = $env:database_arm | convertfrom-json
+      	$armOutputObj.PSObject.Properties | ForEach-Object {
+          $keyname = $_.Name
+          $value = $_.Value.value
+      
+          ## Creates a standard pipeline variable
+          Write-Output "##vso[task.setvariable variable=$keyName;]$value"
+      		
+          ## Creates an output variable
+          Write-Output "##vso[task.setvariable variable=$keyName;isOutput=true]$value"
+      	}
