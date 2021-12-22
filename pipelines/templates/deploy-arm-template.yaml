@@ -74,11 +74,12 @@ steps:
 
 - pwsh: |
     $outputsObject = $env:ARM_OUTPUTS | ConvertFrom-Json
+    Write-Host "##vso[task.setvariable variable=StorageAccountName]$($outputsObject.StorageAccountName.value)"
   displayName: 'Parse ARM deploymentOutputs | pwsh'
   env:
     ARM_OUTPUTS: $(armOutputs)
-- script: echo $(armOutputs)
-  displayName: 'Log armOutputs'
+- script: echo $(StorageAccountName)
+  displayName: 'Log StorageAccountName'
 #- task: AzurePowerShell@5
 #  inputs:
 #    azureSubscription: 'TrainingAccountSP'
@@ -131,19 +132,6 @@ steps:
 #          Write-Output "##vso[task.setvariable variable=$keyName;isOutput=true]$value"
 #      	}
 #    azurePowerShellVersion: LatestVersion
-- task: cboroson-WriteSecrets@1
-  inputs:
-    ConnectedServiceName: 'TrainingAccountSP'
-    resourceGroupName: '${{parameters.resourceGroupName}}'
-    KeyVaultName: 'dev-keyvaultdemo'
-    SecretName: 'adminPassword'
-    SecretValue: 'Admin123*!'
-- task: AzureKeyVault@1
-  inputs:
-    azureSubscription: 'TrainingAccountSP'
-    KeyVaultName: 'dev-keyvaultdemo'
-    SecretsFilter: '*'
-    RunAsPreJob: false
 
 #- task: SqlAzureDacpacDeployment@1
 #  displayName: 'Execute Azure SQL : InlineSqlTask'

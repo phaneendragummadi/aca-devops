@@ -62,11 +62,11 @@
     }
   ],
   "outputs": {
-    "Infra.StorageAccount.Name": {
+    "StorageAccountName": {
       "type": "string",
       "value": "[variables('StorageAccountName')]"
     },
-    "Infra.StorageAccount.Id": {
+    "StorageAccountId": {
       "type": "string",
       "value": "[variables('StorageAccountResourceId')]"
     }
