@@ -24,7 +24,7 @@
       "value": "#{Release.ReleaseWebUrl}#"
     },
     "Keyvault.SkuName": {
-      "value": "#{Storage.SkuName}#"
+      "value": "#{Keyvault.SkuName}#"
     },
     "Keyvault.ObjectId": {
       "value": "#{Infra.DevOps.ObjectId}#"

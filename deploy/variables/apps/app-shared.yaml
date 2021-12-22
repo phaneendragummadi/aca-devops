@@ -5,5 +5,7 @@ variables:
     value: $(App.Environment.Code)-devops-demo
   - name: Storage.SkuName
     value: Standard_LRS
+  - name: Keyvault.SkuName
+    value: Standard
   - name: Infra.DevOps.ObjectId
     value: $(DevOps.ObjectId) 
