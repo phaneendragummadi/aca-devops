@@ -36,7 +36,7 @@ parameters:
   default: netcoreapp3.1
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: ubuntu-latest'
 
 stages:
 - stage: Package
@@ -45,6 +45,8 @@ stages:
   jobs:
   - job: validate_and_publish
     displayName: Validate & Publish Artifact
+    pool:
+      vmImage: 'ubuntu-latest'
     steps:
     # Validation
     - ${{ if eq(parameters.loggingLevel, 'Debug') }}:
