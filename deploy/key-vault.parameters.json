@@ -28,6 +28,9 @@
     },
     "Keyvault.ObjectId": {
       "value": "#{Infra.DevOps.ObjectId}#"
+    },
+    "Keyvault.TenantId": {
+      "value":  "#{Infra.DevOps.TenantId}"
     }
   }
 }

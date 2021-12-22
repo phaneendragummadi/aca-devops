@@ -34,6 +34,9 @@
         "description": "Provide the pricing tier of the key vault."
       }
     },
+    "Keyvault.TenantId": {
+      "type":  "string"
+    },
     "Keyvault.ObjectId": {
       "type": "string"
     }
@@ -57,7 +60,7 @@
       "location": "[resourceGroup().location]",
       "name": "[variables('keyVaultName')]",
       "properties": {
-        "tenantId": "[subscription().tenantId]",
+        "tenantId": "[parameters('Keyvault.TenantId')]",
         "sku": {
           "name": "[parameters('Keyvault.SkuName')]",
           "family": "A"
@@ -75,11 +78,11 @@
       "properties": {
         "accessPolicies": [
           {
-            "tenantId": "[subscription().tenantId]",
+            "tenantId": "[parameters('Keyvault.TenantId')]",
             "objectId": "[parameters('Keyvault.ObjectId')]",
             "permissions": {
               "keys": [ "list", "get" ],
-              "secrets": [ "list", "get" ]
+              "secrets": [ "list", "get", "set" ]
             }
           }
         ]

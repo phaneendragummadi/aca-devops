@@ -123,12 +123,19 @@ steps:
           ## Creates an output variable
           Write-Output "##vso[task.setvariable variable=$keyName;isOutput=true]$value"
       	}
+- task: cboroson-WriteSecrets@1
+  inputs:
+    ConnectedServiceName: 'TrainingAccountSP'
+    resourceGroupName: '${{parameters.resourceGroupName}}'
+    KeyVaultName: 'dev-keyvaultdemo'
+    SecretName: 'adminPassword'
+    SecretValue: 'Admin123*!'
 - task: AzureKeyVault@1
   inputs:
     azureSubscription: 'TrainingAccountSP'
     KeyVaultName: 'dev-keyvaultdemo'
     SecretsFilter: '*'
-    RunAsPreJob: true
+    RunAsPreJob: false
 
 - task: SqlAzureDacpacDeployment@1
   displayName: 'Execute Azure SQL : InlineSqlTask'

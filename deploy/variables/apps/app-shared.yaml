@@ -9,3 +9,5 @@ variables:
     value: Standard
   - name: Infra.DevOps.ObjectId
     value: $(DevOps.ObjectId) 
+  - name: Infra.DevOps.TenantId
+    value: $(DevOps.TenantId)

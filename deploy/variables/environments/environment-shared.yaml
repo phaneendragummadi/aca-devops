@@ -6,4 +6,6 @@ variables:
   - name: Azure.Subscription.Id
     value: 533f6b10-3a70-4c5d-8962-8b51e839a13c
   - name: DevOps.ObjectId
-    value: 7e3303b1-5566-4e7c-bf35-e7142c30b5ec 
+    value: 0d876cc9-1767-4fc7-b562-1d3d31671c8f
+  - name: DevOps.TenantId
+    value: 7517bc42-bcf8-4916-a677-b5753051f846
