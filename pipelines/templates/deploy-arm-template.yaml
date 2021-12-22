@@ -173,3 +173,26 @@ steps:
     ARM_OUTPUTS: $(armOutputs)
 - script: echo $(StorageAccountName)
   displayName: 'Log AppServicePlanName'
+- task: AzureResourceManagerTemplateDeployment@3
+  displayName: 'Deploy ARM app service plan template on ${{parameters.resourceGroupName}}'
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: '${{parameters.azureResourceManagerConnection}}'
+    subscriptionId: '${{parameters.subscriptionId}}'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: '${{parameters.resourceGroupName}}'
+    location: '${{parameters.location}}'
+    templateLocation: 'Linked artifact'
+    csmFile: '${{parameters.artifactFolder}}/arm/app-service.json'
+    csmParametersFile: '${{parameters.artifactFolder}}/arm/app-service.parameters.json'
+    deploymentMode: 'Incremental'
+    deploymentOutputs: 'armOutputs'
+
+- pwsh: |
+    $outputsObject = $env:ARM_OUTPUTS | ConvertFrom-Json
+    Write-Host "##vso[task.setvariable variable=AppServicePlanName]$($outputsObject.AppServicePlanName.value)"
+  displayName: 'Parse ARM deploymentOutputs | pwsh'
+  env:
+    ARM_OUTPUTS: $(armOutputs)
+- script: echo $(StorageAccountName)
+  displayName: 'Log AppServicePlanName'
