@@ -36,7 +36,7 @@ parameters:
   default: netcoreapp3.1
 
 pool:
-  vmImage: ubuntu-latest'
+  vmImage: 'ubuntu-latest'
 
 stages:
 - stage: Package
@@ -66,7 +66,7 @@ stages:
     # TODO: Build your app    
   - job: DotNetCore
     pool:
-      vmImage: 'windows-latest'
+      vmImage: 'ubuntu-latest'
     steps:
     - task: DotNetCoreCLI@2
       displayName: 'Restore Packages'
