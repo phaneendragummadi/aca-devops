@@ -33,7 +33,7 @@ parameters:
 - name: targetFramework
   displayName: Target Framework
   type: string
-  default: netcoreapp2.2
+  default: netcoreapp3.1
 
 pool:
   vmImage: ubuntu-latest'
