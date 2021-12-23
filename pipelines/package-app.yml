@@ -1,0 +1,30 @@
+name: 1.0$(Rev:.r)
+
+trigger:
+ branches:
+   include:
+   - main
+ paths:
+   include:
+   - src/Application/DevOps.App/*
+
+pr: none
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+- template: variables/naming-convention.yml
+- template: variables/azure-landscape.yml
+- template: variables/container-image-names.yml
+
+stages:
+  # Before we build our image, we want to build the project & run unit tests
+  # This allows us to validate the quality before shipping it
+  - template: ./templates/build-and-test-project.yml
+    parameters:
+      # Name of the current stage
+      stageName: verify
+      # Path of the project to build
+      projectPath: 'src/Application/DevOps.APP/DevOps.App.csproj'
+  

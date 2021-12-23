@@ -30,11 +30,11 @@ parameters:
   displayName: Build Configuration
   type: string
   default: Release
+- dotNetVersion: '3.x'
 - name: targetFramework
   displayName: Target Framework
   type: string
   default: netcoreapp3.1
-
 pool:
   vmImage: 'ubuntu-latest'
 
@@ -62,12 +62,17 @@ stages:
       displayName: Lint JSON files
       inputs:
         script: 'jsonlint-cli $(Pipeline.Workspace)/s/deploy/**.json'
-    
+
     # TODO: Build your app    
   - job: DotNetCore
     pool:
-      vmImage: 'ubuntu-latest'
+      vmImage: 'windows-latest'
     steps:
+    - task: UseDotNet@2
+      displayName: 'Install .NET Core sdk'
+      inputs:
+        packageType: sdk
+        version: '${{ parameters.dotNetVersion }}'
     - task: DotNetCoreCLI@2
       displayName: 'Restore Packages'
       inputs:
