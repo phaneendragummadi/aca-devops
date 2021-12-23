@@ -2,7 +2,6 @@
 using System.Net;
 using System.Threading.Tasks;
 using DevOps.App.Encryption;
-using DevOps.App.Models;
 using DevOps.App.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,6 +13,7 @@ namespace DevOps.App.Controllers
     [Route("api/v1")]
     public class EncryptionController : Controller
     {
+        private const string encryptionKey= "ENCRYPTED";
         /// <summary>
         ///     Gets the encrypted text that is stored.
         /// </summary>
@@ -23,10 +23,10 @@ namespace DevOps.App.Controllers
         {
             try
             {
-                var tableStorageRepository = new TableStorageRepository();
+                var tableStorageRepository = new EncryptedTableStorageRepository();
                 var entity = await tableStorageRepository.GetAsync();
 
-                return Ok(entity.EncryptedText);
+                return Ok(entity[encryptionKey]);
             }
             catch (Exception exception)
             {
@@ -45,10 +45,10 @@ namespace DevOps.App.Controllers
             {
                 var encryptor = new Encryptor();
                 var encryptedText = encryptor.Encrypt(text);
-                var entity = new EncryptionEntity(encryptedText);
+                //var entity = new EncryptionEntity(encryptedText);
 
-                var tableStorageRepository = new TableStorageRepository();
-                await tableStorageRepository.UpdateAsync(entity);
+                var tableStorageRepository = new EncryptedTableStorageRepository();
+                await tableStorageRepository.UpdateAsync(encryptionKey, encryptedText);
 
                 return Ok();
             }
@@ -67,11 +67,11 @@ namespace DevOps.App.Controllers
         {
             try
             {
-                var tableStorageRepository = new TableStorageRepository();
+                var tableStorageRepository = new EncryptedTableStorageRepository();
                 var entity = await tableStorageRepository.GetAsync();
                 
                 var encryptor = new Encryptor();
-                var decryptedText = encryptor.Decrypt(entity.EncryptedText);
+                var decryptedText = encryptor.Decrypt(entity[encryptionKey].ToString());
 
                 return Ok(decryptedText);
             }
