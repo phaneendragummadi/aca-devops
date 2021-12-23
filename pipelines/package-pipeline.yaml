@@ -30,7 +30,9 @@ parameters:
   displayName: Build Configuration
   type: string
   default: Release
-- dotNetVersion: '3.x'
+- name: dotNetVersion
+  type: string
+  default: 3.x
 - name: targetFramework
   displayName: Target Framework
   type: string
