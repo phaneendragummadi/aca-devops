@@ -9,6 +9,15 @@ steps:
     SecretsFilter: 'secretDemo'                          ## YOUR_SECRET_NAME. Default value: *
     RunAsPreJob: false                                   ## Make the secret(s) available to the whole job
 
+
+- task: AzureCLI@2
+  inputs:
+      azureSubscription: 'rg-the-code-manual'
+      scriptType: 'pscore'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+        $secretValue =  az keyvault secret show --vault-name tcm-kv --name $(keyName) --query value
+        echo $secretValue
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'

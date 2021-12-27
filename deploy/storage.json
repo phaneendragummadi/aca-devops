@@ -40,6 +40,7 @@
   "variables": {
     "StorageAccountName": "[concat(tolower(replace(parameters('Application.Name'),'-','')), 'storage')]",
     "StorageAccountResourceId": "[resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName'))]",
+    "apiVersion": "[providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]]", 
     "Tags": {
       "environment": "[parameters('Application.Environment')]",
       "version": "[parameters('Application.Version')]",
@@ -72,6 +73,14 @@
     "StorageAccountId": {
       "type": "string",
       "value": "[variables('StorageAccountResourceId')]"
+    },
+    "storageAccountKey": {
+      "type": "string",
+      "value": "[listKeys(variables('StorageAccountResourceId'), variables('apiVersion')).keys[0].value]"
+    },
+    "storageAccountEndpoint": {
+      "type": "string",
+      "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountResourceId'), variables('apiVersion')).keys[0].value, ';EndpointSuffix=core.windows.net')]"
     }
   }
 }
