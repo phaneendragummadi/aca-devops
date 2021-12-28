@@ -82,7 +82,7 @@ steps:
 - task: AzureRmWebAppDeployment@4
   displayName: 'Deploy App'
   inputs:
-    azureSubscription: ${{ parameters.AzureServiceConnectionName }}
+    azureSubscription: ${{ parameters.azureResourceManagerConnection }}
     WebAppName: '$(Infra.AppService.Name)'
     packageForLinux: '$(Pipeline.Workspace)/Api/publish.zip'
 
