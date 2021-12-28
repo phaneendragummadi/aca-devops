@@ -120,5 +120,10 @@ stages:
           armtemplate.parameters.json
           azure-infrastructure.json
           azure-infrastructure.parameters.json
-        TargetFolder: '$(Build.ArtifactStagingDirectory)/artifact/arm'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)\Packages'
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Arm templates'
+      inputs:
+        path: '$(Build.ArtifactStagingDirectory)\Packages'
+        artifact: Arm
 
