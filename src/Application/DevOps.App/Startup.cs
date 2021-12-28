@@ -1,7 +1,10 @@
+using DevOps.App.Interfaces;
+using DevOps.App.KeyVault;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -27,7 +30,13 @@ namespace DevOps.App
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAzureClients(azureClientFactoryBuilder =>
+            {
+                azureClientFactoryBuilder.AddSecretClient(
+                Program.Configuration.GetSection("KeyVault"));
+            });
 
+            services.AddSingleton<IKeyVaultManager, KeyVaultManager>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

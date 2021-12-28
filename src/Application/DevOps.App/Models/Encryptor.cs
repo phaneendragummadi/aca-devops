@@ -12,10 +12,11 @@ namespace DevOps.App.Encryption
         private readonly string encryptionKey;
         private readonly byte[] salt = {0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76};
 
-        public Encryptor()
-        {
-            encryptionKey = ConfigurationProvider.Get<string>("Encryption.Key");
-        }
+        //public Encryptor()
+        //{
+        //    encryptionKey = ConfigurationProvider.Get<string>("Encryption.Key");
+
+        //}
         public Encryptor(string encryptionKey)
         {
             this.encryptionKey = encryptionKey;
