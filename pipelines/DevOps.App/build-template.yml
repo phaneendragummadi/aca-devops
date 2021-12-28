@@ -37,8 +37,6 @@ stages:
       inputs:
         path: '$(Build.ArtifactStagingDirectory)\Packages'
         artifact: Api
-
-
   - job: Publish_Resources
     pool:
       vmImage: 'windows-latest'

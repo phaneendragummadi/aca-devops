@@ -123,9 +123,3 @@ stages:
           azure-infrastructure.parameters.json
         TargetFolder: '$(Build.ArtifactStagingDirectory)/artifact/arm'
 
-    - task: PublishPipelineArtifact@1
-      displayName: 'Publish artifact'
-      inputs:
-        targetPath: '$(Build.ArtifactStagingDirectory)/artifact'
-        artifact: 'artifact'
-        publishLocation: 'pipeline'

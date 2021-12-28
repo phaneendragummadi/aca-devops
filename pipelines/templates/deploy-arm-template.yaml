@@ -79,12 +79,27 @@ steps:
     ARM_OUTPUTS: $(armOutputs)
 - script: echo $(AppServicePlanName)
   displayName: 'Log AppServicePlanName'
-- task: AzureRmWebAppDeployment@4
-  displayName: 'Deploy App'
-  inputs:
-    azureSubscription: ${{ parameters.azureResourceManagerConnection }}
-    WebAppName: '$(Infra.AppService.Name)'
-    packageForLinux: '$(Pipeline.Workspace)/Api/publish.zip'
+# Show zip before deployment
+- ${{ if eq(parameters.loggingLevel, 'Debug') }}:
+  - task: PowerShell@2
+    displayName: '[Debug] App that will be deployed'
+    inputs:
+      targetType: inline
+      script: |
+        $files = Get-ChildItem -Path ${{parameters.artifactFolder}}\Api\*.zip
+        foreach ($file in $files)
+        {
+          Write-Host "=== ARM template Output ==="
+          Write-Host "Filename: ($file)" 
+          $content = Get-Content $file
+          Write-Host $content
+        }
+#- task: AzureRmWebAppDeployment@4
+#  displayName: 'Deploy App'
+#  inputs:
+#    azureSubscription: ${{ parameters.azureResourceManagerConnection }}
+#    WebAppName: '$(Api.Name)'
+#    packageForLinux: '${{parameters.artifactFolder}}/Api/publish.zip'
 
 #- task: AzurePowerShell@3
 #  displayName: 'Remove Old ARM Deployments'

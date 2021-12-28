@@ -34,7 +34,7 @@ stages:
               inlineScript: 'az deployment group validate --resource-group $(Azure.ResourceGroup.Name) --template-file azure-infrastructure.json --parameters azure-infrastructure.parameters.ci.json'
               workingDirectory: deploy
 
-  # Once the image is published, we package & publish our Azure artifacts
+  # package & publish our Azure artifacts
   - stage: publish
     displayName: Publish
     dependsOn: verify
@@ -51,10 +51,3 @@ stages:
                 azure-infrastructure.json
                 azure-infrastructure.parameters.json
               TargetFolder: '$(build.artifactstagingdirectory)/artifact/arm'
-          # Publish it as artifacts
-          - task: PublishBuildArtifacts@1
-            displayName: Publish Artifact
-            inputs:
-              PathtoPublish: '$(Build.ArtifactStagingDirectory)/artifact'
-              ArtifactName: 'artifact'
-              publishLocation: 'Container'
