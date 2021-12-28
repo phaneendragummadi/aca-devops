@@ -94,7 +94,7 @@ stages:
     - task: CopyFiles@2
       displayName: 'Copy Application Package'
       inputs:
-        SourceFolder: '$(Build.SourcesDirectory)/src/Application/DevOps.App/bin/${{ parameters.buildConfiguration }}\${{ parameters.targetFramework }}'
+        SourceFolder: 'src/Application/DevOps.App/bin/${{ parameters.buildConfiguration }}/${{ parameters.targetFramework }}'
         Contents: '**/*.zip'
         TargetFolder: '$(Build.ArtifactStagingDirectory)/Packages'
 
