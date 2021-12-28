@@ -79,14 +79,14 @@ stages:
       displayName: 'Restore Packages'
       inputs:
         command: restore
-        projects: '/src/pplication/Devops.App.sln'
+        projects: 'src\pplication\DevOps.App.sln'
 
     - task: DotNetCoreCLI@2
       displayName: 'Build and Package Application'
       inputs:
         command: publish
         publishWebProjects: false
-        projects: 'src\Application\Devops.App\Devops.App.csproj'
+        projects: 'src\Application\Devops.App\DevOps.App.csproj'
         arguments: '--configuration ${{ parameters.buildConfiguration }} --framework ${{ parameters.targetFramework }}'
         zipAfterPublish: True
         modifyOutputPath: false
