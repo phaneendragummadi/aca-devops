@@ -79,14 +79,14 @@ stages:
       displayName: 'Restore Packages'
       inputs:
         command: restore
-        projects: 'src\pplication\DevOps.App.sln'
+        projects: 'src/Application/DevOps.App.sln'
 
     - task: DotNetCoreCLI@2
       displayName: 'Build and Package Application'
       inputs:
         command: publish
         publishWebProjects: false
-        projects: 'src\Application\Devops.App\DevOps.App.csproj'
+        projects: 'src/Application/Devops.App/DevOps.App.csproj'
         arguments: '--configuration ${{ parameters.buildConfiguration }} --framework ${{ parameters.targetFramework }}'
         zipAfterPublish: True
         modifyOutputPath: false
@@ -94,9 +94,9 @@ stages:
     - task: CopyFiles@2
       displayName: 'Copy Application Package'
       inputs:
-        SourceFolder: '$(Build.SourcesDirectory)\src\Application\Devops.App\bin\${{ parameters.buildConfiguration }}\${{ parameters.targetFramework }}'
-        Contents: '**\*.zip'
-        TargetFolder: '$(Build.ArtifactStagingDirectory)\Packages'
+        SourceFolder: '$(Build.SourcesDirectory)/src/Application/Devops.App/bin/${{ parameters.buildConfiguration }}\${{ parameters.targetFramework }}'
+        Contents: '**/*.zip'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/Packages'
 
     - task: PublishPipelineArtifact@1
       displayName: 'Publish Scripts'
@@ -114,10 +114,10 @@ stages:
           armtemplate.parameters.json
           azure-infrastructure.json
           azure-infrastructure.parameters.json
-        TargetFolder: '$(Build.ArtifactStagingDirectory)\Packages'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/Packages'
     - task: PublishPipelineArtifact@1
       displayName: 'Publish Arm templates'
       inputs:
-        path: '$(Build.ArtifactStagingDirectory)\Packages'
+        path: '$(Build.ArtifactStagingDirectory)/Packages'
         artifact: artifact 
 
