@@ -68,7 +68,7 @@ stages:
     # TODO: Build your app    
   - job: DotNetCore
     pool:
-      vmImage: 'windows-latest'
+      vmImage: 'ubuntu-latest'
     steps:
     - task: UseDotNet@2
       displayName: 'Install .NET Core sdk'
