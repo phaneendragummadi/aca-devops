@@ -117,6 +117,8 @@ stages:
       inputs:
         SourceFolder: deploy
         Contents: |
+          armtemplate.json
+          armtemplate.parameters.json
           app-service-with-plan.json
           app-service-with-plan.parameters.json
         TargetFolder: '$(Build.ArtifactStagingDirectory)/artifact/arm'
