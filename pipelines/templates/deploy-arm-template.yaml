@@ -67,8 +67,8 @@ steps:
     resourceGroupName: '${{parameters.resourceGroupName}}'
     location: '${{parameters.location}}'
     templateLocation: 'Linked artifact'
-    csmFile: '${{parameters.artifactFolder}}/arm/storage.json'
-    csmParametersFile: '${{parameters.artifactFolder}}/arm/storage.parameters.json'
+    csmFile: '${{parameters.artifactFolder}}/arm/app-service-with-plan.json'
+    csmParametersFile: '${{parameters.artifactFolder}}/arm/app-service-with-plan.parameters.json'
     deploymentMode: 'Incremental'
     deploymentOutputs: 'armOutputs'
 
