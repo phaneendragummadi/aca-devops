@@ -125,5 +125,5 @@ stages:
       displayName: 'Publish Arm templates'
       inputs:
         path: '$(Build.ArtifactStagingDirectory)\Packages'
-        artifact: Arm
+        artifact: Arm 
 
