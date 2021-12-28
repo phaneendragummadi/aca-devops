@@ -177,15 +177,12 @@
     {
       "type": "Microsoft.Storage/storageAccounts/tableServices",
       "apiVersion": "2021-06-01",
-      "name": "[parameters('StorageAccountTableName')]",
+      "name": "[concat(parameters('StorageAccountTableName'), '/default')]",
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName'))]"
       ],
-      "properties": {
-        "cors": {
-          "corsRules": []
-        }
-      }
+      "tags": "[variables('Tags')]",
+      "properties": {}
     },
     {
       "apiVersion": "2020-12-01",
