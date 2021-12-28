@@ -79,7 +79,7 @@ stages:
       displayName: 'Restore Packages'
       inputs:
         command: restore
-        projects: 'src\Application\Devops.App.sln'
+        projects: '/src/pplication/Devops.App.sln'
 
     - task: DotNetCoreCLI@2
       displayName: 'Build and Package Application'
