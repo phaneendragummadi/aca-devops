@@ -68,6 +68,7 @@ stages:
               resourceGroupName: $(Azure.ResourceGroup.Name)
               location: $(Azure.ResourceGroup.Location)
               loggingLevel: ${{ parameters.loggingLevel }}
+          
 #- stage: deploy_test
 #  displayName: 'Deploy to Test'
 #  dependsOn: deploy_development

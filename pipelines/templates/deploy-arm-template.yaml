@@ -67,8 +67,8 @@ steps:
     resourceGroupName: '${{parameters.resourceGroupName}}'
     location: '${{parameters.location}}'
     templateLocation: 'Linked artifact'
-    csmFile: '${{parameters.artifactFolder}}/arm/app-service-with-plan.json'
-    csmParametersFile: '${{parameters.artifactFolder}}/arm/app-service-with-plan.parameters.json'
+    csmFile: '${{parameters.artifactFolder}}/arm/azure-infrastructure.json'
+    csmParametersFile: '${{parameters.artifactFolder}}/arm/azure-infrastructure.parameters.json'
     deploymentMode: 'Incremental'
     deploymentOutputs: 'armOutputs'
 - pwsh: |
@@ -79,3 +79,19 @@ steps:
     ARM_OUTPUTS: $(armOutputs)
 - script: echo $(AppServicePlanName)
   displayName: 'Log AppServicePlanName'
+- task: AzureRmWebAppDeployment@4
+  displayName: 'Deploy App'
+  inputs:
+    azureSubscription: ${{ parameters.AzureServiceConnectionName }}
+    WebAppName: '$(Infra.AppService.Name)'
+    packageForLinux: '$(Pipeline.Workspace)/Api/publish.zip'
+
+#- task: AzurePowerShell@3
+#  displayName: 'Remove Old ARM Deployments'
+#  env:
+#    SYSTEM_ACCESSTOKEN: $(System.AccessToken) 
+#    inputs:
+#      azureSubscription: ${{ parameters.AzureServiceConnectionName }}
+#      ScriptPath: '$(Pipeline.Workspace)/Scripts/Azure-RemoveOldArmDeployments.ps1'
+#      ScriptArguments: '-resourceGroup $(Infra.ResourceGroup.Name)'
+#      azurePowerShellVersion: LatestVersion

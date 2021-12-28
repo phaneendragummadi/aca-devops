@@ -119,8 +119,8 @@ stages:
         Contents: |
           armtemplate.json
           armtemplate.parameters.json
-          app-service-with-plan.json
-          app-service-with-plan.parameters.json
+          azure-infrastructure.json
+          azure-infrastructure.parameters.json
         TargetFolder: '$(Build.ArtifactStagingDirectory)/artifact/arm'
 
     - task: PublishPipelineArtifact@1
