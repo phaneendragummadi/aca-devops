@@ -175,6 +175,19 @@
       "properties": {}
     },
     {
+      "type": "Microsoft.Storage/storageAccounts/tableServices",
+      "apiVersion": "2021-06-01",
+      "name": "[parameters('StorageAccountTableName')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName'))]"
+      ],
+      "properties": {
+        "cors": {
+          "corsRules": []
+        }
+      }
+    },
+    {
       "apiVersion": "2020-12-01",
       "name": "[variables('AppServicePlanName')]",
       "type": "Microsoft.Web/serverfarms",
