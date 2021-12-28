@@ -29,5 +29,5 @@ steps:
     ConnectedServiceName: 'TrainingAccountSP'
     resourceGroupName: 'yaml-introduction-demo'
     KeyVaultName: 'intro-devops-keyvault'
-    SecretName: 'newsecret'
+    SecretName: 'EncryptionKey'
     SecretValue: $(thesecret)
