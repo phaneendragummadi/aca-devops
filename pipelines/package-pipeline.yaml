@@ -99,12 +99,6 @@ stages:
         TargetFolder: '$(Build.ArtifactStagingDirectory)\Packages'
 
     - task: PublishPipelineArtifact@1
-      displayName: 'Publish Artifacts'
-      inputs:
-        path: '$(Build.ArtifactStagingDirectory)\Packages'
-        artifact: Api
-
-    - task: PublishPipelineArtifact@1
       displayName: 'Publish Scripts'
       inputs:
         path: deploy/scripts
@@ -125,5 +119,5 @@ stages:
       displayName: 'Publish Arm templates'
       inputs:
         path: '$(Build.ArtifactStagingDirectory)\Packages'
-        artifact: Arm 
+        artifact: artifact 
 
