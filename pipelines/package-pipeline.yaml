@@ -110,7 +110,6 @@ stages:
         path: deploy/scripts
         artifact: Scripts
     # TODO: Your verification steps here
-
     # Publish
     - task: CopyFiles@2
       displayName: Copy ARM templates
