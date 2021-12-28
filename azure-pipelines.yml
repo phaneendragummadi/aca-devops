@@ -22,12 +22,12 @@ steps:
     ConnectedServiceName: 'TrainingAccountSP'
     Action: 'GetSecret'
     KeyVaultName: 'dev-devops-demo-keyvault'
-    SecretName: 'mysecret'
+    SecretName: 'EncryptionKey'
     VariableName: 'thesecret'
 - task: cboroson-WriteSecrets@1
   inputs:
     ConnectedServiceName: 'TrainingAccountSP'
     resourceGroupName: 'yaml-introduction-demo'
-    KeyVaultName: 'dev-devops-demo-keyvault'
+    KeyVaultName: 'intro-devops-keyvault'
     SecretName: 'newsecret'
     SecretValue: $(thesecret)
