@@ -12,14 +12,8 @@
 				"Premium_LRS"
 			]
 		},
-		"storageAccountTableName": {
+		"StorageAccountTableName": {
 			"type": "string"
-		},
-		"EncryptionKey": {
-			"type": "securestring",
-			"metadata": {
-				"description": "Provide the encryption key that needs to be used."
-			}
 		},
 		"Application.Name": {
 			"type": "string"
@@ -211,10 +205,6 @@
 						{
 							"name": "StorageAccount.TableName",
 							"value": "[parameters('StorageAccountTableName')]"
-						},
-						{
-							"name": "Encryption.Key",
-							"value": "[parameters('EncryptionKey')]"
 						}
 					]
 				}

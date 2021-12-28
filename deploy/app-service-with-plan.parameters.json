@@ -5,16 +5,8 @@
     "Storage.SkuName": {
       "value": "#{Storage.SkuName}#"
     },
-    "storageAccountTableName": {
+    "StorageAccountTableName": {
       "value": "#{StorageAccount.TableName}#"
-    },
-    "encryptionKey": {
-      "reference": {
-        "keyVault": {
-          "id": "#{Infra.KeyVault.Id}#"
-        },
-        "secretName": "Encryption-Key"
-      }
     },
     "Application.Name": {
       "value": "#{Api.Name}#"

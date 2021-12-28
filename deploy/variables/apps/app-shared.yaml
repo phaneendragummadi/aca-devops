@@ -11,6 +11,8 @@ variables:
     value: Standard
   - name: AppSvcPlan.SkuName
     value: S1
+  - name: StorageAccount.TableName
+    value: EncryptionTable
   - name: Release.ObjectId
     value: $(DevOps.ObjectId) 
   - name: Release.TenantId
