@@ -212,13 +212,9 @@
     }
   ],
   "outputs": {
-    "AppServicePlanName": {
+    "AppServiceName": {
       "type": "string",
-      "value": "[variables('AppServicePlanName')]"
-    },
-    "AppServicePlanId": {
-      "type": "string",
-      "value": "[variables('AppServicePlanResourceId')]"
+      "value": "[variables('AppServiceName')]"
     }
   }
 }
