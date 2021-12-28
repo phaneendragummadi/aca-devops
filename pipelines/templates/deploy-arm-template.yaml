@@ -13,93 +13,93 @@ steps:
     inputs:
       script: 'ls ${{parameters.artifactFolder}}'
 
-#- task: qetza.replacetokens.replacetokens-task.replacetokens@3
-#  displayName: Replace Tokens in ARM template
-#  inputs:
-#    rootDirectory: '${{parameters.artifactFolder}}/arm/'
-#    targetFiles: '*.json'
-#    encoding: 'auto'
-#    writeBOM: true
-#    verbosity: 'detailed'
-#    actionOnMissing: 'fail'
-#    keepToken: false
-#    tokenPrefix: '#{'
-#    tokenSuffix: '}#'
+- task: qetza.replacetokens.replacetokens-task.replacetokens@3
+  displayName: Replace Tokens in ARM template
+  inputs:
+    rootDirectory: '${{parameters.artifactFolder}}/'
+    targetFiles: '*.json'
+    encoding: 'auto'
+    writeBOM: true
+    verbosity: 'detailed'
+    actionOnMissing: 'fail'
+    keepToken: false
+    tokenPrefix: '#{'
+    tokenSuffix: '}#'
 
 ## Show ARM template & parameter values before deployment
-#- ${{ if eq(parameters.loggingLevel, 'Debug') }}:
-#  - task: PowerShell@2
-#    displayName: '[Debug] Output ARM templates that will be deployed'
-#    inputs:
-#      targetType: inline
-#      script: |
-#        $files = Get-ChildItem -Path ${{parameters.artifactFolder}}\arm\*.json
-#        foreach ($file in $files)
-#        {
-#          Write-Host "=== ARM template Output ==="
-#          Write-Host "Filename: ($file)" 
-#          $content = Get-Content $file
-#          Write-Host $content
-#        }
+- ${{ if eq(parameters.loggingLevel, 'Debug') }}:
+  - task: PowerShell@2
+    displayName: '[Debug] Output ARM templates that will be deployed'
+    inputs:
+      targetType: inline
+      script: |
+        $files = Get-ChildItem -Path ${{parameters.artifactFolder}}\*.json
+        foreach ($file in $files)
+        {
+          Write-Host "=== ARM template Output ==="
+          Write-Host "Filename: ($file)" 
+          $content = Get-Content $file
+          Write-Host $content
+        }
 
 ## Deploy through ARM
-#- task: AzureResourceManagerTemplateDeployment@3
-#  displayName: 'Deploy ARM template on ${{parameters.resourceGroupName}}'
-#  inputs:
-#    deploymentScope: 'Resource Group'
-#    azureResourceManagerConnection: '${{parameters.azureResourceManagerConnection}}'
-#    subscriptionId: '${{parameters.subscriptionId}}'
-#    action: 'Create Or Update Resource Group'
-#    resourceGroupName: '${{parameters.resourceGroupName}}'
-#    location: '${{parameters.location}}'
-#    templateLocation: 'Linked artifact'
-#    csmFile: '${{parameters.artifactFolder}}/arm/armtemplate.json'
-#    csmParametersFile: '${{parameters.artifactFolder}}/arm/armtemplate.parameters.json'
-#    deploymentMode: 'Incremental'
-#    deploymentOutputs: 'ArmOutputs'
-#- task: AzureResourceManagerTemplateDeployment@3
-#  displayName: 'Deploy ARM storage template on ${{parameters.resourceGroupName}}'
-#  inputs:
-#    deploymentScope: 'Resource Group'
-#    azureResourceManagerConnection: '${{parameters.azureResourceManagerConnection}}'
-#    subscriptionId: '${{parameters.subscriptionId}}'
-#    action: 'Create Or Update Resource Group'
-#    resourceGroupName: '${{parameters.resourceGroupName}}'
-#    location: '${{parameters.location}}'
-#    templateLocation: 'Linked artifact'
-#    csmFile: '${{parameters.artifactFolder}}/arm/azure-infrastructure.json'
-#    csmParametersFile: '${{parameters.artifactFolder}}/arm/azure-infrastructure.parameters.json'
-#    deploymentMode: 'Incremental'
-#    deploymentOutputs: 'armOutputs'
-#- pwsh: |
-#    $outputsObject = $env:ARM_OUTPUTS | ConvertFrom-Json
-#    Write-Host "##vso[task.setvariable variable=AppServicePlanName]$($outputsObject.AppServicePlanName.value)"
-#  displayName: 'Parse ARM deploymentOutputs | pwsh'
-#  env:
-#    ARM_OUTPUTS: $(armOutputs)
-#- script: echo $(AppServicePlanName)
-#  displayName: 'Log AppServicePlanName'
-## Show zip before deployment
-#- ${{ if eq(parameters.loggingLevel, 'Debug') }}:
-#  - task: PowerShell@2
-#    displayName: '[Debug] App that will be deployed'
-#    inputs:
-#      targetType: inline
-#      script: |
-#        $files = Get-ChildItem -Path ${{parameters.artifactFolder}}\Api\*.zip
-#        foreach ($file in $files)
-#        {
-#          Write-Host "=== ARM template Output ==="
-#          Write-Host "Filename: ($file)" 
-#          $content = Get-Content $file
-#          Write-Host $content
-#        }
-#- task: AzureRmWebAppDeployment@4
-#  displayName: 'Deploy App'
-#  inputs:
-#    azureSubscription: ${{ parameters.azureResourceManagerConnection }}
-#    WebAppName: '$(Api.Name)'
-#    packageForLinux: '${{parameters.artifactFolder}}/Api/publish.zip'
+- task: AzureResourceManagerTemplateDeployment@3
+  displayName: 'Deploy ARM template on ${{parameters.resourceGroupName}}'
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: '${{parameters.azureResourceManagerConnection}}'
+    subscriptionId: '${{parameters.subscriptionId}}'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: '${{parameters.resourceGroupName}}'
+    location: '${{parameters.location}}'
+    templateLocation: 'Linked artifact'
+    csmFile: '${{parameters.artifactFolder}}/armtemplate.json'
+    csmParametersFile: '${{parameters.artifactFolder}}/armtemplate.parameters.json'
+    deploymentMode: 'Incremental'
+    deploymentOutputs: 'ArmOutputs'
+- task: AzureResourceManagerTemplateDeployment@3
+  displayName: 'Deploy ARM storage template on ${{parameters.resourceGroupName}}'
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: '${{parameters.azureResourceManagerConnection}}'
+    subscriptionId: '${{parameters.subscriptionId}}'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: '${{parameters.resourceGroupName}}'
+    location: '${{parameters.location}}'
+    templateLocation: 'Linked artifact'
+    csmFile: '${{parameters.artifactFolder}}/azure-infrastructure.json'
+    csmParametersFile: '${{parameters.artifactFolder}}/azure-infrastructure.parameters.json'
+    deploymentMode: 'Incremental'
+    deploymentOutputs: 'armOutputs'
+- pwsh: |
+    $outputsObject = $env:ARM_OUTPUTS | ConvertFrom-Json
+    Write-Host "##vso[task.setvariable variable=AppServicePlanName]$($outputsObject.AppServicePlanName.value)"
+  displayName: 'Parse ARM deploymentOutputs | pwsh'
+  env:
+    ARM_OUTPUTS: $(armOutputs)
+- script: echo $(AppServicePlanName)
+  displayName: 'Log AppServicePlanName'
+# Show zip before deployment
+- ${{ if eq(parameters.loggingLevel, 'Debug') }}:
+  - task: PowerShell@2
+    displayName: '[Debug] App that will be deployed'
+    inputs:
+      targetType: inline
+      script: |
+        $files = Get-ChildItem -Path ${{parameters.artifactFolder}}\*.zip
+        foreach ($file in $files)
+        {
+          Write-Host "=== ARM template Output ==="
+          Write-Host "Filename: ($file)" 
+          $content = Get-Content $file
+          Write-Host $content
+        }
+- task: AzureRmWebAppDeployment@4
+  displayName: 'Deploy App'
+  inputs:
+    azureSubscription: ${{ parameters.azureResourceManagerConnection }}
+    WebAppName: '$(Api.Name)'
+    packageForLinux: '${{parameters.artifactFolder}}/publish.zip'
 
 #- task: AzurePowerShell@3
 #  displayName: 'Remove Old ARM Deployments'
