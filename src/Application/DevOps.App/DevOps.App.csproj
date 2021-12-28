@@ -5,8 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Arcus.Security.Core" Version="1.6.0" />
+    <PackageReference Include="Arcus.Security.Providers.AzureKeyVault" Version="1.6.0" />
     <PackageReference Include="Azure.Data.Tables" Version="12.3.0" /> 
-    <PackageReference Include="Azure.Storage.Common" Version="12.9.0" />
+    <PackageReference Include="Azure.Storage.Common" Version="12.9.0" /> 
+    <PackageReference Include="Serilog" Version="2.10.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
 

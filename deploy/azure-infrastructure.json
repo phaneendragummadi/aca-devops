@@ -117,6 +117,15 @@
   },
   "resources": [
     {
+      "type": "Microsoft.Resources/tags",
+      "name": "default",
+      "apiVersion": "2019-10-01",
+      "dependsOn": [],
+      "properties": {
+        "tags": "[variables('Tags')]"
+      }
+    },
+    {
       "apiVersion": "2018-02-14",
       "location": "[resourceGroup().location]",
       "name": "[variables('keyVaultName')]",

@@ -16,7 +16,10 @@ namespace DevOps.App.Encryption
         {
             encryptionKey = ConfigurationProvider.Get<string>("Encryption.Key");
         }
-        
+        public Encryptor(string encryptionKey)
+        {
+            this.encryptionKey = encryptionKey;
+        }
         public string Decrypt(string encryptedText)
         {
             encryptedText = encryptedText.Replace(" ", "+");
