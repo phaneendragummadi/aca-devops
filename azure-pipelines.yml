@@ -28,6 +28,6 @@ steps:
   inputs:
     ConnectedServiceName: 'TrainingAccountSP'
     resourceGroupName: 'yaml-introduction-demo'
-    KeyVaultName: 'intro-devops-keyvault'
+    KeyVaultName: 'dev-we-devops-keyvault'
     SecretName: 'EncryptionKey'
     SecretValue: $(thesecret)
