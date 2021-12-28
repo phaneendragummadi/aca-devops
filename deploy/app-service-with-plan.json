@@ -82,9 +82,28 @@
 			"metadata": {
 				"description": "Provide the pricing tier of the App Service Plan."
 			}
+		},
+		"Keyvault.SkuName": {
+			"type": "string",
+			"defaultValue": "Standard",
+			"allowedValues": [
+				"Standard",
+				"Premium"
+			],
+			"metadata": {
+				"description": "Provide the pricing tier of the key vault."
+			}
+		},
+		"Keyvault.TenantId": {
+			"type": "string"
+		},
+		"Keyvault.ObjectId": {
+			"type": "string"
 		}
 	},
 	"variables": {
+		"keyVaultName": "[concat(parameters('Application.Name'), '-keyvault')]",
+		"keyVaultResourceId": "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]",
 		"AppServicePlanName": "[concat(parameters('Application.Name'), '-appserviceplan')]",
 		"AppServicePlanResourceId": "[resourceId('Microsoft.Web/serverFarms', variables('AppServicePlanName'))]",
 		"AppServiceName": "[concat(parameters('Application.Name'), '-app')]",
@@ -103,6 +122,43 @@
 		}
 	},
 	"resources": [
+		{
+			"apiVersion": "2018-02-14",
+			"location": "[resourceGroup().location]",
+			"name": "[variables('keyVaultName')]",
+			"properties": {
+				"tenantId": "[parameters('Keyvault.TenantId')]",
+				"sku": {
+					"name": "[parameters('Keyvault.SkuName')]",
+					"family": "A"
+				},
+				"enabledForTemplateDeployment": true,
+				"accessPolicies": []
+			},
+			"tags": "[variables('Tags')]",
+			"type": "Microsoft.KeyVault/vaults"
+		},
+		{
+			"type": "Microsoft.KeyVault/vaults/accessPolicies",
+			"name": "[concat(variables('keyVaultName'), '/add')]",
+			"apiVersion": "2018-02-14",
+			"properties": {
+				"accessPolicies": [
+					{
+						"tenantId": "[parameters('Keyvault.TenantId')]",
+						"objectId": "[parameters('Keyvault.ObjectId')]",
+						"permissions": {
+							"keys": [ "list", "get" ],
+							"secrets": [ "list", "get", "set" ]
+						}
+					}
+				]
+			},
+			"tags": "[variables('Tags')]",
+			"dependsOn": [
+				"[variables('keyVaultResourceId')]"
+			]
+		},
 		{
 			"type": "Microsoft.Storage/storageAccounts",
 			"name": "[variables('StorageAccountName')]",

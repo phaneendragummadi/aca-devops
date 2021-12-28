@@ -117,16 +117,8 @@ stages:
       inputs:
         SourceFolder: deploy
         Contents: |
-          armtemplate.json
-          armtemplate.parameters.json
-          storage.json
-          storage.parameters.json
-          app-service-plan.json
-          app-service-plan.parameters.json
-          app-service.json
-          app-service.parameters.json
-          key-vault.json
-          key-vault.parameters.json
+          app-service-with-plan.json
+          app-service-with-plan.parameters.json
         TargetFolder: '$(Build.ArtifactStagingDirectory)/artifact/arm'
 
     - task: PublishPipelineArtifact@1

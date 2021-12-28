@@ -42,6 +42,15 @@
     },
     "AppSvcPlan.SkuName": {
       "value": "#{AppSvcPlan.SkuName}#"
+    },
+    "Keyvault.SkuName": {
+      "value": "#{Keyvault.SkuName}#"
+    },
+    "Keyvault.ObjectId": {
+      "value": "#{Release.ObjectId}#"
+    },
+    "Keyvault.TenantId": {
+      "value": "#{Release.TenantId}#"
     }
   }
 }

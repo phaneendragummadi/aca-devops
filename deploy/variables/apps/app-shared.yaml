@@ -4,14 +4,14 @@ variables:
   - name: Azure.ResourceGroup.Name
     value: yaml-introduction-demo
   - name: Api.Name
-    value: $(Resource.Prefix)-devops
+    value: $(Resource.Prefix)-intro-devops
   - name: Storage.SkuName
     value: Standard_LRS
   - name: Keyvault.SkuName
     value: Standard
   - name: AppSvcPlan.SkuName
     value: S1
-  - name: Infra.DevOps.ObjectId
+  - name: Release.ObjectId
     value: $(DevOps.ObjectId) 
-  - name: Infra.DevOps.TenantId
+  - name: Release.TenantId
     value: $(DevOps.TenantId)
