@@ -164,25 +164,28 @@
     },
     {
       "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2019-06-01",
       "name": "[variables('StorageAccountName')]",
       "location": "[resourceGroup().location]",
-      "apiVersion": "2018-07-01",
-      "sku": {
-        "name": "[parameters('Storage.SkuName')]"
-      },
+      "tags": "[variables('Tags')]",
+      "sku": "[parameters('Storage.SkuName')]",
       "kind": "StorageV2",
-      "tags": "[variables('Tags')]",
-      "properties": {}
-    },
-    {
-      "type": "Microsoft.Storage/storageAccounts/tableServices",
-      "apiVersion": "2021-06-01",
-      "name": "[concat(parameters('StorageAccountTableName'), '/default')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName'))]"
-      ],
-      "tags": "[variables('Tags')]",
-      "properties": {}
+      "properties": {
+        "accessTier": "Hot",
+        "minimumTlsVersion": "TLS1_2",
+        "allowBlobPublicAccess": false,
+        "supportsHttpsTrafficOnly": true
+      },
+      "resources": [
+        {
+          "type": "tableServices/tables",
+          "apiVersion": "2019-06-01",
+          "name": "[concat('default/', parameters('StorageAccountTableName'))]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+          ]
+        }
+      ]
     },
     {
       "apiVersion": "2020-12-01",
