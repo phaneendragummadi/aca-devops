@@ -168,7 +168,9 @@
       "name": "[variables('StorageAccountName')]",
       "location": "[resourceGroup().location]",
       "tags": "[variables('Tags')]",
-      "sku": "[parameters('Storage.SkuName')]",
+      "sku": {
+        "name": "[parameters('Storage.SkuName')]"
+      },
       "kind": "StorageV2",
       "properties": {
         "accessTier": "Hot",
