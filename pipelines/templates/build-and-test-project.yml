@@ -28,9 +28,9 @@ stages:
         command: 'build'
         projects: ${{ parameters.projectPath }}
         arguments: '--configuration ${{ parameters.buildConfiguration }}'
-    - task: DotNetCoreCLI@2
-      displayName: Run Unit Tests
-      inputs:
-        command: 'test'
-        projects: './src/CarWash.Tests.Unit/CarWash.Tests.Unit.csproj'
-        arguments: '--configuration ${{ parameters.buildConfiguration }} --filter Category=Unit'
+    #- task: DotNetCoreCLI@2
+    #  displayName: Run Unit Tests
+    #  inputs:
+    #    command: 'test'
+    #    projects: './src/CarWash.Tests.Unit/CarWash.Tests.Unit.csproj'
+    #    arguments: '--configuration ${{ parameters.buildConfiguration }} --filter Category=Unit'
