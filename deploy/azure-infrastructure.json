@@ -96,15 +96,15 @@
     }
   },
   "variables": {
-    "keyVaultName": "[concat(parameters('Application.Name'), '-keyvault')]",
-    "keyVaultResourceId": "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]",
+    "KeyVaultName": "[concat(parameters('Application.Name'), '-keyvault')]",
+    "KeyVaultResourceId": "[resourceId('Microsoft.KeyVault/vaults', variables('KeyVaultName'))]",
     "AppServicePlanName": "[concat(parameters('Application.Name'), '-appserviceplan')]",
     "AppServicePlanResourceId": "[resourceId('Microsoft.Web/serverFarms', variables('AppServicePlanName'))]",
     "AppServiceName": "[concat(parameters('Application.Name'), '-app')]",
     "AppServiceResourceId": "[resourceId('Microsoft.Web/sites', variables('AppServiceName'))]",
     "StorageAccountName": "[concat(tolower(replace(parameters('Application.Name'),'-','')), 'storage')]",
     "StorageAccountResourceId": "[resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName'))]",
-    "apiVersion": "[providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]]",
+    "ApiVersion": "[providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]]",
     "Tags": {
       "environment": "[parameters('Application.Environment')]",
       "version": "[parameters('Application.Version')]",
@@ -128,7 +128,7 @@
     {
       "apiVersion": "2018-02-14",
       "location": "[resourceGroup().location]",
-      "name": "[variables('keyVaultName')]",
+      "name": "[variables('KeyVaultName')]",
       "properties": {
         "tenantId": "[parameters('Keyvault.TenantId')]",
         "sku": {
@@ -143,7 +143,7 @@
     },
     {
       "type": "Microsoft.KeyVault/vaults/accessPolicies",
-      "name": "[concat(variables('keyVaultName'), '/add')]",
+      "name": "[concat(variables('KeyVaultName'), '/add')]",
       "apiVersion": "2018-02-14",
       "properties": {
         "accessPolicies": [
@@ -159,7 +159,7 @@
       },
       "tags": "[variables('Tags')]",
       "dependsOn": [
-        "[variables('keyVaultResourceId')]"
+        "[variables('KeyVaultResourceId')]"
       ]
     },
     {
