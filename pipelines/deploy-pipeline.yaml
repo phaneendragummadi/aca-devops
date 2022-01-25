@@ -9,7 +9,7 @@ resources:
     # Name of the pipeline resource inside this workflow. Used to reference the pipeline resources later on (e.g. download artifacts).
   - pipeline: package_build
     # Name of the pipeline in Azure Pipelines
-    source: 'Infra.aca-devops.yaml-CI' 
+    source: 'Codit.aca-devops-yaml-CI' 
     trigger: true
 
 parameters:
