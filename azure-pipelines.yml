@@ -32,10 +32,29 @@ steps:
     workingDirectory: '$(Pipeline.Workspace)'
 #- script: "echo $(mysecret) | secret1.txt" # uses macro syntax
 #- script: "echo $(my-passed-variable) > $(Pipeline.Workspace)/secret2.txt"
-
+- task: PowerShell@2
+  displayName: '[Debug] Output ARM templates that will be deployed'
+  inputs:
+      targetType: inline
+      script: |
+        $files = Get-ChildItem -Path ${{Pipeline.Workspace}}\*.tst
+        foreach ($file in $files)
+        {
+          Write-Host "=== ARM template Output ==="
+          Write-Host "Filename: ($file)" 
+          $content = Get-Content $file
+          Write-Host $content
+        }
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Write your commands here
+      
+      ls
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: '**/**/*.txt'
+    targetPath: '$(Pipeline.Workspace)'
     artifact: 'drop'
     publishLocation: 'pipeline'
 
