@@ -32,12 +32,22 @@ steps:
 #    workingDirectory: '$(Pipeline.Workspace)'
 #- script: "echo $(mysecret) | secret1.txt" # uses macro syntax
 #- script: "echo $(my-passed-variable) > $(Pipeline.Workspace)/secret2.txt"
+
+- script: "echo $(Build.StagingDirectory)
+- pwsh: |
+    ls $(Build.StagingDirectory)
+    $alias = Get-ChildItem $(Build.StagingDirectory) | ? { $_.Name.Length -gt 1 } | select -ExpandProperty Name -First 1
+    echo "##vso[task.setvariable variable=ArtifactAlias]$alias"
+- script: "echo $(Pipeline.Workspace)
 - pwsh: |
     ls $(Pipeline.Workspace)
     $alias = Get-ChildItem $(Pipeline.Workspace) | ? { $_.Name.Length -gt 1 } | select -ExpandProperty Name -First 1
     echo "##vso[task.setvariable variable=ArtifactAlias]$alias"
-
-
+- script: "echo $(Build.ArtifactStagingDirectory)
+- pwsh: |
+    ls $(Build.ArtifactStagingDirectory)
+    $alias = Get-ChildItem $(Build.ArtifactStagingDirectory) | ? { $_.Name.Length -gt 1 } | select -ExpandProperty Name -First 1
+    echo "##vso[task.setvariable variable=ArtifactAlias]$alias"
 #- pwsh: echo 'alias: $(ArtifactAlias)' 
 - task: PowerShell@2
   displayName: '[Debug] Output ARM templates that will be deployed'
@@ -65,10 +75,7 @@ steps:
     targetPath: $(System.DefaultWorkingDirectory)/test
     artifactName: artifact
 
-- pwsh: |
-    ls $(Pipeline.Workspace)
-    $alias = Get-ChildItem $(Pipeline.Workspace) | ? { $_.Name.Length -gt 1 } | select -ExpandProperty Name -First 1
-    echo "##vso[task.setvariable variable=ArtifactAlias]$alias"
+
 - task: PublishPipelineArtifact@1
   inputs:
     targetPath: 'D:\a\1\s'
