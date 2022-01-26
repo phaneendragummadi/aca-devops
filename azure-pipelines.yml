@@ -33,7 +33,7 @@ steps:
 #- script: "echo $(mysecret) | secret1.txt" # uses macro syntax
 #- script: "echo $(my-passed-variable) > $(Pipeline.Workspace)/secret2.txt"
 - pwsh: |
-    ls 
+    ls $(Pipeline.Workspace)
     $alias = Get-ChildItem $(Pipeline.Workspace) | ? { $_.Name.Length -gt 1 } | select -ExpandProperty Name -First 1
     echo "##vso[task.setvariable variable=ArtifactAlias]$alias"
 
@@ -59,13 +59,21 @@ steps:
       # Write your commands here
       
       ls
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: $(System.DefaultWorkingDirectory)/test
+    artifactName: artifact
+
+- pwsh: |
+    ls $(Pipeline.Workspace)
+    $alias = Get-ChildItem $(Pipeline.Workspace) | ? { $_.Name.Length -gt 1 } | select -ExpandProperty Name -First 1
+    echo "##vso[task.setvariable variable=ArtifactAlias]$alias"
 - task: PublishPipelineArtifact@1
   inputs:
     targetPath: 'D:\a\1\s'
     artifact: 'drop'
     publishLocation: 'pipeline'
-
-
 - script: |
     echo Add other tasks to build, test, and deploy your project.
     echo See https://aka.ms/yaml
