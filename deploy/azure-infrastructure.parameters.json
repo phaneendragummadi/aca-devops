@@ -43,6 +43,9 @@
     },
     "Keyvault.TenantId": {
       "value": "#{Release.TenantId}#"
+    },
+    "Keyvault.SecretName": {
+      "value": "#{Keyvault.SecretName}#"
     }
   }
 }

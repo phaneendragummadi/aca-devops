@@ -93,11 +93,26 @@
     },
     "Keyvault.ObjectId": {
       "type": "string"
+    },
+    "Keyvault.SecretName": {
+      "type": "string",
+      "metadata": {
+        "description": "Specifies the name of the secret that you want to create."
+      }
     }
+
   },
   "variables": {
     "KeyVaultName": "[concat(parameters('Application.Name'), '-keyvault')]",
     "KeyVaultResourceId": "[resourceId('Microsoft.KeyVault/vaults', variables('KeyVaultName'))]",
+    "Keyvault.SecretValue": {
+      "reference": {
+        "keyVault": {
+          "id": "[resourceId('Microsoft.KeyVault/vaults', variables('KeyVaultName'))]"
+        },
+        "secretName": "[parameters('Keyvault.SecretName').secrets.name]"
+      }
+    },
     "AppServicePlanName": "[concat(parameters('Application.Name'), '-appserviceplan')]",
     "AppServicePlanResourceId": "[resourceId('Microsoft.Web/serverFarms', variables('AppServicePlanName'))]",
     "AppServiceName": "[concat(parameters('Application.Name'), '-app')]",
@@ -135,31 +150,34 @@
           "name": "[parameters('Keyvault.SkuName')]",
           "family": "A"
         },
+        "networkAcls": {
+          "defaultAction": "Allow",
+          "bypass": "AzureServices"
+        },
         "enabledForTemplateDeployment": true,
-        "accessPolicies": []
-      },
-      "tags": "[variables('Tags')]",
-      "type": "Microsoft.KeyVault/vaults"
-    },
-    {
-      "type": "Microsoft.KeyVault/vaults/accessPolicies",
-      "name": "[concat(variables('KeyVaultName'), '/add')]",
-      "apiVersion": "2018-02-14",
-      "properties": {
         "accessPolicies": [
           {
             "tenantId": "[parameters('Keyvault.TenantId')]",
             "objectId": "[parameters('Keyvault.ObjectId')]",
             "permissions": {
               "keys": [ "list", "get" ],
-              "secrets": [ "list", "get", "set" ]
+              "secrets": [ "list", "get" ]
             }
           }
         ]
       },
       "tags": "[variables('Tags')]",
+      "type": "Microsoft.KeyVault/vaults"
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2021-04-01-preview",
+      "name": "[parameters('Keyvault.SecretName')]",
+      "properties": {
+        "value": "[variables('Keyvault.SecretValue')]"
+      },
       "dependsOn": [
-        "[variables('KeyVaultResourceId')]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('KeyVaultName'))]"
       ]
     },
     {
@@ -198,7 +216,6 @@
         "name": "[parameters('AppSvcPlan.SkuName')]",
         "capacity": 1
       },
-      "kind": "linux",
       "properties": {
         "reserved": true
       },
@@ -221,8 +238,7 @@
           "connectionStrings": [
             {
               "name": "StorageAccount.ConnectionString",
-              "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountResourceId'), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value, ';EndpointSuffix=core.windows.net')]",
-              "type": "SQLAzure"
+              "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountResourceId'), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value, ';EndpointSuffix=core.windows.net')]"
             }
           ],
           "appSettings": [

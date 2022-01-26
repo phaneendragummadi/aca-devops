@@ -9,6 +9,8 @@ variables:
     value: Standard_LRS
   - name: Keyvault.SkuName
     value: Standard
+  - name: Keyvault.SecretName
+    value: EncryptionKey
   - name: AppSvcPlan.SkuName
     value: S1
   - name: StorageAccount.TableName
