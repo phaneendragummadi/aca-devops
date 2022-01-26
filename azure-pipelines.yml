@@ -33,22 +33,49 @@ steps:
 #- script: "echo $(mysecret) | secret1.txt" # uses macro syntax
 #- script: "echo $(my-passed-variable) > $(Pipeline.Workspace)/secret2.txt"
 
-- script: "echo $(Build.StagingDirectory)
-- pwsh: |
-    ls $(Build.StagingDirectory)
-    $alias = Get-ChildItem $(Build.StagingDirectory) | ? { $_.Name.Length -gt 1 } | select -ExpandProperty Name -First 1
-    echo "##vso[task.setvariable variable=ArtifactAlias]$alias"
-- script: "echo $(Pipeline.Workspace)
-- pwsh: |
-    ls $(Pipeline.Workspace)
-    $alias = Get-ChildItem $(Pipeline.Workspace) | ? { $_.Name.Length -gt 1 } | select -ExpandProperty Name -First 1
-    echo "##vso[task.setvariable variable=ArtifactAlias]$alias"
-- script: "echo $(Build.ArtifactStagingDirectory)
-- pwsh: |
-    ls $(Build.ArtifactStagingDirectory)
-    $alias = Get-ChildItem $(Build.ArtifactStagingDirectory) | ? { $_.Name.Length -gt 1 } | select -ExpandProperty Name -First 1
-    echo "##vso[task.setvariable variable=ArtifactAlias]$alias"
-#- pwsh: echo 'alias: $(ArtifactAlias)' 
+- script: "echo $(Build.StagingDirectory)"
+- task: PowerShell@2
+  displayName: 'Build.StagingDirectory'
+  inputs:
+      targetType: inline
+      script: |
+        $files = Get-ChildItem -Path $(Build.StagingDirectory)/*.*
+        foreach ($file in $files)
+        {
+          Write-Host "=== ARM template Output ==="
+          Write-Host "Filename: ($file)" 
+          $content = Get-Content $file
+          Write-Host $content
+        }
+- script: "echo $(Pipeline.Workspace)"
+- task: PowerShell@2
+  displayName: 'Build.Workspace'
+  inputs:
+      targetType: inline
+      script: |
+        $files = Get-ChildItem -Path $(Build.Workspace)/*.*
+        foreach ($file in $files)
+        {
+          Write-Host "=== ARM template Output ==="
+          Write-Host "Filename: ($file)" 
+          $content = Get-Content $file
+          Write-Host $content
+        }
+- script: "echo $(Build.ArtifactStagingDirectory)"
+- task: PowerShell@2
+  displayName: 'Build.ArtifactStagingDirectory'
+  inputs:
+      targetType: inline
+      script: |
+        $files = Get-ChildItem -Path $(Build.ArtifactStagingDirectory)/*.*
+        foreach ($file in $files)
+        {
+          Write-Host "=== ARM template Output ==="
+          Write-Host "Filename: ($file)" 
+          $content = Get-Content $file
+          Write-Host $content
+        }
+
 - task: PowerShell@2
   displayName: '[Debug] Output ARM templates that will be deployed'
   inputs:
