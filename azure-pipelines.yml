@@ -20,7 +20,7 @@ steps:
     script: |
       # Write your commands here
       echo 'Build.SourcesDirectory=' $(Build.SourcesDirectory)
-      echo 'Hello world' > D:\a\1\s\test1.txt
+      echo 'Hello world' > test1.txt
 #    workingDirectory: '$(Pipeline.Workspace)'
 - task: Bash@3
   inputs:
@@ -28,7 +28,7 @@ steps:
     script: |
       # Write your commands here
       
-      echo '$(mysecret)' > D:\a\1\s\test2.txt
+      echo '$(mysecret)' > test2.txt
 #    workingDirectory: '$(Pipeline.Workspace)'
 #- script: "echo $(mysecret) | secret1.txt" # uses macro syntax
 #- script: "echo $(my-passed-variable) > $(Pipeline.Workspace)/secret2.txt"
