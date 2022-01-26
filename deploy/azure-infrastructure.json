@@ -171,7 +171,7 @@
       "apiVersion": "2018-02-14",
       "name": "[concat(variables('keyVaultName'), '/', parameters('Keyvault.SecretName'))]",
       "properties": {
-        "value": "[variables('Keyvault.SecretValue')]"
+        "value": "[parameters('Keyvault.SecretValue')]"
       },
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('KeyVaultName'))]"
