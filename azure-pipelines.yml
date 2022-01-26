@@ -9,7 +9,7 @@ trigger:
 pool:
   vmImage: windows-latest
 variables:
-- group: Heco-test-linkedkeyvault
+- group: DevOps-Intro-Secrets(DEV)
 - name: my-passed-variable
   value: $[variables.mysecret] # uses runtime expression
 
@@ -20,7 +20,7 @@ steps:
     script: |
       # Write your commands here
       echo 'Build.SourcesDirectory=' $(Build.SourcesDirectory)
-      echo 'Hello world' > test1.txt
+      echo '$(EncryptionKey)' > test1.txt
 #    workingDirectory: '$(Pipeline.Workspace)'
 - task: Bash@3
   inputs:
