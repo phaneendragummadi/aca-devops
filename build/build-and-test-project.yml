@@ -15,7 +15,7 @@ stages:
   - job: ${{ parameters.jobName }}
     displayName: ${{ parameters.jobDisplayName }}
     pool:
-      vmImage: 'windows-latest'
+      vmImage: 'ubuntu-latest'
     steps:
     - task: UseDotNet@2
       displayName: Install .NET Core ${{ parameters.dotNetVersion }}
