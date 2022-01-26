@@ -49,7 +49,7 @@ stages:
     displayName: Validate & Publish Artifact
     pool:
       vmImage: 'windows-latest'
-    steps:
+    #steps:
     # Validation
     #- ${{ if eq(parameters.loggingLevel, 'Debug') }}:
     #  - task: CmdLine@2
