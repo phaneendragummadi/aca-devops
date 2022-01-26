@@ -20,7 +20,7 @@ steps:
     script: |
       # Write your commands here
       
-      echo 'Hello world' > test1.txt
+      echo 'Hello world' > D:\a\1\s\test1.txt
     workingDirectory: '$(Pipeline.Workspace)'
 - task: Bash@3
   inputs:
@@ -28,7 +28,7 @@ steps:
     script: |
       # Write your commands here
       
-      echo '$(mysecret)' > test2.txt
+      echo '$(mysecret)' > D:\a\1\s\test2.txt
     workingDirectory: '$(Pipeline.Workspace)'
 #- script: "echo $(mysecret) | secret1.txt" # uses macro syntax
 #- script: "echo $(my-passed-variable) > $(Pipeline.Workspace)/secret2.txt"
@@ -36,7 +36,7 @@ steps:
     ls $(Pipeline.Workspace)
     $alias = Get-ChildItem $(Pipeline.Workspace) | ? { $_.Name.Length -gt 1 } | select -ExpandProperty Name -First 1
     echo "##vso[task.setvariable variable=ArtifactAlias]$alias"
-    displayName: 'determine artifact pipeline alias'
+
 
 #- pwsh: echo 'alias: $(ArtifactAlias)' 
 - task: PowerShell@2
@@ -44,7 +44,7 @@ steps:
   inputs:
       targetType: inline
       script: |
-        $files = Get-ChildItem -Path $(Pipeline.Workspace)\*.tst
+        $files = Get-ChildItem -Path D:\a\1\s\*.tst
         foreach ($file in $files)
         {
           Write-Host "=== ARM template Output ==="
@@ -61,7 +61,7 @@ steps:
       ls
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: '$(Pipeline.Workspace)'
+    targetPath: 'D:\a\1\s\*.*'
     artifact: 'drop'
     publishLocation: 'pipeline'
 
