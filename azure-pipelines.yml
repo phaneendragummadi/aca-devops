@@ -30,14 +30,14 @@ steps:
  
 - task: azurekeyvaultactions@2
   inputs:
-    ConnectedServiceName: 'TrainingAccountSP'
+    ConnectedServiceName: 'Trainingdevopsyamlserviceconn'
     Action: 'GetSecret'
     KeyVaultName: 'dev-devops-demo-keyvault'
     SecretName: 'EncryptionKey'
     VariableName: 'thesecret'
 - task: cboroson-WriteSecrets@1
   inputs:
-    ConnectedServiceName: 'TrainingAccountSP'
+    ConnectedServiceName: 'Trainingdevopsyamlserviceconn'
     resourceGroupName: 'yaml-introduction-demo'
     KeyVaultName: 'dev-we-devops-keyvault'
     SecretName: 'EncryptionKey'
