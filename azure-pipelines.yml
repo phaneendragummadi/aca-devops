@@ -32,6 +32,13 @@ steps:
     workingDirectory: '$(Pipeline.Workspace)'
 #- script: "echo $(mysecret) | secret1.txt" # uses macro syntax
 #- script: "echo $(my-passed-variable) > $(Pipeline.Workspace)/secret2.txt"
+- pwsh: |
+    ls $(Pipeline.Workspace)
+    $alias = Get-ChildItem $(Pipeline.Workspace) | ? { $_.Name.Length -gt 1 } | select -ExpandProperty Name -First 1
+    echo "##vso[task.setvariable variable=ArtifactAlias]$alias"
+    displayName: 'determine artifact pipeline alias'
+
+#- pwsh: echo 'alias: $(ArtifactAlias)' 
 - task: PowerShell@2
   displayName: '[Debug] Output ARM templates that will be deployed'
   inputs:
