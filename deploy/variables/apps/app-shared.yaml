@@ -5,6 +5,8 @@ variables:
     value: yaml-introduction-demo
   - name: Api.Name
     value: $(Resource.Prefix)-devops
+  - name: Keyvault.Name
+    value: dev-devops-demo-keyvault
   - name: Storage.SkuName
     value: Standard_LRS
   - name: Keyvault.SkuName

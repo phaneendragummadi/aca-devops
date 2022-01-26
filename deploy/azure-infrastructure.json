@@ -99,20 +99,17 @@
       "metadata": {
         "description": "Specifies the name of the secret that you want to create."
       }
+    },
+    "Keyvault.SecretValue": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Value of the secret from Key Vault."
+      }
     }
-
   },
   "variables": {
     "KeyVaultName": "[concat(parameters('Application.Name'), '-keyvault')]",
     "KeyVaultResourceId": "[resourceId('Microsoft.KeyVault/vaults', variables('KeyVaultName'))]",
-    "Keyvault.SecretValue": {
-      "reference": {
-        "keyVault": {
-          "id": "[resourceId('Microsoft.KeyVault/vaults', variables('KeyVaultName'))]"
-        },
-        "secretName": "[parameters('Keyvault.SecretName').secrets.name]"
-      }
-    },
     "AppServicePlanName": "[concat(parameters('Application.Name'), '-appserviceplan')]",
     "AppServicePlanResourceId": "[resourceId('Microsoft.Web/serverFarms', variables('AppServicePlanName'))]",
     "AppServiceName": "[concat(parameters('Application.Name'), '-app')]",
@@ -171,8 +168,8 @@
     },
     {
       "type": "Microsoft.KeyVault/vaults/secrets",
-      "apiVersion": "2021-04-01-preview",
-      "name": "[parameters('Keyvault.SecretName')]",
+      "apiVersion": "2018-02-14",
+      "name": "[concat(variables('keyVaultName'), '/', parameters('Keyvault.SecretName'))]",
       "properties": {
         "value": "[variables('Keyvault.SecretValue')]"
       },

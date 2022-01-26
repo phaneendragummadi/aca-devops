@@ -46,6 +46,14 @@
     },
     "Keyvault.SecretName": {
       "value": "#{Keyvault.SecretName}#"
+    },
+    "Keyvault.SecretValue": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/#{Azure.Subscription.Id}#/resourceGroups/#{Azure.ResourceGroup.Name}#/providers/Microsoft.KeyVault/vaults/#{Keyvault.Name}#"
+        },
+        "secretName": "#{Keyvault.SecretName}#"
+      }
     }
   }
 }

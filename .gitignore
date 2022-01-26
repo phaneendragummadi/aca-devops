@@ -351,3 +351,7 @@ MigrationBackup/
 /deploy/scripts/TODO.txt
 /deploy/app-service-plan.parameters.local.json
 /deploy/app-service.parameters.local.json
+/deploy/azure-infrastructure-bak.json
+/src/Application/DevOps.App/.config/dotnet-tools.json
+/src/Application/DevOps.App/Properties/ServiceDependencies/dev-we-devops-app - Web Deploy
+/src/Application/DevOps.App/Properties

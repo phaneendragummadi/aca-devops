@@ -1,0 +1,153 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: windows-latest
+variables:
+- group: Heco-test-linkedkeyvault
+- name: my-passed-variable
+  value: $[variables.mysecret] # uses runtime expression
+
+steps:
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Write your commands here
+      echo 'Build.SourcesDirectory=' $(Build.SourcesDirectory)
+      echo 'Hello world' > D:\a\1\s\test1.txt
+#    workingDirectory: '$(Pipeline.Workspace)'
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Write your commands here
+      
+      echo '$(mysecret)' > D:\a\1\s\test2.txt
+#    workingDirectory: '$(Pipeline.Workspace)'
+#- script: "echo $(mysecret) | secret1.txt" # uses macro syntax
+#- script: "echo $(my-passed-variable) > $(Pipeline.Workspace)/secret2.txt"
+#- task: CopyFiles@2
+#  inputs:
+    #sourceFolder: # Optional
+    #contents: '**' 
+#    targetFolder: 
+    #cleanTargetFolder: false # Optional
+    #overWrite: false # Optional
+    #flattenFolders: false # Optional
+    #preserveTimestamp: false # Optional
+    #retryCount: 0 # Optional
+    #ignoreMakeDirErrors: false # Optional
+- task: CopyFiles@2
+  displayName: Copy ARM templates
+  inputs:
+    SourceFolder: D:\a\1\s\
+    Contents: |
+      *.txt
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/Packages'
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish txt'
+  inputs:
+    path: '$(Build.ArtifactStagingDirectory)/Packages'
+    artifact: artifact 
+
+- script: "echo $(Build.Sources)"
+- task: PowerShell@2
+  displayName: 'Build.StagingDirectory'
+  inputs:
+      targetType: inline
+      script: |
+        $files = Get-ChildItem -Path $(Build.StagingDirectory)/*.*
+        foreach ($file in $files)
+        {
+          Write-Host "=== ARM template Output ==="
+          Write-Host "Filename: ($file)" 
+          $content = Get-Content $file
+          Write-Host $content
+        }
+- script: "echo $(Pipeline.Workspace)"
+- task: PowerShell@2
+  displayName: 'Build.Workspace'
+  inputs:
+      targetType: inline
+      script: |
+        $files = Get-ChildItem -Path $(Build.Workspace)/*.*
+        foreach ($file in $files)
+        {
+          Write-Host "=== ARM template Output ==="
+          Write-Host "Filename: ($file)" 
+          $content = Get-Content $file
+          Write-Host $content
+        }
+- script: "echo $(Build.ArtifactStagingDirectory)"
+- task: PowerShell@2
+  displayName: 'Build.ArtifactStagingDirectory'
+  inputs:
+      targetType: inline
+      script: |
+        $files = Get-ChildItem -Path $(Build.ArtifactStagingDirectory)/*.*
+        foreach ($file in $files)
+        {
+          Write-Host "=== ARM template Output ==="
+          Write-Host "Filename: ($file)" 
+          $content = Get-Content $file
+          Write-Host $content
+        }
+
+- task: PowerShell@2
+  displayName: '[Debug] Output ARM templates that will be deployed'
+  inputs:
+      targetType: inline
+      script: |
+        $files = Get-ChildItem -Path D:\a\1\s\*.*
+        foreach ($file in $files)
+        {
+          Write-Host "=== ARM template Output ==="
+          Write-Host "Filename: ($file)" 
+          $content = Get-Content $file
+          Write-Host $content
+        }
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Write your commands here
+      
+      ls
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: $(System.DefaultWorkingDirectory)/test
+    artifactName: artifact
+
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: 'D:\a\1\s'
+    artifact: 'drop'
+    publishLocation: 'pipeline'
+- script: |
+    echo Add other tasks to build, test, and deploy your project.
+    echo See https://aka.ms/yaml
+  displayName: 'Run a multi-line script'
+ 
+- task: azurekeyvaultactions@2
+  inputs:
+    ConnectedServiceName: 'Trainingdevopsyamlserviceconn'
+    Action: 'GetSecret'
+    KeyVaultName: 'dev-devops-demo-keyvault'
+    SecretName: 'EncryptionKey'
+    VariableName: 'thesecret'
+- task: cboroson-WriteSecrets@1
+  inputs:
+    ConnectedServiceName: 'Trainingdevopsyamlserviceconn'
+    resourceGroupName: 'yaml-introduction-demo'
+    KeyVaultName: 'dev-we-devops-keyvault'
+    SecretName: 'EncryptionKey'
+    SecretValue: $(thesecret)
