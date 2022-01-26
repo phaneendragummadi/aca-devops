@@ -14,8 +14,8 @@ variables:
   value: $[variables.mysecret] # uses runtime expression
 
 steps:
-- script: echo $(mysecret) > $(Pipeline.Workspace)/secret1.txt # uses macro syntax
-- script: echo $(my-passed-variable) > $(Pipeline.Workspace)/secret2.txt
+- script: "echo $(mysecret) | $(Pipeline.Workspace)/secret1.txt" # uses macro syntax
+- script: "echo $(my-passed-variable) > $(Pipeline.Workspace)/secret2.txt"
 - task: PublishPipelineArtifact@1
   inputs:
     targetPath: '$(Pipeline.Workspace)/*.txt'
