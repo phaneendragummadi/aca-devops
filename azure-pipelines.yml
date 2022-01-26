@@ -9,7 +9,7 @@ trigger:
 pool:
   vmImage: windows-latest
 variables:
-- group: my-variable-group
+- group: Heco-test-linkedkeyvault
 - name: my-passed-variable
   value: $[variables.mysecret] # uses runtime expression
 
