@@ -8,8 +8,14 @@ trigger:
 
 pool:
   vmImage: windows-latest
+variables:
+- group: my-variable-group
+- name: my-passed-variable
+  value: $[variables.mysecret] # uses runtime expression
 
 steps:
+- script: echo $(mysecret) # uses macro syntax
+- script: echo $(my-passed-variable)
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
 
