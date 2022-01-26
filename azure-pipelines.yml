@@ -37,7 +37,7 @@ steps:
   inputs:
       targetType: inline
       script: |
-        $files = Get-ChildItem -Path ${{Pipeline.Workspace}}\*.tst
+        $files = Get-ChildItem -Path $(Pipeline.Workspace)\*.tst
         foreach ($file in $files)
         {
           Write-Host "=== ARM template Output ==="
