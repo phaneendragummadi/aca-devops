@@ -31,7 +31,7 @@ variables:
   value: $(resources.pipeline.package_build.runName)
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'windows-latest'
 
 stages: 
 - stage: preparation

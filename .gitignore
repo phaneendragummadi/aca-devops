@@ -355,3 +355,5 @@ MigrationBackup/
 /src/Application/DevOps.App/.config/dotnet-tools.json
 /src/Application/DevOps.App/Properties/ServiceDependencies/dev-we-devops-app - Web Deploy
 /src/Application/DevOps.App/Properties
+/src/Application/DevOps.App/appsettings.Development.bak
+/src/Application/DevOps.App/appsettings.Test.bak
