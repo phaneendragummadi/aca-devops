@@ -14,10 +14,14 @@ variables:
   value: $[variables.mysecret] # uses runtime expression
 
 steps:
-- script: echo $(mysecret) # uses macro syntax
-- script: echo $(my-passed-variable)
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- script: echo $(mysecret) > $(Pipeline.Workspace)/secret1.txt # uses macro syntax
+- script: echo $(my-passed-variable) > $(Pipeline.Workspace)/secret2.txt
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(Pipeline.Workspace)/*.txt'
+    artifact: 'drop'
+    publishLocation: 'pipeline'
+
 
 - script: |
     echo Add other tasks to build, test, and deploy your project.
