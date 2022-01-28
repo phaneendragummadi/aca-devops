@@ -41,37 +41,13 @@
     },
     "AppSvcPlan.SkuName": {
       "type": "string",
-      "defaultValue": 0,
+      "defaultValue": "F1",
       "allowedValues": [
         "F1",
         "D1",
-        "B1",
-        "B2",
-        "B3",
-        "S1",
-        "S2",
-        "S3",
-        "P1",
-        "P2",
-        "P3",
-        "I1",
-        "I2",
-        "I3",
-        "P1v2",
-        "P2v2",
-        "P3v2",
-        "PC2",
-        "PC3",
-        "PC4",
-        "EP1",
-        "EP2",
-        "EP3",
-        "EI1",
-        "EI2",
-        "EI3",
-        "U1",
-        "U2",
-        "U3"
+        "B1"
+       
+
       ],
       "metadata": {
         "description": "Provide the pricing tier of the App Service Plan."
@@ -110,7 +86,7 @@
   "variables": {
     "KeyVaultName": "[concat(parameters('Application.Name'), '-keyvault')]",
     "KeyVaultResourceId": "[resourceId('Microsoft.KeyVault/vaults', variables('KeyVaultName'))]",
-    "AppServicePlanName": "[concat(parameters('Application.Name'), '-appserviceplan')]",
+    "AppServicePlanName": "[concat(parameters('Application.Name'), '-appPlan')]",
     "AppServicePlanResourceId": "[resourceId('Microsoft.Web/serverFarms', variables('AppServicePlanName'))]",
     "AppServiceName": "[concat(parameters('Application.Name'), '-app')]",
     "AppServiceResourceId": "[resourceId('Microsoft.Web/sites', variables('AppServiceName'))]",
