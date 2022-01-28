@@ -29,7 +29,8 @@ variables:
   value: $(Artifact.Version)-$(Build.BuildNumber) 
 - name: Artifact.Version
   value: $(resources.pipeline.package_build.runName)
-
+- name: VmImage
+  value: 'windows-latest'
 pool:
   vmImage: $(VmImage)
 
