@@ -43,7 +43,7 @@
 		}
 	},
 	"variables": {
-		"AppServicePlanName": "[concat(parameters('Application.Name'), '-appserviceplan')]",
+		"AppServicePlanName": "[concat(parameters('Application.Name'), '-appPlan')]",
 		"AppServicePlanResourceId": "[resourceId('Microsoft.Web/serverFarms', variables('AppServicePlanName'))]",
 		"Tags": {
 			"environment": "[parameters('Application.Environment')]",
