@@ -38,7 +38,7 @@ parameters:
   type: string
   default: netcoreapp3.1
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: '$(VmImage)'
 
 stages:
 - stage: Package
@@ -48,7 +48,7 @@ stages:
   - job: validate_and_publish
     displayName: Validate & Publish Artifact
     pool:
-      vmImage: 'ubuntu-latest'
+      vmImage: '$(VmImage)'
     #steps:
     # Validation
     #- ${{ if eq(parameters.loggingLevel, 'Debug') }}:
@@ -68,7 +68,7 @@ stages:
     # TODO: Build your app    
   - job: DotNetCore
     pool:
-      vmImage: 'ubuntu-latest'
+      vmImage: '$(VmImage)'
     steps:
     - task: UseDotNet@2
       displayName: 'Install .NET Core sdk'

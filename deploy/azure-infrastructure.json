@@ -173,6 +173,7 @@
       "properties": {
         "value": "[parameters('Keyvault.SecretValue')]"
       },
+      "tags": "[variables('Tags')]",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('KeyVaultName'))]"
       ]
@@ -224,7 +225,7 @@
       "type": "Microsoft.Web/sites",
       "location": "[resourceGroup().location]",
       "tags": "[variables('Tags')]",
-      "kind": "",
+      "kind": "windows",
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]"
       ],
@@ -250,9 +251,9 @@
     }
   ],
   "outputs": {
-    "AppServiceName": {
-      "type": "string",
-      "value": "[variables('AppServiceName')]"
+    //"AppServiceName": {
+    //  "type": "string",
+    //  "value": "[variables('AppServiceName')]"
     }
   }
 }
