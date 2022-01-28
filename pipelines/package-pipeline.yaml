@@ -38,7 +38,7 @@ parameters:
   type: string
   default: netcoreapp3.1
 pool:
-  vmImage: '$(VmImage)'
+  vmImage: $(VmImage)
 
 stages:
 - stage: Package
