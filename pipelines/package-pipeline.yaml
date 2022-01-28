@@ -38,7 +38,7 @@ parameters:
   type: string
   default: netcoreapp3.1
 variables:
-- name: vmImageName
+- name: VmImage
   value: 'windows-latest'
 pool:
   vmImage: $(VmImage)
