@@ -202,7 +202,7 @@
       "type": "Microsoft.Web/sites",
       "location": "[resourceGroup().location]",
       "tags": "[variables('Tags')]",
-      "kind": "",
+      "kind": "app",
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]"
       ],
