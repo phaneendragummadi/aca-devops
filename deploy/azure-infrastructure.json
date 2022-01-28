@@ -254,6 +254,6 @@
     //"AppServiceName": {
     //  "type": "string",
     //  "value": "[variables('AppServiceName')]"
-    }
+    //}
   }
 }
