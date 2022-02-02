@@ -4,7 +4,7 @@ parameters:
   resourceGroupName: ''
   artifactFolder: '$(Pipeline.Workspace)/package_build/artifact'
   location: ''
-  loggingLevel: ''
+  loggingLevel: 'Debug'
 
 steps:
 - ${{ if eq(parameters.loggingLevel, 'Debug') }}:
@@ -16,7 +16,7 @@ steps:
 - task: qetza.replacetokens.replacetokens-task.replacetokens@3
   displayName: Replace Tokens in ARM template
   inputs:
-    rootDirectory: '${{parameters.artifactFolder}}/'
+    rootDirectory: '${{parameters.artifactFolder}}/arm/'
     targetFiles: '*.json'
     encoding: 'auto'
     writeBOM: true
@@ -33,7 +33,7 @@ steps:
     inputs:
       targetType: inline
       script: |
-        $files = Get-ChildItem -Path ${{parameters.artifactFolder}}\*.json
+        $files = Get-ChildItem -Path ${{parameters.artifactFolder}}\arm\*.json
         foreach ($file in $files)
         {
           Write-Host "=== ARM template Output ==="
@@ -44,20 +44,6 @@ steps:
 
 ## Deploy through ARM
 - task: AzureResourceManagerTemplateDeployment@3
-  displayName: 'Deploy ARM template on ${{parameters.resourceGroupName}}'
-  inputs:
-    deploymentScope: 'Resource Group'
-    azureResourceManagerConnection: '${{parameters.azureResourceManagerConnection}}'
-    subscriptionId: '${{parameters.subscriptionId}}'
-    action: 'Create Or Update Resource Group'
-    resourceGroupName: '${{parameters.resourceGroupName}}'
-    location: '${{parameters.location}}'
-    templateLocation: 'Linked artifact'
-    csmFile: '${{parameters.artifactFolder}}/armtemplate.json'
-    csmParametersFile: '${{parameters.artifactFolder}}/armtemplate.parameters.json'
-    deploymentMode: 'Incremental'
-    deploymentOutputs: 'ArmOutputs'
-- task: AzureResourceManagerTemplateDeployment@3
   displayName: 'Deploy ARM storage template on ${{parameters.resourceGroupName}}'
   inputs:
     deploymentScope: 'Resource Group'
@@ -67,8 +53,8 @@ steps:
     resourceGroupName: '${{parameters.resourceGroupName}}'
     location: '${{parameters.location}}'
     templateLocation: 'Linked artifact'
-    csmFile: '${{parameters.artifactFolder}}/azure-infrastructure.json'
-    csmParametersFile: '${{parameters.artifactFolder}}/azure-infrastructure.parameters.json'
+    csmFile: '${{parameters.artifactFolder}}/arm/azure-infrastructure.json'
+    csmParametersFile: '${{parameters.artifactFolder}}/arm/azure-infrastructure.parameters.json'
     deploymentMode: 'Incremental'
     deploymentOutputs: 'armOutputs'
 - pwsh: |
@@ -94,19 +80,3 @@ steps:
           $content = Get-Content $file
           Write-Host $content
         }
-- task: AzureRmWebAppDeployment@4
-  displayName: 'Deploy App'
-  inputs:
-    azureSubscription: ${{ parameters.azureResourceManagerConnection }}
-    WebAppName: '$(AppServiceName)'
-    packageForLinux: '${{parameters.artifactFolder}}/publish.zip'
-
-#- task: AzurePowerShell@3
-#  displayName: 'Remove Old ARM Deployments'
-#  env:
-#    SYSTEM_ACCESSTOKEN: $(System.AccessToken) 
-#    inputs:
-#      azureSubscription: ${{ parameters.AzureServiceConnectionName }}
-#      ScriptPath: '$(Pipeline.Workspace)/Scripts/Azure-RemoveOldArmDeployments.ps1'
-#      ScriptArguments: '-resourceGroup $(Infra.ResourceGroup.Name)'
-#      azurePowerShellVersion: LatestVersion

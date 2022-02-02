@@ -7,7 +7,7 @@ Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "DevOps.Resources", "DevOps.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevOps.App", "DevOps.App\DevOps.App.csproj", "{042DAAC9-44ED-4F81-871A-EF5AA4E3D89B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevOps.App.Tests", "..\Test\DevOps.App.Tests\DevOps.App.Tests.csproj", "{C9A459EE-2C6C-481B-852D-941B21E96E63}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevOps.App.Tests", "..\Test\DevOps.App.Tests\DevOps.App.Tests.csproj", "{C9A459EE-2C6C-481B-852D-941B21E96E63}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -2,11 +2,11 @@ variables:
   - name: Resource.Prefix
     value: $(App.Environment.Code)-$(Region.ShortName)
   - name: Azure.ResourceGroup.Name
-    value: yaml-introduction-demo
+    value: aca-devops
   - name: Api.Name
-    value: $(Resource.Prefix)-devops
+    value: $(Resource.Prefix)-devops-app
   - name: Keyvault.Name
-    value: dev-devops-demo-keyvault
+    value: codit-academy-vault
   - name: Storage.SkuName
     value: Standard_LRS
   - name: Keyvault.SkuName

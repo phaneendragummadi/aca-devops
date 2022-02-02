@@ -38,10 +38,19 @@ parameters:
   type: string
   default: netcoreapp3.1
 variables:
-- name: VmImage
+- name: vmImage
   value: 'windows-latest'
+- name: buildConfiguration
+  value: 'Release'
+- name: workingDirectory
+  value: '$(System.DefaultWorkingDirectory)/src/Application'
+- name: solutionFile  
+  value: 'DevOps.App.sln'
+- name: appName
+  value: 'DevOps.App'
+
 pool:
-  vmImage: $(VmImage)
+  vmImage: $(vmImage)
 
 stages:
 - stage: Package
@@ -51,61 +60,33 @@ stages:
   - job: validate_and_publish
     displayName: Validate & Publish Artifact
     pool:
-      vmImage: '$(VmImage)'
-    #steps:
-    # Validation
-    #- ${{ if eq(parameters.loggingLevel, 'Debug') }}:
-    #  - task: CmdLine@2
-    #    displayName: "[Debug]"
-    #    inputs:
-    #      script: 'ls -R $(Pipeline.Workspace)'
-    #- task: CmdLine@2
-    #  displayName: Install jsonlint
-    #  inputs:
-    #    script: 'sudo npm install -g jsonlint-cli'
-    #- task: CmdLine@2
-    #  displayName: Lint JSON files
-    #  inputs:
-    #    script: 'jsonlint-cli $(Pipeline.Workspace)/s/deploy/**.json'
-
-    # TODO: Build your app    
+      vmImage: '$(vmImage)'
+    # Build your app    
   - job: DotNetCore
     pool:
-      vmImage: '$(VmImage)'
+      vmImage: '$(vmImage)'
     steps:
-    - task: UseDotNet@2
-      displayName: 'Install .NET Core sdk'
-      inputs:
-        packageType: sdk
-        version: '${{ parameters.dotNetVersion }}'
     - task: DotNetCoreCLI@2
       displayName: 'Restore Packages'
       inputs:
         command: restore
-        projects: 'src/Application/DevOps.App.sln'
-
+        projects: '$(workingDirectory)/$(solutionFile)'
     - task: DotNetCoreCLI@2
-      displayName: 'Build and Package Application'
+      displayName: Build
       inputs:
-        command: publish
-        publishWebProjects: false
-        projects: 'src/Application/DevOps.App/DevOps.App.csproj'
-        arguments: '--configuration ${{ parameters.buildConfiguration }} --framework ${{ parameters.targetFramework }}'
-        zipAfterPublish: True
-        modifyOutputPath: false
+        command: 'build'
+        projects: |
+          $(workingDirectory)/$(solutionFile)
+        arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration $(buildConfiguration)
+    - task: ArchiveFiles@2
+      displayName: 'Archive files'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/publish_output'
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/artifact/package/$(Build.BuildId).zip
+        replaceExistingArchive: true
 
-    - task: CopyFiles@2
-      displayName: 'Copy Application Package'
-      inputs:
-        SourceFolder: 'src/Application/DevOps.App/bin/${{ parameters.buildConfiguration }}/${{ parameters.targetFramework }}'
-        Contents: '**/*.zip'
-        TargetFolder: '$(Build.ArtifactStagingDirectory)/Packages'
-
-    - task: PublishPipelineArtifact@1
-      displayName: 'Publish Scripts'
-      inputs:
-        path: deploy/scripts
-        artifact: Scripts
     # TODO: Your verification steps here
     # Publish
     - task: CopyFiles@2
@@ -113,14 +94,12 @@ stages:
       inputs:
         SourceFolder: deploy
         Contents: |
-          armtemplate.json
-          armtemplate.parameters.json
           azure-infrastructure.json
           azure-infrastructure.parameters.json
-        TargetFolder: '$(Build.ArtifactStagingDirectory)/Packages'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/artifact/arm'
     - task: PublishPipelineArtifact@1
-      displayName: 'Publish Arm templates'
+      displayName: 'Publish artifacts'
       inputs:
-        path: '$(Build.ArtifactStagingDirectory)/Packages'
+        path: '$(Build.ArtifactStagingDirectory)/artifact'
         artifact: artifact 
-
+        publishLocation: 'pipeline'

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#", 
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "Storage.SkuName": {
@@ -46,7 +46,7 @@
         "F1",
         "D1",
         "B1"
-       
+
 
       ],
       "metadata": {
@@ -84,11 +84,10 @@
     }
   },
   "variables": {
-    "KeyVaultName": "[concat(parameters('Application.Name'), '-keyvault')]",
+    "KeyVaultName": "[concat(parameters('Application.Name'), '-vault')]",
     "KeyVaultResourceId": "[resourceId('Microsoft.KeyVault/vaults', variables('KeyVaultName'))]",
-    "AppServicePlanName": "[concat(parameters('Application.Name'), '-appPlan')]",
-    "AppServicePlanResourceId": "[resourceId('Microsoft.Web/serverFarms', variables('AppServicePlanName'))]",
-    "AppServiceName": "[concat(parameters('Application.Name'), '-app')]",
+    "AppServicePlanName": "[concat(parameters('Application.Name'), 'Plan')]",
+    "AppServiceName": "[parameters('Application.Name')]",
     "AppServiceResourceId": "[resourceId('Microsoft.Web/sites', variables('AppServiceName'))]",
     "StorageAccountName": "[concat(tolower(replace(parameters('Application.Name'),'-','')), 'storage')]",
     "StorageAccountResourceId": "[resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName'))]",
@@ -182,9 +181,9 @@
       ]
     },
     {
-      "apiVersion": "2020-12-01",
+      "apiVersion": "2018-02-01",
       "name": "[variables('AppServicePlanName')]",
-      "type": "Microsoft.Web/serverfarms",
+      "type": "Microsoft.Web/serverFarms",
       "kind": "app",
       "location": "[resourceGroup().location]",
       "sku": {
@@ -192,24 +191,23 @@
         "capacity": 1
       },
       "properties": {
-        "reserved": true
+        "reserved": false
       },
       "tags": "[variables('Tags')]"
     },
     {
-      "apiVersion": "2020-12-01",
       "name": "[variables('AppServiceName')]",
       "type": "Microsoft.Web/sites",
       "location": "[resourceGroup().location]",
       "tags": "[variables('Tags')]",
       "kind": "app",
+      "apiVersion": "2018-02-01",
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]"
       ],
       "properties": {
         "name": "[variables('AppServiceName')]",
-        "serverFarmId": "[variables('AppServicePlanResourceId')]",
-        "AppServicePlanName": null,
+        "serverFarmId": "[resourceId('Microsoft.Web/serverFarms', variables('AppServicePlanName'))]",
         "siteConfig": {
           "connectionStrings": [
             {
@@ -221,16 +219,19 @@
             {
               "name": "StorageAccount.TableName",
               "value": "[parameters('StorageAccountTableName')]"
+            },
+            {
+              "name": "VaultUri",
+              "value": "[concat('https://',variables('KeyVaultName'),'.vault.azure.net/')]"
             }
           ]
         }
+      },
+      "identity": {
+        "type": "SystemAssigned"
       }
     }
   ],
   "outputs": {
-    //"AppServiceName": {
-    //  "type": "string",
-    //  "value": "[variables('AppServiceName')]"
-    //}
   }
 }

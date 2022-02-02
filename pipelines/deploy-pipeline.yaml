@@ -63,6 +63,10 @@ stages:
           - download: 'package_build'
             artifact: 'artifact'
             displayName: Download Artifact
+          - task: CmdLine@2
+            displayName: "[Debug] Output artifact structure"
+            inputs:
+              script: 'ls $(Pipeline.Workspace)/package_build/artifact/arm'
           - template: ./templates/deploy-arm-template.yaml
             parameters:
               azureResourceManagerConnection: $(Azure.ServiceConnection.Name)
@@ -70,31 +74,52 @@ stages:
               resourceGroupName: $(Azure.ResourceGroup.Name)
               location: $(Azure.ResourceGroup.Location)
               loggingLevel: ${{ parameters.loggingLevel }}
+          - task: AzureRmWebAppDeployment@4
+            displayName: 'Deploy Web App'
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: '$(Azure.ServiceConnection.Name)'
+              appType: 'webApp'
+              WebAppName: '$(Api.Name)'
+              packageForLinux: '$(Pipeline.Workspace)/**/*.zip'
+#              AppSettings: '-storage:accountname $(storageName) -storage:accountkey $(storageKey) -Telemetry:ApplicationInsights:InstrumentationKey $(applicationInsightsKey) -APPINSIGHTS_INSTRUMENTATIONKEY $(applicationInsightsKey)'
+              enableCustomDeployment: true
+              DeploymentType: 'zipDeploy'
           
-#- stage: deploy_test
-#  displayName: 'Deploy to Test'
-#  dependsOn: deploy_development
-#  variables:
-#    - template: ./variables/environments/environment-tst.yaml
-#    - template: ./variables/apps/app-tst.yaml
-#  jobs:
-#  - deployment: deploy_to_tst
-#    displayName: 'Deploy to TST'
-#    environment: TST
-#    strategy:
-#      runOnce:
-#        deploy:
-#          steps:
-#          - download: 'package_build'
-#            artifact: 'artifact'
-#            displayName: Download Artifact
-#          - template: ./templates/deploy-arm-template.yaml
-#            parameters:
-#              azureResourceManagerConnection: $(Azure.ServiceConnection.Name)
-#              subscriptionId: $(Azure.Subscription.Id)
-#              resourceGroupName: $(Azure.ResourceGroup.Name)
-#              location: $(Azure.ResourceGroup.Location)
-#              loggingLevel: ${{ parameters.loggingLevel }}
+- stage: deploy_test
+  displayName: 'Deploy to Test'
+  dependsOn: deploy_development
+  variables:
+    - template: /deploy/variables/environments/environment-tst.yaml
+    - template: /deploy/variables/apps/app-tst.yaml
+  jobs:
+  - deployment: deploy_to_tst
+    displayName: 'Deploy to TST'
+    environment: TST
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: 'package_build'
+            artifact: 'artifact'
+            displayName: Download Artifact
+          - template: ./templates/deploy-arm-template.yaml
+            parameters:
+              azureResourceManagerConnection: $(Azure.ServiceConnection.Name)
+              subscriptionId: $(Azure.Subscription.Id)
+              resourceGroupName: $(Azure.ResourceGroup.Name)
+              location: $(Azure.ResourceGroup.Location)
+              loggingLevel: ${{ parameters.loggingLevel }}
+          - task: AzureRmWebAppDeployment@4
+            displayName: 'Deploy Web App'
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: '$(Azure.ServiceConnection.Name)'
+              appType: 'webApp'
+              WebAppName: '$(Api.Name)'
+              packageForLinux: '$(Pipeline.Workspace)/**/*.zip'
+              enableCustomDeployment: true
+              DeploymentType: 'zipDeploy'
 #- stage: deploy_acc
 #  displayName: 'Deploy to Acceptance'
 #  dependsOn: deploy_test
