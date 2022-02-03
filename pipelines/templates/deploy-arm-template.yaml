@@ -57,14 +57,6 @@ steps:
     csmParametersFile: '${{parameters.artifactFolder}}/arm/azure-infrastructure.parameters.json'
     deploymentMode: 'Incremental'
     deploymentOutputs: 'armOutputs'
-- pwsh: |
-    $outputsObject = $env:ARM_OUTPUTS | ConvertFrom-Json
-    Write-Host "##vso[task.setvariable variable=AppServiceName]$($outputsObject.AppServiceName.value)"
-  displayName: 'Parse ARM deploymentOutputs | pwsh'
-  env:
-    ARM_OUTPUTS: $(armOutputs)
-- script: echo $(AppServiceName)
-  displayName: 'Log AppServiceName'
 # Show zip before deployment
 - ${{ if eq(parameters.loggingLevel, 'Debug') }}:
   - task: PowerShell@2
