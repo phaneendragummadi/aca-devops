@@ -11,7 +11,7 @@ namespace DevOps.App.Tests
     public class EntryptorUnitTests
     {
         [Fact]
-        public void Encrypt_Value_Text_Returns()
+        public void Encrypt_Value_Text_Returns() 
         {
             KeyVaultSecret keyVaultSecret = SecretModelFactory.KeyVaultSecret(new SecretProperties("<encryptionKey>"), "<encryptionKeyValue>");
             Azure.Response<KeyVaultSecret> response = Azure.Response.FromValue(keyVaultSecret, Mock.Of<Azure.Response>());
