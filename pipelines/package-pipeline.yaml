@@ -1,0 +1,105 @@
+name: ${{ parameters.major }}.${{ parameters.minor }}$(rev:.r)
+
+pr: none
+trigger:
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    # REQUIRED : suppose we are releasing the sample-app
+    - /deploy/
+
+parameters:
+- name: major
+  displayName: Major Version
+  type: string
+  default: 1
+- name: minor
+  displayName: Minor Version
+  type: string
+  default: 0
+- name: loggingLevel
+  displayName: Logging Level
+  type: string
+  default: Pipeline
+  values:
+  - Pipeline
+  - Debug
+- name: buildConfiguration
+  displayName: Build Configuration
+  type: string
+  default: Release
+- name: dotNetVersion
+  type: string
+  default: 3.x
+- name: targetFramework
+  displayName: Target Framework
+  type: string
+  default: netcoreapp3.1
+variables:
+- name: vmImage
+  value: 'windows-latest'
+- name: buildConfiguration
+  value: 'Release'
+- name: workingDirectory
+  value: '$(System.DefaultWorkingDirectory)/src/Application'
+- name: solutionFile  
+  value: 'DevOps.App.sln'
+- name: appName
+  value: 'DevOps.App'
+
+pool:
+  vmImage: $(vmImage)
+
+stages:
+- stage: Package
+  displayName: Package
+  dependsOn: []
+  jobs:
+  - job: validate_and_publish
+    displayName: Validate & Publish Artifact
+    pool:
+      vmImage: '$(vmImage)'
+    # Build your app    
+  - job: DotNetCore
+    pool:
+      vmImage: '$(vmImage)'
+    steps:
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore Packages'
+      inputs:
+        command: restore
+        projects: '$(workingDirectory)/$(solutionFile)'
+    - task: DotNetCoreCLI@2
+      displayName: Build
+      inputs:
+        command: 'build'
+        projects: |
+          $(workingDirectory)/$(solutionFile)
+        arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration $(buildConfiguration)
+    - task: ArchiveFiles@2
+      displayName: 'Archive files'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/publish_output'
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/artifact/package/$(Build.BuildId).zip
+        replaceExistingArchive: true
+
+    # TODO: Your verification steps here
+    # Publish
+    - task: CopyFiles@2
+      displayName: Copy ARM templates
+      inputs:
+        SourceFolder: deploy
+        Contents: |
+          azure-infrastructure.json
+          azure-infrastructure.parameters.json
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/artifact/arm'
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish artifacts'
+      inputs:
+        path: '$(Build.ArtifactStagingDirectory)/artifact'
+        artifact: artifact 
+        publishLocation: 'pipeline'

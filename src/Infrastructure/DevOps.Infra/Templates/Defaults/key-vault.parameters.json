@@ -13,18 +13,18 @@
         },
         "accessPolicies": {
             "value": [
-                {
-                    "objectId": "f7bd8e3e-9056-4452-b4f3-4a6ca2d986bb",
-                    "tenantId": "7517bc42-bcf8-4916-a677-b5753051f846",
-                    "permissions": {
-                        "keys": [],
-                        "secrets": [
-                            "Get",
-                            "List"
-                        ],
-                        "certificates": []
-                    }
+              {
+                "objectId": "0d876cc9-1767-4fc7-b562-1d3d31671c8f",
+                "tenantId": "7517bc42-bcf8-4916-a677-b5753051f846",
+                "permissions": {
+                  "keys": [],
+                  "secrets": [
+                    "Get",
+                    "List"
+                  ],
+                  "certificates": []
                 }
+              }
             ]
         },
         "tenant": {
