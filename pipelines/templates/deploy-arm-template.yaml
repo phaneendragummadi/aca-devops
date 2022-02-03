@@ -4,7 +4,7 @@ parameters:
   resourceGroupName: ''
   artifactFolder: '$(Pipeline.Workspace)/package_build/artifact'
   location: ''
-  loggingLevel: 'Debug'
+  loggingLevel: ''
 
 steps:
 - ${{ if eq(parameters.loggingLevel, 'Debug') }}:

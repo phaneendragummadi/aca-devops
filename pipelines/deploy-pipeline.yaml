@@ -9,7 +9,7 @@ resources:
     # Name of the pipeline resource inside this workflow. Used to reference the pipeline resources later on (e.g. download artifacts).
   - pipeline: package_build
     # Name of the pipeline in Azure Pipelines
-    source: 'Codit.aca-devops-yaml-CI' 
+    source: 'aca-devops-CI' 
     trigger: true
 
 parameters:
@@ -63,10 +63,6 @@ stages:
           - download: 'package_build'
             artifact: 'artifact'
             displayName: Download Artifact
-          - task: CmdLine@2
-            displayName: "[Debug] Output artifact structure"
-            inputs:
-              script: 'ls $(Pipeline.Workspace)/package_build/artifact/arm'
           - template: ./templates/deploy-arm-template.yaml
             parameters:
               azureResourceManagerConnection: $(Azure.ServiceConnection.Name)
@@ -82,7 +78,6 @@ stages:
               appType: 'webApp'
               WebAppName: '$(Api.Name)'
               packageForLinux: '$(Pipeline.Workspace)/**/*.zip'
-#              AppSettings: '-storage:accountname $(storageName) -storage:accountkey $(storageKey) -Telemetry:ApplicationInsights:InstrumentationKey $(applicationInsightsKey) -APPINSIGHTS_INSTRUMENTATIONKEY $(applicationInsightsKey)'
               enableCustomDeployment: true
               DeploymentType: 'zipDeploy'
           
