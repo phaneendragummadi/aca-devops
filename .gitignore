@@ -348,16 +348,4 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
-/deploy/scripts/TODO.txt
-/deploy/app-service-plan.parameters.local.json
-/deploy/app-service.parameters.local.json
-/deploy/azure-infrastructure-bak.json
 /src/Application/DevOps.App/.config/dotnet-tools.json
-/src/Application/DevOps.App/Properties/ServiceDependencies/dev-we-devops-app - Web Deploy
-/src/Application/DevOps.App/Properties
-/src/Application/DevOps.App/appsettings.Development.bak
-/src/Application/DevOps.App/appsettings.Test.bak
-/deploy/app-service-with-plan-test.env.parameters.json
-/deploy/app-service-with-plan-test.json
-/deploy/exported-template.parameters.json
-/deploy/exported-template.json
