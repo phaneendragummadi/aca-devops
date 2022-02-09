@@ -228,7 +228,6 @@
             "objectId": "[reference(resourceId('Microsoft.Web/sites', variables('AppServiceName')),'2019-08-01', 'full').identity.principalId]",
             "permissions": {
               "secrets": [
-                "list",
                 "get"
               ]
             }
@@ -251,4 +250,4 @@
     }
   ],
   "outputs": {}
-}
+} 
