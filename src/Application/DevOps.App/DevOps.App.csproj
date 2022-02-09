@@ -5,6 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+		<Content Update="appsettings - Copy.json">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 		<Content Update="appsettings.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
