@@ -68,10 +68,15 @@ stages:
       displayName: "[Debug]"
       inputs:
         script: 'dir -R $(Pipeline.Workspace)'
-    - task: CmdLine@2
-      displayName: Install jsonlint
+    - task: UseNode@1
+      displayName: 'Install Node.js'
       inputs:
-        script: 'install jsonlint -g'
+        checkLatest: true
+    - task: Npm@1
+      displayName: 'Install JSONLint'
+      inputs:
+        command: 'custom'
+        customCommand: 'install jsonlint -g'
     - task: CmdLine@2
       displayName: Lint JSON files
       inputs:
