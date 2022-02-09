@@ -349,3 +349,14 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 /src/Application/DevOps.App/.config/dotnet-tools.json
+/src/Application/DevOps.App/Properties/ServiceDependencies
+/src/Application/DevOps.App/Properties/serviceDependencies.json
+/src/Application/DevOps.App/Properties/serviceDependencies.dev-we-devops-app - Web Deploy1.json
+/src/Application/DevOps.App/Properties/serviceDependencies.dev-we-devops-app - Web Deploy.json
+/src/Application/DevOps.App/appsettings - Copy.Development.json
+/src/Application/DevOps.App/appsettings - Copy.json
+/src/Application/DevOps.App/appsettings - Orig.Development.json
+/src/Application/DevOps.App/appsettings - Orig.json
+/src/Application/DevOps.App/appsettings - Tst.Development.json
+/src/Application/DevOps.App/appsettings - Tst.json
+/src/Application/DevOps.App/Properties/serviceDependencies.dev-we-devops-app - Web Deploy2.json
