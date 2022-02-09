@@ -78,9 +78,12 @@ stages:
         command: 'custom'
         customCommand: 'install jsonlint -g'
     - task: CmdLine@2
-      displayName: Lint JSON files
+      displayName: 'Validate Syntax JSON file(s)'
       inputs:
-        script: 'jsonlint-cli $(Pipeline.Workspace)/s/deploy/**.json'    
+        script: 'FOR /r %%A IN (*.json) DO jsonlint %%A'
+        workingDirectory: $(Pipeline.Workspace)\s\deploy\
+        failOnStderr: true
+ 
     # Build your app    
   - job: DotNetCore
     pool:
