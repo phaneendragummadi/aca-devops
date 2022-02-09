@@ -5,7 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-		<Content Update="appsettings - Copy.json">
+		<Content Update="appsettings - Orig.json">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="appsettings - Tst.json">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Update="appsettings.json">

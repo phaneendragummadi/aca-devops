@@ -3,81 +3,79 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "Storage.SkuName": {
-      "type": "string",
       "defaultValue": 0,
       "allowedValues": [
         "Standard_LRS",
         "Standard_GRS",
         "Standard_ZRS",
         "Premium_LRS"
-      ]
+      ],
+      "type": "String"
     },
     "StorageAccountTableName": {
-      "type": "string"
+      "type": "String"
     },
     "Application.Name": {
-      "type": "string"
+      "type": "String"
     },
     "Application.Environment": {
-      "type": "string"
+      "type": "String"
     },
     "Application.Version": {
-      "type": "string"
+      "type": "String"
     },
     "Release.Name": {
-      "type": "string"
+      "type": "String"
     },
     "Release.RequestedFor": {
-      "type": "string"
+      "type": "String"
     },
     "Release.SourceCodeBranch": {
-      "type": "string"
+      "type": "String"
     },
     "Release.TriggerType": {
-      "type": "string"
+      "type": "String"
     },
     "Release.Url": {
-      "type": "string"
+      "type": "String"
     },
     "AppSvcPlan.SkuName": {
-      "type": "string",
       "defaultValue": "F1",
       "allowedValues": [
         "F1",
         "D1",
         "B1"
-
-
       ],
+      "type": "String",
       "metadata": {
         "description": "Provide the pricing tier of the App Service Plan."
       }
     },
     "Keyvault.SkuName": {
-      "type": "string",
       "defaultValue": "Standard",
       "allowedValues": [
         "Standard",
         "Premium"
       ],
+      "type": "String",
       "metadata": {
         "description": "Provide the pricing tier of the key vault."
       }
     },
     "Keyvault.TenantId": {
-      "type": "string"
+      "type": "String"
     },
     "Keyvault.ObjectId": {
-      "type": "string"
+      "type": "String"
     },
     "Keyvault.SecretName": {
-      "type": "string",
+      "type": "String",
       "metadata": {
         "description": "Specifies the name of the secret that you want to create."
       }
     },
     "Keyvault.SecretValue": {
-      "type": "securestring",
+      "type": "SecureString",
       "metadata": {
         "description": "Value of the secret from Key Vault."
       }
@@ -105,53 +103,12 @@
   "resources": [
     {
       "type": "Microsoft.Resources/tags",
-      "name": "default",
       "apiVersion": "2019-10-01",
+      "name": "default",
       "dependsOn": [],
       "properties": {
         "tags": "[variables('Tags')]"
       }
-    },
-    {
-      "apiVersion": "2018-02-14",
-      "location": "[resourceGroup().location]",
-      "name": "[variables('KeyVaultName')]",
-      "properties": {
-        "tenantId": "[parameters('Keyvault.TenantId')]",
-        "sku": {
-          "name": "[parameters('Keyvault.SkuName')]",
-          "family": "A"
-        },
-        "networkAcls": {
-          "defaultAction": "Allow",
-          "bypass": "AzureServices"
-        },
-        "enabledForTemplateDeployment": true,
-        "accessPolicies": [
-          {
-            "tenantId": "[parameters('Keyvault.TenantId')]",
-            "objectId": "[parameters('Keyvault.ObjectId')]",
-            "permissions": {
-              "keys": [ "list", "get" ],
-              "secrets": [ "list", "get" ]
-            }
-          }
-        ]
-      },
-      "tags": "[variables('Tags')]",
-      "type": "Microsoft.KeyVault/vaults"
-    },
-    {
-      "type": "Microsoft.KeyVault/vaults/secrets",
-      "apiVersion": "2018-02-14",
-      "name": "[concat(variables('keyVaultName'), '/', parameters('Keyvault.SecretName'))]",
-      "properties": {
-        "value": "[parameters('Keyvault.SecretValue')]"
-      },
-      "tags": "[variables('Tags')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', variables('KeyVaultName'))]"
-      ]
     },
     {
       "type": "Microsoft.Storage/storageAccounts",
@@ -181,30 +138,33 @@
       ]
     },
     {
+      "type": "Microsoft.Web/serverFarms",
       "apiVersion": "2018-02-01",
       "name": "[variables('AppServicePlanName')]",
-      "type": "Microsoft.Web/serverFarms",
-      "kind": "app",
       "location": "[resourceGroup().location]",
+      "tags": "[variables('Tags')]",
       "sku": {
         "name": "[parameters('AppSvcPlan.SkuName')]",
         "capacity": 1
       },
+      "kind": "app",
       "properties": {
         "reserved": false
-      },
-      "tags": "[variables('Tags')]"
+      }
     },
     {
-      "name": "[variables('AppServiceName')]",
       "type": "Microsoft.Web/sites",
-      "location": "[resourceGroup().location]",
-      "tags": "[variables('Tags')]",
-      "kind": "app",
       "apiVersion": "2018-02-01",
+      "name": "[variables('AppServiceName')]",
+      "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]"
       ],
+      "tags": "[variables('Tags')]",
+      "kind": "app",
+      "identity": {
+        "type": "SystemAssigned"
+      },
       "properties": {
         "name": "[variables('AppServiceName')]",
         "serverFarmId": "[resourceId('Microsoft.Web/serverFarms', variables('AppServicePlanName'))]",
@@ -226,12 +186,69 @@
             }
           ]
         }
-      },
-      "identity": {
-        "type": "SystemAssigned"
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2018-02-14",
+      "name": "[variables('KeyVaultName')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('AppServiceName'))]"
+      ],
+      "tags": "[variables('Tags')]",
+      "properties": {
+        "tenantId": "[parameters('Keyvault.TenantId')]",
+        "sku": {
+          "name": "[parameters('Keyvault.SkuName')]",
+          "family": "A"
+        },
+        "networkAcls": {
+          "defaultAction": "Allow",
+          "bypass": "AzureServices"
+        },
+        "enabledForTemplateDeployment": true,
+        "accessPolicies": [
+          {
+            "tenantId": "[parameters('Keyvault.TenantId')]",
+            "objectId": "[parameters('Keyvault.ObjectId')]",
+            "permissions": {
+              "keys": [
+                "list",
+                "get"
+              ],
+              "secrets": [
+                "list",
+                "get"
+              ]
+            }
+          },
+          {
+            "tenantId": "[parameters('Keyvault.TenantId')]",
+            "objectId": "[reference(resourceId('Microsoft.Web/sites', variables('AppServiceName')),'2019-08-01', 'full').identity.principalId]",
+            "permissions": {
+              "secrets": [
+                "list",
+                "get"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2018-02-14",
+      "name": "[concat(variables('keyVaultName'), '/', parameters('Keyvault.SecretName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', variables('KeyVaultName'))]",
+        "[resourceId('Microsoft.Web/sites', variables('AppServiceName'))]"
+      ],
+      "tags": "[variables('Tags')]",
+      "properties": {
+        "value": "[parameters('Keyvault.SecretValue')]"
       }
     }
   ],
-  "outputs": {
-  }
+  "outputs": {}
 }
