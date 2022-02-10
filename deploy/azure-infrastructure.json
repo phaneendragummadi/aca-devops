@@ -169,6 +169,13 @@
         "name": "[variables('AppServiceName')]",
         "serverFarmId": "[resourceId('Microsoft.Web/serverFarms', variables('AppServicePlanName'))]",
         "siteConfig": {
+          "netFrameworkVersion": "",
+          "metadata": [
+            {
+              "name": "CURRENT_STACK",
+              "value": "dotnetcore"
+            }
+          ],
           "connectionStrings": [
             {
               "name": "StorageAccount.ConnectionString",

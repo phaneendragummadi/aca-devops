@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
+using Azure.Core.Extensions;
 
 namespace DevOps.App
 {
@@ -27,6 +28,7 @@ namespace DevOps.App
                 string vaultUrl = Program.Configuration.GetValue<string>("VaultUri");
                 var vaultUri= new Uri(vaultUrl);
                 azureClientFactoryBuilder.AddSecretClient(vaultUri);
+                azureClientFactoryBuilder.AddTableServiceClient(Program.Configuration["StorageAccount.ConnectionString"]);
             });
 
             services.AddSingleton<IKeyVaultManager, KeyVaultManager>();
@@ -62,4 +64,5 @@ namespace DevOps.App
             });
         }
     }
+   
 }
