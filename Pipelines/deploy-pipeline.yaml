@@ -34,7 +34,6 @@ pool:
   vmImage: 'windows-latest'
 
 stages: 
-stages: 
 - stage: preparation
   displayName: 'Prepare Deployment'
   jobs:
