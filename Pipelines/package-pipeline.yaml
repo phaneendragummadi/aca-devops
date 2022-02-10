@@ -1,0 +1,81 @@
+name: ${{ parameters.major }}.${{ parameters.minor }}$(rev:.r)
+
+pr: none
+trigger:
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    # REQUIRED : suppose we are releasing the sample-app
+    - /deploy/
+
+parameters:
+- name: major
+  displayName: Major Version
+  type: string
+  default: 1
+- name: minor
+  displayName: Minor Version
+  type: string
+  default: 0
+- name: loggingLevel
+  displayName: Logging Level
+  type: string
+  default: Pipeline
+  values:
+  - Pipeline
+  - Debug
+
+pool:
+  vmImage: 'windows-latest'
+
+stages:
+- stage: Package
+  displayName: Package
+  dependsOn: []
+  jobs:
+  - job: validate_and_publish
+    displayName: Validate & Publish Artifact
+    steps:
+    # Validation    
+    - task: CmdLine@2
+      condition: eq('${{parameters['loggingLevel']}}', 'Debug')
+      displayName: "[Debug]"
+      inputs:
+        script: 'dir -R $(Pipeline.Workspace)'
+    - task: UseNode@1
+      displayName: 'Install Node.js'
+      inputs:
+        checkLatest: true
+    - task: Npm@1
+      displayName: 'Install JSONLint'
+      inputs:
+        command: 'custom'
+        customCommand: 'install jsonlint -g'
+    - task: CmdLine@2
+      displayName: 'Validate Syntax JSON file(s)'
+      inputs:
+        script: 'FOR /r %%A IN (*.json) DO jsonlint %%A'
+        workingDirectory: $(Pipeline.Workspace)\s\deploy\
+        failOnStderr: true
+    
+    # TODO: Build your app    
+    # TODO: Your verification steps here
+
+    # Publish
+    - task: CopyFiles@2
+      displayName: Copy ARM templates
+      inputs:
+        SourceFolder: deploy
+        Contents: |
+          azure-infrastructure.json
+          azure-infrastructure.parameters.json
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/artifact/arm'
+
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish artifact'
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)/artifact'
+        artifact: 'artifact'
+        publishLocation: 'pipeline'
