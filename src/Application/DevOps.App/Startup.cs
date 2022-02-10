@@ -28,7 +28,6 @@ namespace DevOps.App
                 string vaultUrl = Program.Configuration.GetValue<string>("VaultUri");
                 var vaultUri= new Uri(vaultUrl);
                 azureClientFactoryBuilder.AddSecretClient(vaultUri);
-                azureClientFactoryBuilder.AddTableServiceClient(Program.Configuration["StorageAccount.ConnectionString"]);
             });
 
             services.AddSingleton<IKeyVaultManager, KeyVaultManager>();
@@ -64,5 +63,6 @@ namespace DevOps.App
             });
         }
     }
-   
+
+
 }

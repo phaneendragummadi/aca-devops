@@ -360,3 +360,5 @@ MigrationBackup/
 /src/Application/DevOps.App/appsettings - Tst.Development.json
 /src/Application/DevOps.App/appsettings - Tst.json
 /src/Application/DevOps.App/Properties/serviceDependencies.dev-we-devops-app - Web Deploy2.json
+/src/Application/DevOps.App/Properties/serviceDependencies.dev-we-devops-app - Web Deploy3.json
+/src/Application/DevOps.App/Properties/serviceDependencies.dev-we-devops-app - Web Deploy4.json

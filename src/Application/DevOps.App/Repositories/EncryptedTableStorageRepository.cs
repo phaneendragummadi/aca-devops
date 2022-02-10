@@ -16,7 +16,7 @@ namespace DevOps.App.Repositories
 
         public EncryptedTableStorageRepository()
         {
-            var connectionString = ConfigurationProvider.Get<string>("StorageAccount.ConnectionString");
+            var connectionString = ConfigurationProvider.Get<string>("ConnectionStrings:StorageAccount");
             var tableName = ConfigurationProvider.Get<string>("StorageAccount.TableName");
             _tableClient = new TableClient(connectionString, tableName);
         }
