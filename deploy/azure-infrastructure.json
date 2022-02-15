@@ -143,11 +143,11 @@
       "name": "[variables('AppServicePlanName')]",
       "location": "[resourceGroup().location]",
       "tags": "[variables('Tags')]",
+      "kind": "linux",
       "sku": {
         "name": "[parameters('AppSvcPlan.SkuName')]",
         "capacity": 1
       },
-      "kind": "app",
       "properties": {
         "reserved": false
       }
@@ -169,13 +169,7 @@
         "name": "[variables('AppServiceName')]",
         "serverFarmId": "[resourceId('Microsoft.Web/serverFarms', variables('AppServicePlanName'))]",
         "siteConfig": {
-          "netFrameworkVersion": "",
-          "metadata": [
-            {
-              "name": "CURRENT_STACK",
-              "value": "dotnetcore"
-            }
-          ],
+          "linuxFxVersion": "DOTNETCORE|2.2",
           "connectionStrings": [
             {
               "name": "StorageAccount.ConnectionString",
@@ -186,6 +180,10 @@
             {
               "name": "StorageAccount.TableName",
               "value": "[parameters('StorageAccountTableName')]"
+            },
+            {
+              "name": "Encryption.Key",
+              "value": "EC545C08-43AF-4B49-965F-75B27300CFA0"
             },
             {
               "name": "VaultUri",
