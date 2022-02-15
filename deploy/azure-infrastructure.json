@@ -156,7 +156,7 @@
           "capacity": 1
         },
         "properties": {
-          "reserved": false
+          "reserved": true
         }
       },
       {
