@@ -27,8 +27,20 @@ parameters:
   - Pipeline
   - Debug
 
+variables:
+- name: vmImage
+  value: 'ubuntu-latest'
+- name: buildConfiguration
+  value: 'Release'
+- name: workingDirectory
+  value: '$(System.DefaultWorkingDirectory)/src/Application'
+- name: solutionFile  
+  value: 'DevOps.App.sln'
+- name: appName
+  value: 'DevOps.App'
+
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: $(vmImage)
 
 stages:
 - stage: Package
