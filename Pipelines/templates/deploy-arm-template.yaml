@@ -59,12 +59,8 @@ steps:
     deploymentOutputs: 'ArmOutputs'
  # Deploy web app
 - task: AzureRmWebAppDeployment@4
-  displayName: 'Deploy Web App'
+  displayName: 'Deploy App'
   inputs:
-    ConnectionType: 'AzureRM'
     azureSubscription: '$(Azure.ServiceConnection.Name)'
-    appType: 'webApp'
     WebAppName: '$(Api.Name)'
     packageForLinux: '$(Pipeline.Workspace)/**/*.zip'
-    enableCustomDeployment: true
-    DeploymentType: 'zipDeploy'  
