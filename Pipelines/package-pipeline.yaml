@@ -65,7 +65,18 @@ stages:
           azure-infrastructure.json
           azure-infrastructure.parameters.json
         TargetFolder: '$(Build.ArtifactStagingDirectory)/artifact/arm'
-
+    - task: qetza.replacetokens.replacetokens-task.replacetokens@3
+      displayName: Replace Tokens in ARM template
+      inputs:
+        rootDirectory: '$(Build.ArtifactStagingDirectory)/artifact/arm'
+        targetFiles: '*.json'
+        encoding: 'auto'
+        writeBOM: true
+        verbosity: 'detailed'
+        actionOnMissing: 'fail'
+        keepToken: false
+        tokenPrefix: '#{'
+        tokenSuffix: '}#'
     - task: PublishPipelineArtifact@1
       displayName: 'Publish artifact'
       inputs:
