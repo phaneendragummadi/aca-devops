@@ -28,7 +28,7 @@ parameters:
   - Debug
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'ubuntu-latest'
 
 stages:
 - stage: Package
@@ -43,22 +43,15 @@ stages:
       condition: eq('${{parameters['loggingLevel']}}', 'Debug')
       displayName: "[Debug]"
       inputs:
-        script: 'dir -R $(Pipeline.Workspace)'
-    - task: UseNode@1
-      displayName: 'Install Node.js'
-      inputs:
-        checkLatest: true
-    - task: Npm@1
-      displayName: 'Install JSONLint'
-      inputs:
-        command: 'custom'
-        customCommand: 'install jsonlint -g'
+        script: 'ls -R $(Pipeline.Workspace)'
     - task: CmdLine@2
-      displayName: 'Validate Syntax JSON file(s)'
+      displayName: Install jsonlint
       inputs:
-        script: 'FOR /r %%A IN (*.json) DO jsonlint %%A'
-        workingDirectory: $(Pipeline.Workspace)\s\deploy\
-        failOnStderr: true
+        script: 'sudo npm install -g jsonlint-cli'
+    - task: CmdLine@2
+      displayName: Lint JSON files
+      inputs:
+        script: 'jsonlint-cli $(Pipeline.Workspace)/s/deploy/**.json'
     
     # TODO: Build your app    
     # TODO: Your verification steps here
