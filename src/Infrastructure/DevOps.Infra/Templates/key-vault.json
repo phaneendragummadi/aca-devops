@@ -54,7 +54,7 @@
       "tags": {
         "environment": "[parameters('infra').environment.name]",
         "department": "Codit",
-        "application": "DevOps-Introduction",
+        "application": "Arm-For-Dummies",
         "component": "Key Vault",
         "displayName": "Key Vault",
         "version": "[parameters('releaseInfo').version]",
@@ -81,7 +81,7 @@
       "tags": {
         "environment": "[parameters('infra').environment.name]",
         "department": "Codit",
-        "application": "DevOps-Introduction",
+        "application": "Arm-For-Dummies",
         "component": "Access Policy for Azure DevOps",
         "displayName": "Access Policy for Azure DevOps",
         "version": "[parameters('releaseInfo').version]",

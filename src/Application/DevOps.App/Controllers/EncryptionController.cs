@@ -2,7 +2,7 @@
 using System.Net;
 using System.Threading.Tasks;
 using DevOps.App.Encryption;
-using DevOps.App.Interfaces;
+using DevOps.App.Models;
 using DevOps.App.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,15 +11,9 @@ namespace DevOps.App.Controllers
     /// <summary>
     ///     Controller that performs encryption and decryption.
     /// </summary>
-    [Route("api/v1/[controller]")]
+    [Route("api/v1")]
     public class EncryptionController : Controller
     {
-        private const string encryptionKey= "ENCRYPTED";
-        private readonly IKeyVaultManager _secretManager;
-        public EncryptionController(IKeyVaultManager secretManager)
-        {
-            _secretManager = secretManager;
-        }
         /// <summary>
         ///     Gets the encrypted text that is stored.
         /// </summary>
@@ -29,10 +23,10 @@ namespace DevOps.App.Controllers
         {
             try
             {
-                var tableStorageRepository = new EncryptedTableStorageRepository();
+                var tableStorageRepository = new TableStorageRepository();
                 var entity = await tableStorageRepository.GetAsync();
 
-                return Ok(entity[encryptionKey]);
+                return Ok(entity.EncryptedText);
             }
             catch (Exception exception)
             {
@@ -40,30 +34,6 @@ namespace DevOps.App.Controllers
             }
         }
 
-        private async Task<string> GetKeyVaultSecretAsync(string secretName)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(secretName))
-                {
-                    throw new ApplicationException("Error: Secret is empty with name " + secretName);
-                }
-                string secretValue = await
-                _secretManager.GetSecret(secretName);
-                if (!string.IsNullOrEmpty(secretValue))
-                {
-                    return secretValue;
-                }
-                else
-                {
-                    throw new ApplicationException("Error: Secret not found with name " + secretName);
-                }
-            }
-            catch
-            {
-                throw new ApplicationException("Error: Unable to read secret with name " + secretName);
-            }
-        }
         /// <summary>
         ///     Updates the encrypted text that is stored.
         /// </summary>
@@ -73,12 +43,12 @@ namespace DevOps.App.Controllers
         {
             try
             {
-                string secretvalue = await GetKeyVaultSecretAsync("EncryptionKey");
-                var encryptor = new Encryptor(secretvalue);
+                var encryptor = new Encryptor();
                 var encryptedText = encryptor.Encrypt(text);
+                var entity = new EncryptionEntity(encryptedText);
 
-                var tableStorageRepository = new EncryptedTableStorageRepository();
-                await tableStorageRepository.UpdateAsync(encryptionKey, encryptedText);
+                var tableStorageRepository = new TableStorageRepository();
+                await tableStorageRepository.UpdateAsync(entity);
 
                 return Ok();
             }
@@ -97,12 +67,11 @@ namespace DevOps.App.Controllers
         {
             try
             {
-                var tableStorageRepository = new EncryptedTableStorageRepository();
+                var tableStorageRepository = new TableStorageRepository();
                 var entity = await tableStorageRepository.GetAsync();
-
-                string secretvalue = await GetKeyVaultSecretAsync("EncryptionKey");
-                var encryptor = new Encryptor(secretvalue);
-                var decryptedText = encryptor.Decrypt(entity[encryptionKey].ToString());
+                
+                var encryptor = new Encryptor();
+                var decryptedText = encryptor.Decrypt(entity.EncryptedText);
 
                 return Ok(decryptedText);
             }

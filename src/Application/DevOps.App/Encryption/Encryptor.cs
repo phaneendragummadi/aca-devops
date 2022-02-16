@@ -2,6 +2,7 @@
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using ConfigurationProvider = DevOps.App.Configuration.ConfigurationProvider;
 
 namespace DevOps.App.Encryption
 {
@@ -11,10 +12,11 @@ namespace DevOps.App.Encryption
         private readonly string encryptionKey;
         private readonly byte[] salt = {0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76};
 
-        public Encryptor(string encryptionKey)
+        public Encryptor()
         {
-            this.encryptionKey = encryptionKey;
+            encryptionKey = ConfigurationProvider.Get<string>("Encryption.Key");
         }
+        
         public string Decrypt(string encryptedText)
         {
             encryptedText = encryptedText.Replace(" ", "+");

@@ -76,7 +76,7 @@
       "tags": {
         "environment": "[parameters('infra').environment.name]",
         "department": "Codit",
-        "application": "DevOps-Introduction",
+        "application": "Arm-For-Dummies",
         "component": "App Service Plan",
         "displayName": "App Service Plan",
         "version": "[parameters('releaseInfo').version]",
