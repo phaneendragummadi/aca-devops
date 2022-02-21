@@ -44,12 +44,12 @@ stages:
           Write-Host "##vso[build.updatebuildnumber]$(Pipeline.Version)"
           Write-Host "Pipeline version is '$(Pipeline.Version)'"
         displayName: 'Change pipeline version $(Pipeline.Version)'
-- stage: deploy_acceptance
-  displayName: 'Deploy to Acceptance'
+- stage: deploy_development
+  displayName: 'Deploy to Development'
   dependsOn: preparation
   variables:
-    - template: ./variables/environments/environment-acc.yaml
-    - template: ./variables/apps/app-acc.yaml
+    - template: ./variables/environments/environment-dev.yaml
+    - template: ./variables/apps/app-dev.yaml
   jobs:
   - deployment: deploy_to_dev
     displayName: 'Deploy to DEV'
