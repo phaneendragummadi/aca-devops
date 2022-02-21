@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Azure.Data.Tables;
 using Microsoft.Extensions.Configuration;
-//using ConfigurationProvider = DevOps.App.Configuration.ConfigurationProvider;
 
 namespace DevOps.App.Repositories
 {

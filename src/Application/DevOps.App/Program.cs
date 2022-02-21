@@ -6,13 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Azure.Identity;
 
 namespace DevOps.App
 {
     public class Program
     {
-        public static IConfiguration Configuration { get; set; }
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
@@ -20,18 +18,18 @@ namespace DevOps.App
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((hostingContext, config) =>
-                {
-                    config.Sources.Clear();
-                    var env = hostingContext.HostingEnvironment;
-                    config.AddJsonFile("appsettings.json",
-                                       optional: true,
-                                       reloadOnChange: true);
-                    config.AddEnvironmentVariables();
-                 })
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+                            .ConfigureAppConfiguration((hostingContext, config) =>
+                            {
+                                config.Sources.Clear();
+                                var env = hostingContext.HostingEnvironment;
+                                config.AddJsonFile("appsettings.json",
+                                                   optional: true,
+                                                   reloadOnChange: true);
+                                config.AddEnvironmentVariables();
+                            })
+                            .ConfigureWebHostDefaults(webBuilder =>
+                            {
+                                webBuilder.UseStartup<Startup>();
+                            });
     }
 }

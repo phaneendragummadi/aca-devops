@@ -1,33 +1,34 @@
-using DevOps.App.Interfaces;
-using DevOps.App.KeyVault;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using DevOps.App.Interfaces;
+using DevOps.App.KeyVault;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
+
 using System;
-using Azure.Core.Extensions;
+using Microsoft.OpenApi.Models;
 
 namespace DevOps.App
 {
     public class Startup
     {
         private const string ApiName = "DevOps Introduction API";
-        private readonly IConfiguration _configuration;
         public Startup(IConfiguration configuration)
         {
-            _configuration = configuration;
+            Configuration = configuration;
         }
+
+        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAzureClients(azureClientFactoryBuilder =>
             {
-                string vaultUrl = _configuration.GetValue<string>("VaultUri");
-                var vaultUri= new Uri(vaultUrl);
+                string vaultUrl = Configuration.GetValue<string>("VaultUri");
+                var vaultUri = new Uri(vaultUrl);
                 azureClientFactoryBuilder.AddSecretClient(vaultUri);
             });
 
@@ -46,12 +47,9 @@ namespace DevOps.App
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseHsts();
-            }
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", ApiName));
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -64,5 +62,4 @@ namespace DevOps.App
             });
         }
     }
-   
 }
