@@ -75,16 +75,16 @@ stages:
       displayName: 'dotnet build $(buildConfiguration)'
 
     - task: DotNetCoreCLI@2
-      displayName: 'Test'
+      displayName: 'Restore Packages'
       inputs:
-        command: test
-        projects: '**/Test/*Tests/*.csproj'
-        arguments: '--configuration $(buildConfiguration)'
+        command: 'restore'
+        projects: '$(workingDirectory)/$(solutionFile)'
     #- task: DotNetCoreCLI@2
-    #  displayName: 'Restore Packages'
+    #  displayName: 'Test'
     #  inputs:
-    #    command: 'restore'
-    #    projects: '$(workingDirectory)/$(appName)/$(appName).csproj'
+    #    command: test
+    #    projects: '**/Test/*Tests/*.csproj'
+    #    arguments: '--configuration $(buildConfiguration)'
     - task: DotNetCoreCLI@2
       displayName: Publish
       inputs:
