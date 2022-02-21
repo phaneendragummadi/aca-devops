@@ -67,18 +67,20 @@ stages:
     
     # Build your app  
     - task: UseDotNet@2 
-      displayName: ".NET Core 3.1.x"
+      displayName: "Use .NET SDK $(Api.SDK)"
       inputs:
-        version: '3.1.x'
-        packageType: sdk
-    - script: dotnet build --configuration $(buildConfiguration)
-      displayName: 'dotnet build $(buildConfiguration)'
-
+        version: '$(Api.SDK)'
+        packageType: sdk 
     - task: DotNetCoreCLI@2
-      displayName: 'Restore Packages'
+      displayName: 'Restore Dependencies'
       inputs:
         command: 'restore'
         projects: '$(workingDirectory)/$(solutionFile)'
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'build'
+        projects: '$(workingDirectory)/$(appName)/$(appName).csproj'
+        arguments: '--no-restore --configuration $(buildConfiguration)'
     #- task: DotNetCoreCLI@2
     #  displayName: 'Test'
     #  inputs:
