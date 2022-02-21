@@ -62,5 +62,6 @@ steps:
   displayName: 'Deploy App'
   inputs:
     azureSubscription: '$(Azure.ServiceConnection.Name)'
+    appType: webAppLinux
     WebAppName: '$(Api.Name)'
     packageForLinux: '$(Pipeline.Workspace)/**/*.zip'
