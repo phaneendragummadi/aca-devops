@@ -64,4 +64,5 @@ steps:
     azureSubscription: '$(Azure.ServiceConnection.Name)'
     appType: webAppLinux
     WebAppName: '$(Api.Name)'
+    RuntimeStack: '$(Api.DotnetVersion)'
     packageForLinux: '$(Pipeline.Workspace)/**/*.zip'

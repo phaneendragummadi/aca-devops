@@ -26,7 +26,7 @@
     },
     "Appication.LinuxFxVersion": {
       "type": "string",
-      "defaultValue": "DOTNETCORE|2.2",
+      "defaultValue": "DOTNETCORE|3.1",
       "metadata": {
         "description": "The Runtime stack of current web app"
       }
