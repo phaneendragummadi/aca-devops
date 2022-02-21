@@ -77,7 +77,7 @@ stages:
         command: 'build'
         projects: |
           $(workingDirectory)/$(solutionFile)
-        arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration $(buildConfiguration)
+        arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration $(buildConfiguration) -r linux-x64 --self-contained true 
     - task: ArchiveFiles@2
       displayName: 'Archive files'
       inputs:
