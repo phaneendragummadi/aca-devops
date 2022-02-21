@@ -1,4 +1,4 @@
-v variables:
+variables:
   - name: Azure.ServiceConnection.Name
     value: 'TrainingAccountSP'
   - name: Region.ShortName
