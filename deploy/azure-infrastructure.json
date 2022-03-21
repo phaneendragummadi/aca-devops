@@ -139,7 +139,7 @@
     },
     {
       "type": "Microsoft.Web/serverFarms",
-      "apiVersion": "2018-02-01",
+      "apiVersion": "2019-08-01",
       "name": "[variables('AppServicePlanName')]",
       "location": "[resourceGroup().location]",
       "tags": "[variables('Tags')]",
@@ -147,29 +147,33 @@
         "name": "[parameters('AppSvcPlan.SkuName')]",
         "capacity": 1
       },
-      "kind": "app",
+      "kind": "linux",
       "properties": {
-        "reserved": false
+        "reserved": true
       }
     },
     {
       "type": "Microsoft.Web/sites",
-      "apiVersion": "2018-02-01",
+      "apiVersion": "2019-08-01",
       "name": "[variables('AppServiceName')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]"
       ],
       "tags": "[variables('Tags')]",
-      "kind": "app",
+      "kind": "app,linux",
       "identity": {
         "type": "SystemAssigned"
       },
       "properties": {
         "name": "[variables('AppServiceName')]",
         "serverFarmId": "[resourceId('Microsoft.Web/serverFarms', variables('AppServicePlanName'))]",
+        "reserved": true,
+        "httpsOnly": true,
+        "clientAffinityEnabled": false,
         "siteConfig": {
-          "netFrameworkVersion": "",
+          "alwaysOn": true,
+          "linuxFxVersion": "dotnet|3.1",
           "metadata": [
             {
               "name": "CURRENT_STACK",
