@@ -60,15 +60,16 @@
             "identity": {
                 "type": "SystemAssigned"
             },
-            "properties": {
-                "httpsOnly": true,
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanPortalName'))]",
-                "siteConfig": {
-                    "linuxFxVersion": "[parameters('linuxFxVersion')]",
-                    "minTlsVersion": "1.2",
-                    "ftpsState": "FtpsOnly"
-                }
+          "properties": {
+            "httpsOnly": true,
+            "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanPortalName'))]",
+            "httpsOnly": true,
+            "siteConfig": {
+              "linuxFxVersion": "[parameters('linuxFxVersion')]",
+              "minTlsVersion": "1.2",
+              "ftpsState": "FtpsOnly"
             }
+          }
         }
     ]
 }
