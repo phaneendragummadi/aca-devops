@@ -79,6 +79,13 @@
       "metadata": {
         "description": "Value of the secret from Key Vault."
       }
+    },
+    "linuxFxVersion": {
+      "defaultValue": "DOTNETCORE|3.0",
+      "type": "String",
+      "metadata": {
+        "description": "The Runtime stack of current web app"
+      }
     }
   },
   "variables": {
@@ -139,13 +146,12 @@
     },
     {
       "type": "Microsoft.Web/serverFarms",
-      "apiVersion": "2019-08-01",
+      "apiVersion": "2021-02-01",
       "name": "[variables('AppServicePlanName')]",
       "location": "[resourceGroup().location]",
       "tags": "[variables('Tags')]",
       "sku": {
-        "name": "[parameters('AppSvcPlan.SkuName')]",
-        "capacity": 1
+        "name": "[parameters('AppSvcPlan.SkuName')]"
       },
       "kind": "linux",
       "properties": {
@@ -154,32 +160,24 @@
     },
     {
       "type": "Microsoft.Web/sites",
-      "apiVersion": "2019-08-01",
+      "apiVersion": "2021-02-01",
       "name": "[variables('AppServiceName')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]"
       ],
       "tags": "[variables('Tags')]",
-      "kind": "app,linux",
       "identity": {
         "type": "SystemAssigned"
       },
       "properties": {
         "name": "[variables('AppServiceName')]",
         "serverFarmId": "[resourceId('Microsoft.Web/serverFarms', variables('AppServicePlanName'))]",
-        "reserved": true,
         "httpsOnly": true,
-        "clientAffinityEnabled": false,
         "siteConfig": {
-          "alwaysOn": true,
-          "linuxFxVersion": "dotnet|3.1",
-          "metadata": [
-            {
-              "name": "CURRENT_STACK",
-              "value": "dotnetcore"
-            }
-          ],
+          "linuxFxVersion": "[parameters('linuxFxVersion')]",
+          "minTlsVersion": "1.2",
+          "ftpsState": "FtpsOnly",
           "connectionStrings": [
             {
               "name": "StorageAccount.ConnectionString",
