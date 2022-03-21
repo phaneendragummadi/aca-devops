@@ -1,0 +1,48 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "ApplicationInsights.Name": {
+            "value": "#{ApplicationInsights.Name}#"
+        },
+        "AppPlan.Capacity": {
+            "value": "#{API.AppPlan.Capacity}#"
+        },
+        "AppPlan.Autoscaling.Min": {
+            "value": "#{API.Autoscaling.Min}#"
+        },
+        "AppPlan.Autoscaling.Max": {
+            "value": "#{API.Autoscaling.Max}#"
+        },
+        "AppPlan.Name": {
+            "value": "#{API.AppPlan.Name}#"
+        },
+        "AppPlan.Size": {
+            "value": "#{API.AppPlan.Size}#"
+        },
+        "Container.ImageName": {
+            "value": "#{Container.Image.API.RepositoryName}#"
+        },
+        "Container.Tag": {
+            "value": "#{Artifact.Version}#"
+        },
+        "ContainerRegistry.Auth.Key": {
+            "value": "#{ContainerRegistry.Auth.Key}#"
+        },
+        "ContainerRegistry.Name": {
+            "value": "#{ContainerRegistry.Name}#"
+        },
+        "ContainerRegistry.ResourceGroup.Name": {
+            "value": "#{ContainerRegistry.ResourceGroup.Name}#"
+        },
+        "ServiceBus.Namespace.Name": {
+            "value": "#{ServiceBus.Namespace.Name}#"
+        },
+        "ServiceBus.Queue.Name": {
+            "value": "#{ServiceBus.Queues.Carwash.Name}#"
+        },
+        "WebApp.Name": {
+            "value": "#{API.WebApp.Name}#"
+        }
+    }
+}
