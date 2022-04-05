@@ -1,0 +1,31 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "infra": {
+      "value": {
+        "environment": {
+          "resourcePrefix": "#{Infra.Environment.ResourcePrefix}#"
+        },
+        "opdgs": {
+          "vmName": {
+            "gatewayName": "#{Infra.Opdgs.VmName.GatewayName}#",
+            "gatewayObjectId": "#{Infra.Opdgs.VmName.GatewayObjectId}#"
+          }
+        }
+      }
+    },
+    "releaseInfo": {
+      "value": {
+        "release": {
+          "name": "#{Release.ReleaseName}#",
+          "url": "#{Release.ReleaseWebUrl}#"
+        },
+        "deployment": {
+          "requestedFor": "#{Release.Deployment.RequestedFor}#",
+          "triggerType": "#{Release.Reason}#"
+        }
+      }
+    }
+  }
+}

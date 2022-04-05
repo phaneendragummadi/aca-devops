@@ -1,0 +1,33 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "infra": {
+      "value": {
+        "environment": {
+          "shortName": "#{Infra.Environment.ShortName}#",
+          "customer": {
+            "shortName": "#{Infra.Environment.Customer.ShortName}#"
+          },
+          "region": {
+            "primary": {
+              "shortName": "#{Infra.Environment.Region.Primary.ShortName}#"
+            }
+          }
+        }
+      }
+    },
+    "releaseInfo": {
+      "value": {
+        "release": {
+          "name": "#{Release.ReleaseName}#",
+          "url": "#{Release.ReleaseWebUrl}#"
+        },
+        "deployment": {
+          "requestedFor": "#{Release.Deployment.RequestedFor}#",
+          "triggerType": "#{Release.Reason}#"
+        }
+      }
+    }
+  }
+}

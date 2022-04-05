@@ -1,0 +1,143 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "infra": {
+      "type": "object",
+      "metadata": {
+        "description": "Provide the object that contains all info about the common infrastructure."
+      }
+    },
+    "releaseInfo": {
+      "type": "object",
+      "metadata": {
+        "description": "Provide info about the release that deployed this resource."
+      }
+    },
+    "location": {
+      "defaultValue": "[resourceGroup().location]",
+      "type": "string",
+      "metadata": {
+        "description": "Provide the location for the Azure resource.  Stick to the default value, which is the same location as the Resource Group, unless you have a specific reason."
+      }
+    },
+    "curatedDataContainerName": {
+      "type": "string",
+      "defaultValue": "curateddata",
+      "metadata": {
+        "description": "Provide the name of the container to be created to store the curated data."
+      }
+    },
+    "datalakeNameSuffix": {
+      "type": "string",
+      "defaultValue": "datalake",
+      "metadata": {
+        "description": "Set the suffix to be used when assigning a name to the data lake."
+      }
+    }
+  },
+  "variables": {
+    "datalakeName": "[concat(replace(parameters('infra').environment.resourcePrefix, '-', ''), parameters('datalakeNameSuffix'))]",
+    "dataLakeResourceId": "[resourceId('Microsoft.Storage/storageAccounts', variables('datalakeName'))]",
+    "containers": [
+      {
+        "name": "[parameters('curatedDataContainerName')]",
+        "publicAccess": "None"
+      }
+    ]
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2019-04-01",
+      "name": "[variables('datalakeName')]",
+      "location": "[parameters('location')]",
+      "kind": "StorageV2",
+      "sku": {
+        "name": "[parameters('infra').datalake.sku]"
+      },
+      "tags": {
+        "displayName": "[variables('datalakeName')]",
+        "releaseName": "[parameters('releaseInfo').release.name]",
+        "createdBy": "[parameters('releaseInfo').release.url]",
+        "triggeredBy": "[parameters('releaseInfo').deployment.requestedFor]",
+        "triggerType": "[parameters('releaseInfo').deployment.triggerType]"
+      },
+      "scale": null,
+      "properties": {
+        "isHnsEnabled": true,
+        "networkAcls": {
+          "bypass": "AzureServices",
+          "virtualNetworkRules": [],
+          "ipRules": [],
+          "defaultAction": "Allow"
+        },
+        "supportsHttpsTrafficOnly": true,
+        "encryption": {
+          "services": {
+            "file": {
+              "enabled": true
+            },
+            "blob": {
+              "enabled": true
+            }
+          },
+          "keySource": "Microsoft.Storage"
+        },
+        "accessTier": "Hot"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices",
+      "apiVersion": "2019-04-01",
+      "name": "[concat(variables('datalakeName'), '/default')]",
+      "dependsOn": [
+        "[variables('dataLakeResourceId')]"
+      ],
+      "properties": {
+        "cors": {
+          "corsRules": []
+        },
+        "deleteRetentionPolicy": {
+          "enabled": false
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+      "apiVersion": "2018-07-01",
+      "copy": {
+        "name": "blobContainerCopy",
+        "count": "[length(variables('containers'))]"
+      },
+      "name": "[concat(variables('datalakeName'), '/default/', variables('containers')[copyIndex()].name)]",
+      "tags": {
+        "displayName": "Data Lake Containers",
+        "releaseName": "[parameters('releaseInfo').release.name]",
+        "createdBy": "[parameters('releaseInfo').release.url]",
+        "triggeredBy": "[parameters('releaseInfo').deployment.requestedFor]",
+        "triggerType": "[parameters('releaseInfo').deployment.triggerType]"
+      },
+      "dependsOn": [
+        "[variables('dataLakeResourceId')]"
+      ],
+      "properties": {
+        "publicAccess": "[variables('containers')[copyIndex()].publicAccess]"
+      }
+    }
+  ],
+  "outputs": {
+    "Infra.DataLake.Id": {
+      "type": "string",
+      "value": "[variables('dataLakeResourceId')]"
+    },
+    "Infra.DataLake.Name": {
+      "type": "string",
+      "value": "[variables('datalakeName')]"
+    },
+    "Infra.DataLake.CuratedDataContainer.Name": {
+      "type": "string",
+      "value": "[parameters('curatedDataContainerName')]"
+    }
+  }
+}

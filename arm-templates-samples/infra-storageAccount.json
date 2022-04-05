@@ -1,0 +1,186 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "infra": {
+      "type": "object",
+      "metadata": {
+        "description": "Provide the object that contains all info about the common infrastructure."
+      }
+    },
+    "releaseInfo": {
+      "type": "object",
+      "metadata": {
+        "description": "Provide info about the release that deployed this resource."
+      }
+    },
+    "location": {
+      "defaultValue": "[resourceGroup().location]",
+      "type": "string",
+      "metadata": {
+        "description": "Provide the location for the Azure resource.  Stick to the default value, which is the same location as the Resource Group, unless you have a specific reason."
+      }
+    },
+    "writeConnectionStringToKeyVault": {
+      "defaultValue": true,
+      "type": "bool",
+      "metadata": {
+        "description": "Write out the full connection string of the storage account as a keyvault secret. Default is true, set false if not needed."
+      }
+    },
+    "includeAlerts": {
+      "type": "bool",
+      "defaultValue": true
+    },
+    "enableAlerts": {
+      "type": "bool",
+      "defaultValue": false
+    }
+  },
+  "variables": {
+    "storageAccountName": "[concat(replace(parameters('infra').environment.resourcePrefix, '-', ''), 'storage')]",
+    "storageAccountConnectionstringSecretName": "[concat(parameters('infra').secrets.keyVault.name, '/' , variables('storageAccountName'), '-connectionstring')]",
+    "blobContainerDeploy": "deploy",
+    "storageAccountResourceId": "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
+    
+    "domain": "Invictus Templates",
+
+    "blobContainers": [
+      {
+        "name": "messages",
+        "publicAccess": "None"
+      },
+      {
+        "name": "[variables('blobContainerDeploy')]",
+        "publicAccess": "Blob"
+      }
+    ]
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "sku": {
+        "name": "[parameters('infra').storageAccount.sku]"
+      },
+      "kind": "StorageV2",
+      "name": "[variables('storageAccountName')]",
+      "apiVersion": "2018-02-01",
+      "location": "[parameters('location')]",
+      "tags": {
+        "displayName": "[variables('storageAccountName')]",
+        "releaseName": "[parameters('releaseInfo').release.name]",
+        "createdBy": "[parameters('releaseInfo').release.url]",
+        "triggeredBy": "[parameters('releaseInfo').deployment.requestedFor]",
+        "triggerType": "[parameters('releaseInfo').deployment.triggerType]"
+      },
+      "scale": null,
+      "properties": {
+        "encryption": {
+          "services": {
+            "file": {
+              "enabled": true
+            },
+            "blob": {
+              "enabled": true
+            }
+          },
+          "keySource": "Microsoft.Storage"
+        },
+        "supportsHttpsTrafficOnly": true,
+        "accessTier": "Hot"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+      "apiVersion": "2018-07-01",
+      "copy": {
+        "name": "blobContainerCopy",
+        "count": "[length(variables('blobContainers'))]"
+      },
+      "name": "[concat(variables('storageAccountName'), '/default/', variables('blobContainers')[copyIndex()].name)]",
+      "tags": {
+        "displayName": "Blob Containers",
+        "releaseName": "[parameters('releaseInfo').release.name]",
+        "createdBy": "[parameters('releaseInfo').release.url]",
+        "triggeredBy": "[parameters('releaseInfo').deployment.requestedFor]",
+        "triggerType": "[parameters('releaseInfo').deployment.triggerType]"
+      },
+      "dependsOn": [
+        "[variables('storageAccountResourceId')]"
+      ],
+      "properties": {
+        "publicAccess": "[variables('blobContainers')[copyIndex()].publicAccess]"
+      }
+    },
+    {
+      "condition": "[parameters('writeConnectionStringToKeyVault')]",
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "name": "[variables('storageAccountConnectionstringSecretName')]",
+      "apiVersion": "2016-10-01",
+      "properties": {
+        "contentType": "text/plain",
+        "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountResourceId'), '2018-02-01').keys[0].value, ';EndpointSuffix=core.windows.net')]"
+      }
+    },
+    {
+      "type": "microsoft.insights/metricAlerts",
+      "apiVersion": "2018-03-01",
+      "name": "[concat('[',variables('domain'),'] Storage Account availability alert for ',variables('storageAccountName'),'(', toUpper(parameters('infra').environment.shortName), ')')]",
+      "condition": "[parameters('includeAlerts')]",
+      "location": "global",
+      "properties": {
+        "description": "If the availability of the Storage Account is less than 95%, alert will trigger.",
+        "severity": 3,
+        "enabled": "[parameters('enableAlerts')]",
+        "scopes": [
+          "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+        ],
+        "evaluationFrequency": "PT1M",
+        "windowSize": "PT5M",
+        "criteria": {
+          "allOf": [
+            {
+              "threshold": 95,
+              "name": "Metric1",
+              "metricNamespace": "microsoft.storage/storageaccounts",
+              "metricName": "Availability",
+              "dimensions": [
+              ],
+              "operator": "LessThan",
+              "timeAggregation": "Average",
+              "criterionType": "StaticThresholdCriterion"
+            }
+          ],
+          "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria"
+        },
+        "autoMitigate": true,
+        "targetResourceType": "Microsoft.Storage/storageAccounts",
+        "actions": [
+          {
+            "actionGroupId": "[resourceId(parameters('infra').monitoring.alerts.actionGroup.resourceGroup , 'microsoft.insights/actiongroups', parameters('infra').monitoring.alerts.actionGroup.name)]",
+            "webHookProperties": {
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "Infra.StorageAccount.Id": {
+      "type": "string",
+      "value": "[variables('storageAccountResourceId')]"
+    },
+    "Infra.StorageAccount.Name": {
+      "type": "string",
+      "value": "[variables('storageAccountName')]"
+    },
+    "Infra.StorageAccount.DeployContainer.Name": {
+      "type": "string",
+      "value": "[variables('blobContainerDeploy')]"
+    },
+    "Infra.StorageAccount.ConnectionString.Secret.Name": {
+      "type": "string",
+      "value": "[variables('storageAccountConnectionstringSecretName')]"
+    }
+  }
+}

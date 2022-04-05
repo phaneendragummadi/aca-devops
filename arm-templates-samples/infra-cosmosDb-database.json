@@ -1,0 +1,136 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "infra": {
+      "type": "object",
+      "metadata": {
+        "description": "Provide the object that contains all info about the common infrastructure."
+      }
+    },
+    "releaseInfo": {
+      "type": "object",
+      "metadata": {
+        "description": "Provide info about the release that deployed this resource."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for all resources."
+      }
+    },
+    "databaseName": {
+      "type": "string",
+      "defaultValue": "DATABASE_NAME_HERE",
+      "metadata": {
+        "description": "Name of the database in cosmosDb."
+      }
+    },
+    "sharedThroughput": {
+      "type": "int",
+      "defaultValue": 400,
+      "minValue": 400,
+      "maxValue": 1000000,
+      "metadata": {
+        "description": "The throughput for the database to be shared"
+      }
+    },
+    "containerName": {
+      "type": "string",
+      "defaultValue": "CONTAINER_NAME_HERE",
+      "metadata": {
+        "description": "Name of the container in the SQL-database in cosmosDb."
+      }
+    }
+  },
+  "variables": {
+    "databaseName": "[concat(parameters('infra').cosmosDb.name, '/', parameters('databaseName'))]",
+    "containerName": "[concat(parameters('infra').cosmosDb.name, '/', parameters('databaseName'), '/', parameters('containerName'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
+      "apiVersion": "2019-08-01",
+      "name": "[variables('databaseName')]",
+      "location": "[parameters('location')]",
+      "tags": {
+        "displayName": "[variables('databaseName')]",
+        "releaseName": "[parameters('releaseInfo').release.name]",
+        "createdBy": "[parameters('releaseInfo').release.url]",
+        "triggeredBy": "[parameters('releaseInfo').deployment.requestedFor]",
+        "triggerType": "[parameters('releaseInfo').deployment.triggerType]"
+      },
+      "properties": {
+        "resource": {
+          "id": "[parameters('databaseName')]"
+        },
+        "options": { "throughput": "[parameters('sharedThroughput')]" }
+      }
+    },
+    {
+      "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
+      "apiVersion": "2019-08-01",
+      "name": "[variables('containerName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', parameters('infra').cosmosDb.name, parameters('databaseName'))]"
+      ],
+      "tags": {
+        "displayName": "[variables('containerName')]",
+        "releaseName": "[parameters('releaseInfo').release.name]",
+        "createdBy": "[parameters('releaseInfo').release.url]",
+        "triggeredBy": "[parameters('releaseInfo').deployment.requestedFor]",
+        "triggerType": "[parameters('releaseInfo').deployment.triggerType]"
+      },
+      "properties": {
+        "resource": {
+          "id": "[parameters('containerName')]",
+          "partitionKey": {
+            "paths": [
+              "FILL_IN_PARTITION_PATH"
+            ],
+            "kind": "Hash"
+          },
+          "indexingPolicy": {
+            "indexingMode": "consistent",
+            "automatic": true,
+            "includedPaths": [
+              {
+                "path": "/*"
+              }
+            ],
+            "excludedPaths": [
+              {
+                "path": "/\"_etag\"/?"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "Products.Api.CosmosDb.Database.FQName": {
+      "type": "string",
+      "value": "[variables('databaseName')]"
+    },
+    "Products.Api.CosmosDb.Database.Name": {
+      "type": "string",
+      "value": "[parameters('databaseName')]"
+    },
+    "Products.Api.CosmosDb.Database.Id": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', parameters('infra').cosmosDb.name, parameters('databaseName'))]"
+    },
+    "Products.Api.CosmosDb.Database.Container.FQName": {
+      "type": "string",
+      "value": "[variables('containerName')]"
+    },
+    "Products.Api.CosmosDb.Database.Container.Name": {
+      "type": "string",
+      "value": "[parameters('containerName')]"
+    }
+  }
+}

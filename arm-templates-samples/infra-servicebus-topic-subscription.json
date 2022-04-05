@@ -1,0 +1,124 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "infra": {
+      "type": "object",
+      "metadata": {
+        "description": "Provide the object that contains all info about the common infrastructure."
+      }
+    },
+    "releaseInfo": {
+      "defaultValue": "",
+      "type": "object",
+      "metadata": {
+        "description": "Provide info about the release that deployed this resource."
+      }
+    },
+    "location": {
+      "defaultValue": "[resourceGroup().location]",
+      "type": "string",
+      "metadata": {
+        "description": "Provide the location for the Logic App.  Stick to the default value, which is the same location as the Resource Group, unless you have a specific reason."
+      }
+    },
+    "topicName": {
+      "type": "string"
+    },
+    "subscriptionName": {
+      "type": "string"
+    },
+    "subscriptionFilter": {
+      "defaultValue": "1=1",
+      "type": "string"
+    },
+    "serviceBusNamespace": {
+      "defaultValue": "",
+      "type": "string",
+      "metadata": {
+        "description": "Provide the service bus namespace in case this is different from the default Invictus SB namespace."
+      }
+    }
+  },
+  "variables": {
+    "serviceBussubscriptionName": "[tolower(parameters('subscriptionName'))]",
+    "serviceBusNamespace": "[if(empty(parameters('serviceBusNamespace')), concat('invictus-', parameters('infra').environment.shortName, '-', parameters('infra').environment.region.primary.shortName, '-', parameters('infra').environment.customer.shortName, '-sbs'),parameters('serviceBusNamespace'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ServiceBus/namespaces/topics",
+      "apiVersion": "2017-04-01",
+      "name": "[concat(variables('serviceBusNamespace'), '/', parameters('topicName'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [],
+      "properties": {
+        "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+        "maxSizeInMegabytes": 1024,
+        "requiresDuplicateDetection": true,
+        "duplicateDetectionHistoryTimeWindow": "PT1H",
+        "enableBatchedOperations": true,
+        "status": "Active",
+        "supportOrdering": true,
+        "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+        "enablePartitioning": false,
+        "enableExpress": false
+      }
+    },
+    {
+      "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+      "apiVersion": "2017-04-01",
+      "name": "[concat(variables('serviceBusNamespace'), '/',parameters('topicName'),'/', variables('serviceBussubscriptionName'))]",
+      "location": "[parameters('location')]",
+      "tags": {
+        "displayName": "[concat(variables('serviceBusNamespace'), '/',parameters('topicName'),'/', variables('serviceBussubscriptionName'))]",
+        "releaseName": "[parameters('releaseInfo').release.name]",
+        "createdBy": "[parameters('releaseInfo').release.url]",
+        "triggeredBy": "[parameters('releaseInfo').deployment.requestedFor]",
+        "triggerType": "[parameters('releaseInfo').deployment.triggerType]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ServiceBus/namespaces/topics', variables('serviceBusNamespace'), parameters('topicName'))]"
+      ],
+      "properties": {
+        "lockDuration": "PT1M",
+        "requiresSession": false,
+        "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+        "deadLetteringOnMessageExpiration": false,
+        "deadLetteringOnFilterEvaluationExceptions": true,
+        "maxDeliveryCount": 10,
+        "status": "Active",
+        "enableBatchedOperations": true,
+        "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S"
+      }
+    },
+    {
+      "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+      "apiVersion": "2017-04-01",
+      "name": "[concat(variables('serviceBusNamespace'), '/',parameters('topicName'),'/', variables('serviceBussubscriptionName'), '/', variables('serviceBussubscriptionName'))]",
+      "location": "[parameters('location')]",
+      "tags": {
+        "displayName": "[concat(variables('serviceBusNamespace'), '/',parameters('topicName'),'/', variables('serviceBussubscriptionName'), '/', variables('serviceBussubscriptionName'))]",
+        "releaseName": "[parameters('releaseInfo').release.name]",
+        "createdBy": "[parameters('releaseInfo').release.url]",
+        "triggeredBy": "[parameters('releaseInfo').deployment.requestedFor]",
+        "triggerType": "[parameters('releaseInfo').deployment.triggerType]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', variables('serviceBusNamespace'), parameters('topicName'), variables('serviceBussubscriptionName'))]"
+      ],
+      "properties": {
+        "action": {},
+        "filterType": "SqlFilter",
+        "sqlFilter": {
+          "sqlExpression": "[parameters('subscriptionFilter')]"
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "subscription.Url": {
+      "type": "string",
+      "value": "[concat('sb://', variables('serviceBusNamespace'), '.servicebus.windows.net/',parameters('topicName'),'/Subscriptions/', variables('serviceBussubscriptionName'))]"
+    }
+  }
+}
