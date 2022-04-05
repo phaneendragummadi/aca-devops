@@ -1,0 +1,57 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "infra": {
+      "type": "object",
+      "metadata": {
+        "description": "Provide the object that contains all info about the common infrastructure."
+      }
+    },
+    "releaseInfo": {
+      "type": "object",
+      "metadata": {
+        "description": "Provide info about the release that deployed this resource."
+      }
+    },
+    "enabled": {
+      "type": "bool",
+      "defaultValue": true
+    }
+  },
+  "variables": {
+  },
+  "resources": [
+    {
+      "apiVersion": "2017-04-01",
+      "type": "Microsoft.Insights/ActionGroups",
+      "name": "[parameters('infra').monitoring.alerts.actionGroup.name]",
+      "location": "Global",
+      "tags": {
+        "displayName": "[parameters('infra').monitoring.alerts.actionGroup.name]",
+        "releaseName": "[parameters('releaseInfo').release.name]",
+        "createdBy": "[parameters('releaseInfo').release.url]",
+        "triggeredBy": "[parameters('releaseInfo').deployment.requestedFor]",
+        "triggerType": "[parameters('releaseInfo').deployment.triggerType]",
+        "environment": "[parameters('infra').environment.shortName]"
+      },
+      "dependsOn": [],
+      "properties": {
+        "groupShortName": "[parameters('infra').monitoring.alerts.actionGroup.shortName]",
+        "enabled": "[parameters('enabled')]",
+        "emailReceivers": [
+          {
+            "name": "Alerts",
+            "emailAddress": "[parameters('infra').monitoring.alerts.actionGroup.email.recipient]"
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "Infra.Monitoring.Alerts.ActionGroup.Id": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Insights/actionGroups', parameters('infra').monitoring.alerts.actionGroup.name)]"
+    }
+  }
+}

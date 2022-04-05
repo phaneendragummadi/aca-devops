@@ -1,0 +1,54 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "infra": {
+      "type": "object",
+      "metadata": {
+        "description": "Provide the object that contains all info about the common infrastructure."
+      }
+    },
+    "releaseInfo": {
+      "type": "object",
+      "metadata": {
+        "description": "Provide info about the release that deployed this resource."
+      }
+    },
+    "location": {
+      "defaultValue": "[resourceGroup().location]",
+      "type": "string",
+      "metadata": {
+        "description": "Provide the location for the Azure resource.  Stick to the default value, which is the same location as the Resource Group, unless you have a specific reason."
+      }
+    }
+  },
+  "variables": {
+    "integrationAccountName": "[concat(parameters('infra').environment.resourcePrefix, '-integrationAccount')]"
+  },
+  "resources": [
+    {
+      "condition": "[not(equals(parameters('infra').integration.integrationAccount.sku,'None'))]",
+      "properties": {},
+      "sku": {
+        "name": "[parameters('infra').integration.integrationAccount.sku]"
+      },
+      "tags": {
+        "displayName": "[variables('integrationAccountName')]",
+        "releaseName": "[parameters('releaseInfo').release.name]",
+        "createdBy": "[parameters('releaseInfo').release.url]",
+        "triggeredBy": "[parameters('releaseInfo').deployment.requestedFor]",
+        "triggerType": "[parameters('releaseInfo').deployment.triggerType]"
+      },
+      "name": "[variables('integrationAccountName')]",
+      "type": "Microsoft.Logic/integrationAccounts",
+      "location": "[parameters('location')]",
+      "apiVersion": "2016-06-01"
+    }
+  ],
+  "outputs": {
+    "Infra.Integration.IntegrationAccount.Id": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Logic/integrationAccounts', variables('integrationAccountName'))]"
+    }
+  }
+}

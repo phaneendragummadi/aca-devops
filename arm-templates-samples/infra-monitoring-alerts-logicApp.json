@@ -1,0 +1,119 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "infra": {
+      "type": "object",
+      "metadata": {
+        "description": "Provide the object that contains all info about the common infrastructure."
+      }
+    },
+    "releaseInfo": {
+      "type": "object",
+      "metadata": {
+        "description": "Provide info about the release that deployed this resource."
+      }
+    },
+    "location": {
+      "defaultValue": "[resourceGroup().location]",
+      "type": "string",
+      "metadata": {
+        "description": "Provide the location for the Logic App.  Stick to the default value, which is the same location as the Resource Group, unless you have a specific reason."
+      }
+    },
+    "logicAppName": {
+      "type": "string",
+      "metadata": {
+        "description": "Provide the name of the Logic App for which alerts need to be added."
+      }
+    },
+    "logicAppResourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "Provide the name of the Resource Group in which the Logic App has been created."
+      }
+    },
+    "enabled": {
+      "type": "bool",
+      "defaultValue": true
+    }
+  },
+  "variables": {
+    "logicAppResourceId": "[resourceId(parameters('logicAppResourceGroupName'), 'Microsoft.Logic/workflows', parameters('logicAppName'))]"
+  },
+  "resources": [
+    {
+      "type": "microsoft.insights/metricAlerts",
+      "name": "[concat('Logic Apps Failed Runs - ', parameters('logicAppName'))]",
+      "apiVersion": "2018-03-01",
+      "location": "global",
+      "properties": {
+        "description": "[concat('There are failed runs for the Logic App ', parameters('logicAppName'), '[',toUpper(parameters('infra').environment.shortName),'].')]",
+        "severity": 3,
+        "enabled": "[parameters('enabled')]",
+        "scopes": [
+          "[variables('logicAppResourceId')]"
+        ],
+        "evaluationFrequency": "PT1M",
+        "windowSize": "PT5M",
+        "criteria": {
+          "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria",
+          "allOf": [
+            {
+              "name": "Failed runs",
+              "metricName": "RunsFailed",
+              "dimensions": [],
+              "operator": "GreaterThan",
+              "threshold": "0",
+              "timeAggregation": "Total"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "actionGroupId": "[resourceId(parameters('infra').monitoring.alerts.actionGroup.resourceGroup , 'microsoft.insights/actiongroups', parameters('infra').monitoring.alerts.actionGroup.name)]",
+            "webHookProperties": {}
+          }
+        ]
+      }
+    },
+    {
+      "type": "microsoft.insights/metricAlerts",
+      "name": "[concat('Logic Apps Failed Triggers - ', parameters('logicAppName'))]",
+      "apiVersion": "2018-03-01",
+      "location": "global",
+      "properties": {
+        "description": "[concat('There are failed triggers for the Logic App ', parameters('logicAppName'), '[',toUpper(parameters('infra').environment.shortName),'].')]",
+        "severity": 3,
+        "enabled": "[parameters('enabled')]",
+        "scopes": [
+          "[variables('logicAppResourceId')]"
+        ],
+        "evaluationFrequency": "PT1M",
+        "windowSize": "PT5M",
+        "criteria": {
+          "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria",
+          "allOf": [
+            {
+              "name": "Failed triggers",
+              "metricName": "TriggersFailed",
+              "dimensions": [],
+              "operator": "GreaterThan",
+              "threshold": "0",
+              "timeAggregation": "Total"
+            }
+          ]
+        },
+        "actions": [
+          {
+
+            "actionGroupId": "[resourceId(parameters('infra').monitoring.alerts.actionGroup.resourceGroup , 'microsoft.insights/actiongroups', parameters('infra').monitoring.alerts.actionGroup.name)]",
+            "webHookProperties": {}
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "infra": {
+      "type": "object",
+      "metadata": {
+        "description": "Provide the object that contains all info about the common infrastructure."
+      }
+    },
+    "releaseInfo": {
+      "defaultValue": "",
+      "type": "object",
+      "metadata": {
+        "description": "Provide info about the release that deployed this resource."
+      }
+    },
+    "location": {
+      "defaultValue": "[resourceGroup().location]",
+      "type": "string",
+      "metadata": {
+        "description": "Provide the location for the Azure resource.  Stick to the default value, which is the same location as the Resource Group, unless you have a specific reason."
+      }
+    },
+    "sqlServerName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the SQL Server."
+      }
+    },
+    "sqlServerLogin": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The login for the SQL Database."
+      }
+    },
+    "sqlServerLoginPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The login password for the SQL Database."
+      }
+    },
+    "AllowAllWindowsAzureIps": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Indicate whether to set the firewall to allow all Azure IPs."
+      }
+    }
+  },
+  "variables": {
+    "sqlServerLogin": "[if(equals(length(parameters('sqlServerLogin')), 0), 'SqlServerAdmin', parameters('sqlServerLogin'))]",
+    "sqlServerName": "[if(equals(length(parameters('sqlServerName')), 0), concat(parameters('infra').environment.resourcePrefix,'-sqlsvr'), parameters('sqlServerName'))]",
+    "sqlServerLoginPassword": "[if(equals(length(parameters('sqlServerLoginPassword')), 0), concat('P', uniqueString(resourceGroup().id, subscription().id, '5572492a-1190-481a-9530-979bcf008acc'), 'x', '!'), parameters('sqlServerLoginPassword'))]",
+
+    "keyVaultSecretName": "infra-sql-server-password",
+
+    "singleQuote": "'"
+  },
+  "resources": [
+    {
+      "comments": "SQL Database Server",
+      "type": "Microsoft.Sql/servers",
+      "kind": "v12.0",
+      "name": "[variables('sqlServerName')]",
+      "apiVersion": "2015-05-01-preview",
+      "location": "[parameters('location')]",
+      "tags": {
+        "displayName": "[variables('sqlServerName')]",
+        "releaseName": "[parameters('releaseInfo').release.name]",
+        "createdBy": "[parameters('releaseInfo').release.url]",
+        "triggeredBy": "[parameters('releaseInfo').deployment.requestedFor]",
+        "triggerType": "[parameters('releaseInfo').deployment.triggerType]"
+      },
+      "scale": null,
+      "properties": {
+        "administratorLogin": "[variables('sqlServerLogin')]",
+        "administratorLoginPassword": "[variables('sqlServerLoginPassword')]",
+        "version": "12.0"
+      },
+      "dependsOn": []
+    },
+    {
+      "condition": "[parameters('AllowAllWindowsAzureIps')]",
+      "comments": "AllowAllWindowsAzureIps",
+      "type": "Microsoft.Sql/servers/firewallRules",
+      "kind": "v12.0",
+      "name": "[concat(variables('sqlServerName'), '/', 'AllowAllWindowsAzureIps')]",
+      "apiVersion": "2014-04-01-preview",
+      "location": "[parameters('location')]",
+      "scale": null,
+      "properties": {
+        "startIpAddress": "0.0.0.0",
+        "endIpAddress": "0.0.0.0"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', variables('sqlServerName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "name": "[concat(parameters('infra').secrets.keyVault.name,'/', variables('keyVaultSecretName'))]",
+      "apiVersion": "2016-10-01",
+      "properties": {
+        "contentType": "text/plain",
+        "value": "[variables('sqlServerLoginPassword')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', variables('sqlServerName'))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "Infra.SqlServer.ServerName": {
+      "value": "[variables('sqlServerName')]",
+      "type": "string"
+    },
+    "Infra.SqlServer.Username": {
+      "value": "[variables('sqlServerLogin')]",
+      "type": "string"
+    },
+    "Infra.SqlServer.Password.SecretName": {
+      "value": "[variables('keyVaultSecretName')]",
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "infra": {
+      "value": {
+        "environment": {
+          "resourcePrefix": "#{Infra.Environment.ResourcePrefix}#"
+        },
+        "secrets": {
+          "keyVault": {
+            "name": "#{Infra.Secrets.KeyVault.Name}#"
+          }
+        }
+      }
+    },
+    "releaseInfo": {
+      "value": {
+        "release": {
+          "name": "#{Release.ReleaseName}#",
+          "url": "#{Release.ReleaseWebUrl}#"
+        },
+        "deployment": {
+          "requestedFor": "#{Release.Deployment.RequestedFor}#",
+          "triggerType": "#{Release.Reason}#"
+        }
+      }
+    }
+  }
+}

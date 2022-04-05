@@ -1,0 +1,277 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.4.1008.15138",
+      "templateHash": "2524527540759163488"
+    }
+  },
+  "parameters": {
+    "Storage_SkuName": {
+      "type": "string",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_GRS",
+        "Standard_ZRS",
+        "Premium_LRS"
+      ]
+    },
+    "StorageAccountTableName": {
+      "type": "string"
+    },
+    "Application_Name": {
+      "type": "string"
+    },
+    "Application_Environment": {
+      "type": "string"
+    },
+    "Application_Version": {
+      "type": "string"
+    },
+    "Release_Name": {
+      "type": "string"
+    },
+    "Release_RequestedFor": {
+      "type": "string"
+    },
+    "Release_SourceCodeBranch": {
+      "type": "string"
+    },
+    "Release_TriggerType": {
+      "type": "string"
+    },
+    "Release_Url": {
+      "type": "string"
+    },
+    "AppSvcPlan_SkuName": {
+      "type": "string",
+      "defaultValue": "F1",
+      "allowedValues": [
+        "F1",
+        "D1",
+        "B1",
+        "S1"
+      ],
+      "metadata": {
+        "description": "Provide the pricing tier of the App Service Plan."
+      }
+    },
+    "Keyvault_SkuName": {
+      "type": "string",
+      "defaultValue": "standard",
+      "allowedValues": [
+        "standard",
+        "premium"
+      ],
+      "metadata": {
+        "description": "Provide the pricing tier of the key vault."
+      }
+    },
+    "Keyvault_TenantId": {
+      "type": "string"
+    },
+    "Keyvault_ObjectId": {
+      "type": "string"
+    },
+    "Keyvault_SecretName": {
+      "type": "string",
+      "metadata": {
+        "description": "Specifies the name of the secret that you want to create."
+      }
+    },
+    "Keyvault_SecretValue": {
+      "type": "secureString",
+      "metadata": {
+        "description": "Value of the secret from Key Vault."
+      }
+    },
+    "linuxFxVersion": {
+      "type": "string",
+      "defaultValue": "DOTNETCORE|3.1",
+      "metadata": {
+        "description": "The Runtime stack of current web app"
+      }
+    }
+  },
+  "functions": [],
+  "variables": {
+    "KeyVaultName_var": "[format('{0}-vault', parameters('Application_Name'))]",
+    "KeyVaultResourceId": "[resourceId('Microsoft.KeyVault/vaults', variables('KeyVaultName_var'))]",
+    "AppServicePlanName_var": "[format('{0}Plan', parameters('Application_Name'))]",
+    "AppServiceName_var": "[parameters('Application_Name')]",
+    "AppServiceResourceId": "[resourceId('Microsoft.Web/sites', variables('AppServiceName_var'))]",
+    "StorageAccountName_var": "[format('{0}storage', toLower(replace(parameters('Application_Name'), '-', '')))]",
+    "StorageAccountResourceId": "[resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName_var'))]",
+    "ApiVersion": "[providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]]",
+    "Tags": {
+      "environment": "[parameters('Application_Environment')]",
+      "version": "[parameters('Application_Version')]",
+      "releaseName": "[parameters('Release_Name')]",
+      "createdBy": "[parameters('Release_Url')]",
+      "branch": "[parameters('Release_SourceCodeBranch')]",
+      "triggeredBy": "[parameters('Release_RequestedFor')]",
+      "triggerType": "[parameters('Release_TriggerType')]"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/tags",
+      "apiVersion": "2019-10-01",
+      "name": "default",
+      "properties": {
+        "tags": "[variables('Tags')]"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2019-06-01",
+      "name": "[variables('StorageAccountName_var')]",
+      "location": "[resourceGroup().location]",
+      "tags": "[variables('Tags')]",
+      "sku": {
+        "name": "[parameters('Storage_SkuName')]"
+      },
+      "kind": "StorageV2",
+      "properties": {
+        "accessTier": "Hot",
+        "minimumTlsVersion": "TLS1_2",
+        "allowBlobPublicAccess": false,
+        "supportsHttpsTrafficOnly": true
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/tableServices/tables",
+      "apiVersion": "2019-06-01",
+      "name": "[format('{0}/default/{1}', variables('StorageAccountName_var'), parameters('StorageAccountTableName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName_var'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2021-02-01",
+      "name": "[variables('AppServicePlanName_var')]",
+      "location": "[resourceGroup().location]",
+      "tags": "[variables('Tags')]",
+      "sku": {
+        "name": "[parameters('AppSvcPlan_SkuName')]"
+      },
+      "kind": "linux",
+      "properties": {
+        "reserved": true
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2021-02-01",
+      "name": "[variables('AppServiceName_var')]",
+      "kind": "app",
+      "location": "[resourceGroup().location]",
+      "tags": "[variables('Tags')]",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName_var'))]",
+        "httpsOnly": false,
+        "siteConfig": {
+          "linuxFxVersion": "[parameters('linuxFxVersion')]",
+          "minTlsVersion": "1.2",
+          "ftpsState": "FtpsOnly",
+          "connectionStrings": [
+            {
+              "name": "StorageAccount.ConnectionString",
+              "connectionString": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix=core.windows.net', variables('StorageAccountName_var'), listKeys(variables('StorageAccountResourceId'), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]"
+            }
+          ],
+          "appSettings": [
+            {
+              "name": "StorageAccount.TableName",
+              "value": "[parameters('StorageAccountTableName')]"
+            },
+            {
+              "name": "VaultUri",
+              "value": "[format('https://{0}.vault.azure.net/', variables('KeyVaultName_var'))]"
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName_var'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName_var'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2018-02-14",
+      "name": "[variables('KeyVaultName_var')]",
+      "location": "[resourceGroup().location]",
+      "tags": "[variables('Tags')]",
+      "properties": {
+        "tenantId": "[parameters('Keyvault_TenantId')]",
+        "sku": {
+          "name": "[parameters('Keyvault_SkuName')]",
+          "family": "A"
+        },
+        "networkAcls": {
+          "defaultAction": "Allow",
+          "bypass": "AzureServices"
+        },
+        "enabledForTemplateDeployment": true,
+        "accessPolicies": [
+          {
+            "tenantId": "[parameters('Keyvault_TenantId')]",
+            "objectId": "[parameters('Keyvault_ObjectId')]",
+            "permissions": {
+              "keys": [
+                "list",
+                "get"
+              ],
+              "secrets": [
+                "list",
+                "get"
+              ]
+            }
+          },
+          {
+            "tenantId": "[parameters('Keyvault_TenantId')]",
+            "objectId": "[reference(resourceId('Microsoft.Web/sites', variables('AppServiceName_var')), '2019-08-01', 'full').identity.principalId]",
+            "permissions": {
+              "secrets": [
+                "get"
+              ]
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('AppServiceName_var'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2018-02-14",
+      "name": "[format('{0}/{1}', variables('KeyVaultName_var'), format('{0}', parameters('Keyvault_SecretName')))]",
+      "tags": "[variables('Tags')]",
+      "properties": {
+        "value": "[parameters('Keyvault_SecretValue')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('AppServiceName_var'))]",
+        "[resourceId('Microsoft.KeyVault/vaults', variables('KeyVaultName_var'))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "EncryptionApi_AppService_Name": {
+      "type": "string",
+      "value": "[variables('AppServiceName_var')]"
+    },
+    "EncryptionApi_AppService_Id": {
+      "type": "string",
+      "value": "[variables('AppServiceResourceId')]"
+    }
+  }
+}

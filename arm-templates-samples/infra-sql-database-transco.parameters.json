@@ -1,0 +1,56 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "infra": {
+      "value": {
+        "environment": {
+          "shortName": "#{Infra.Environment.ShortName}#"
+        },
+        "monitoring": {
+          "alerts": {
+            "actionGroup": {
+              "name": "#{Infra.Monitoring.Alerts.ActionGroup.Name}#",
+              "resourceGroup": "#{Infra.ResourceGroup.Name}#"
+            }
+          }
+        }
+      }
+    },
+    "invictus": {
+      "value": {
+        "infra": {
+          "sqlServer": {
+            "serverInstance": "#{Invictus.SqlServer.ServerName}#",
+            "user": "#{Invictus.SqlServer.Username}#"
+          }
+        },
+        "secrets": {
+          "keyVault": {
+            "name": "#{Invictus.Secrets.KeyVault.Name}#"
+          }
+        }
+      }
+    },
+    "releaseInfo": {
+      "value": {
+        "release": {
+          "name": "#{Release.ReleaseName}#",
+          "url": "#{Release.ReleaseWebUrl}#"
+        },
+        "deployment": {
+          "requestedFor": "#{Release.Deployment.RequestedFor}#",
+          "triggerType": "#{Release.Reason}#"
+        }
+      }
+    },
+    "sqlServerPassword": {
+      "reference": {
+        "keyVault": {
+          "id": "#{Invictus.Secrets.KeyVault.Id}#"
+        },
+        "secretName": "#{Invictus.SqlServer.Password.SecretName}#"
+      }
+    }
+  }
+}

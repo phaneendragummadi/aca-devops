@@ -1,0 +1,36 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "infra": {
+      "value": {
+        "environment": {
+          "shortName": "#{Infra.Environment.ShortName}#"
+        },
+        "monitoring": {
+          "alerts": {
+            "actionGroup": {
+              "name": "#{Infra.Monitoring.Alerts.ActionGroup.Name}#",
+              "shortName": "#{Infra.Monitoring.Alerts.ActionGroup.ShortName}#",
+              "email": {
+                "recipient": "#{Infra.Monitoring.Alerts.Email.Recipients}#"
+              }
+            }
+          }
+        }
+      }
+    },
+    "releaseInfo": {
+      "value": {
+        "release": {
+          "name": "#{Release.ReleaseName}#",
+          "url": "#{Release.ReleaseWebUrl}#"
+        },
+        "deployment": {
+          "requestedFor": "#{Release.Deployment.RequestedFor}#",
+          "triggerType": "#{Release.Reason}#"
+        }
+      }
+    }
+  }
+}

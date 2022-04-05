@@ -1,0 +1,128 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "infra": {
+      "type": "object",
+      "metadata": {
+        "description": "Provide the object that contains all info about the common infrastructure."
+      }
+    },
+    "releaseInfo": {
+      "type": "object",
+      "metadata": {
+        "description": "Provide info about the release that deployed this resource."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for all resources."
+      }
+    },
+    "secondaryLocation": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Secondary location for all resources."
+      }
+    }
+  },
+  "variables": {
+    "cosmosDbName": "[concat(parameters('infra').environment.resourcePrefix, '-cosmosdb')]",
+    "comsosDbResourceId": "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosDbName'))]",
+    "masterSecretName": "cosmosDb-master-secret",
+    "keyVaultMasterSecretName": "[concat(parameters('infra').secrets.keyVault.name,'/', variables('masterSecretName'))]",
+    "connectionStringSecretName": "cosmosDb-connectionstring-secret",
+    "keyVaultConnectionStringSecretName": "[concat(parameters('infra').secrets.keyVault.name,'/', variables('connectionStringSecretName'))]",
+    "nonGeoRedundantLocations": [
+      {
+        "locationName": "[parameters('location')]",
+        "failoverPriority": 0,
+        "isZoneRedundant": false
+      }
+    ],
+    "geoRedundantLocations": [
+      {
+        "locationName": "[parameters('location')]",
+        "failoverPriority": 0,
+        "isZoneRedundant": false
+      },
+      {
+        "locationName": "[parameters('secondaryLocation')]",
+        "failoverPriority": 1,
+        "isZoneRedundant": false
+      }
+    ]
+  },
+  "resources": [
+    {
+      "type": "Microsoft.DocumentDB/databaseAccounts",
+      "apiVersion": "2019-08-01",
+      "name": "[variables('cosmosDbName')]",
+      "location": "[parameters('location')]",
+      "tags": {
+        "defaultExperience": "[parameters('infra').cosmosDb.api]",
+        "hidden-cosmos-mmspecial": "",
+        "displayName": "[variables('cosmosDbName')]",
+        "releaseName": "[parameters('releaseInfo').release.name]",
+        "createdBy": "[parameters('releaseInfo').release.url]",
+        "triggeredBy": "[parameters('releaseInfo').deployment.requestedFor]",
+        "triggerType": "[parameters('releaseInfo').deployment.triggerType]"
+      },
+      "kind": "[parameters('infra').cosmosDb.kind]",
+      "properties": {
+        "enableAutomaticFailover": "[parameters('infra').cosmosDb.automaticFailover]",
+        "enableMultipleWriteLocations": "[parameters('infra').cosmosDb.multipleWriteLocations]",
+        "isVirtualNetworkFilterEnabled": false,
+        "virtualNetworkRules": [],
+        "disableKeyBasedMetadataWriteAccess": false,
+        "databaseAccountOfferType": "[parameters('infra').cosmosDb.sku]",
+        "consistencyPolicy": {
+          "defaultConsistencyLevel": "Session",
+          "maxIntervalInSeconds": 5,
+          "maxStalenessPrefix": 100
+        },
+        "locations": "[if(greater(length(parameters('secondaryLocation')),0), variables('geoRedundantLocations'), variables('nonGeoRedundantLocations'))]",
+        "capabilities": []
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "name": "[variables('keyVaultMasterSecretName')]",
+      "apiVersion": "2016-10-01",
+      "properties": {
+        "contentType": "text/plain",
+        "value": "[listKeys(variables('comsosDbResourceId'), '2019-08-01').primaryMasterKey]"
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "name": "[variables('keyVaultConnectionStringSecretName')]",
+      "apiVersion": "2016-10-01",
+      "properties": {
+        "contentType": "text/plain",
+        "value": "[concat('AccountEndpoint=https://', variables('cosmosDbName'), '.documents.azure.com:443/;AccountKey=', listKeys(variables('comsosDbResourceId'), '2019-08-01').primaryMasterKey, ';')]"
+      }
+    }
+  ],
+  "outputs": {
+    "Infra.CosmosDb.Name": {
+      "type": "string",
+      "value": "[variables('cosmosDbName')]"
+    },
+    "Infra.CosmosDb.Id": {
+      "type": "string",
+      "value": "[variables('comsosDbResourceId')]"
+    },
+    "Infra.CosmosDb.MasterSecret.Name": {
+      "type": "string",
+      "value": "[variables('masterSecretName')]"
+    },
+    "Infra.CosmosDb.ConnectionString.Secret.Name": {
+      "type": "string",
+      "value": "[variables('connectionStringSecretName')]"
+    }
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "infra": {
+      "type": "object",
+      "metadata": {
+        "description": "Provide the object that contains all info about the common infrastructure."
+      }
+    },
+    "releaseInfo": {
+      "type": "object",
+      "metadata": {
+        "description": "Provide info about the release that deployed this resource."
+      }
+    },
+    "location": {
+      "defaultValue": "[resourceGroup().location]",
+      "type": "string",
+      "metadata": {
+        "description": "Provide the location for the Azure resource.  Stick to the default value, which is the same location as the Resource Group, unless you have a specific reason."
+      }
+    }
+  },
+  "variables": {
+    "containerRegistryName": "[concat(replace(parameters('infra').environment.resourcePrefix, '-', ''), 'cr')]",
+    "containerRegistryResourceId": "[resourceId('Microsoft.ContainerRegistry/registries', variables('containerRegistryName'))]"
+  },
+  "resources": [
+    {
+      "name": "[variables('containerRegistryName')]",
+      "type": "Microsoft.ContainerRegistry/registries",
+      "apiVersion": "2019-05-01",
+      "location": "[parameters('location')]",
+      "comments": "Container registry for storing docker images",
+      "tags": {
+        "displayName": "[variables('containerRegistryName')]",
+        "releaseName": "[parameters('releaseInfo').release.name]",
+        "createdBy": "[parameters('releaseInfo').release.url]",
+        "triggeredBy": "[parameters('releaseInfo').deployment.requestedFor]",
+        "triggerType": "[parameters('releaseInfo').deployment.triggerType]"
+      },
+      "sku": {
+        "name": "[parameters('infra').containerRegistry.sku]",
+        "tier": "[parameters('infra').containerRegistry.sku]"
+      },
+      "properties": {
+        "adminUserEnabled": "[parameters('infra').containerRegistry.adminUserEnabled]"
+      }
+    }
+  ],
+  "outputs": {
+    "Infra.ContainerRegistry.LoginServer": {
+      "value": "[reference(resourceId('Microsoft.ContainerRegistry/registries',variables('containerRegistryName')),'2019-05-01').loginServer]",
+      "type": "string"
+    },
+    "Infra.ContainerRegistry.Name": {
+      "value": "[variables('containerRegistryName')]",
+      "type": "string"
+    }
+  }
+}
