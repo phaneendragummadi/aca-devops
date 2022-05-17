@@ -350,3 +350,5 @@ MigrationBackup/
 .ionide/
 /src/Application/DevOps.App/Properties/ServiceDependencies/webApp-q3r35jhphifgc - Zip Deploy
 /src/Application/DevOps.App/Properties
+/src/Application/Arcus.Demo.WebAPI/Properties/ServiceDependencies/ArcusDemoWebAPI - Zip Deploy
+/src/Application/Arcus.Demo.WebAPI/Properties/ServiceDependencies
