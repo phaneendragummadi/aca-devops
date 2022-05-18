@@ -69,7 +69,7 @@ stages:
     - task: UseDotNet@2 
       displayName: "Use .NET SDK $(Api.SDK)"
       inputs:
-        version: $(Api.SDK)
+        version: '$(Api.SDK)'
         packageType: sdk 
     - task: DotNetCoreCLI@2
       displayName: 'Restore Dependencies'
