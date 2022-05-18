@@ -1,0 +1,39 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "StorageAccountTableName": {
+            "value": "#{StorageAccount.TableName}#"
+          },
+          "Application.Name": {
+            "value": "#{Api.Name}#"
+          },
+          "Application.Environment": {
+            "value": "#{App.Environment.Code}#"
+          },
+          "Application.Version": {
+            "value": "#{Artifact.Version}#"
+          },
+          "Keyvault.SecretName": {
+            "value": "#{Keyvault.SecretName}#"
+          },
+          "Appication.LinuxFxVersion": {
+            "value": "#{Api.DotnetVersion}#"
+          },
+          "Release.Name": {
+            "value": "#{Release.ReleaseName}#"
+          },
+          "Release.RequestedFor": {
+            "value": "#{Release.Deployment.RequestedFor}#"
+          },
+          "Release.SourceCodeBranch": {
+            "value": "#{Release.SourceCodeBranch}#"
+          },
+          "Release.TriggerType": {
+            "value": "#{Release.Reason}#"
+          },
+          "Release.Url": {
+            "value": "#{Release.ReleaseWebUrl}#"
+          }
+    }
+}

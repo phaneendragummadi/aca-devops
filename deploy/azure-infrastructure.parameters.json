@@ -2,9 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-08-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "Storage.SkuName": {
-      "value": "#{Storage.SkuName}#"
-    },
     "StorageAccountTableName": {
       "value": "#{StorageAccount.TableName}#"
     },
@@ -13,9 +10,6 @@
     },
     "Application.Environment": {
       "value": "#{App.Environment.Code}#"
-    },
-    "Appication.LinuxFxVersion": {
-      "value": "#{Api.DotnetVersion}#"
     },
     "Application.Version": {
       "value": "#{Artifact.Version}#"
@@ -38,14 +32,11 @@
     "AppSvcPlan.SkuName": {
       "value": "#{AppSvcPlan.SkuName}#"
     },
-    "Keyvault.SkuName": {
-      "value": "#{Keyvault.SkuName}#"
-    },
-    "Keyvault.ObjectId": {
-      "value": "#{Release.ObjectId}#"
-    },
-    "Keyvault.TenantId": {
+    "KeyvaultSecretWriter.TenantId": {
       "value": "#{Release.TenantId}#"
+    },
+    "KeyvaultSecretWriter.ObjectId": {
+      "value": "#{Release.ObjectId}#"
     },
     "Keyvault.SecretName": {
       "value": "#{Keyvault.SecretName}#"

@@ -1,0 +1,143 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+            "StorageAccountTableName": {
+            "type": "String",
+            "defaultValue": "devwelabappstorage"
+            },
+            "Application.Name": {
+            "type": "String",
+            "defaultValue": "dev-we-lab-app"
+            },
+            "Application.Environment": {
+            "type": "String",
+            "defaultValue": "dev"
+            },
+            "Application.Version": {
+            "type": "String",
+            "defaultValue": "1.0.0"
+             },
+            "Keyvault.SecretName": {
+                "type": "String",
+                "defaultValue": "EncryptionKey",
+                "metadata": {
+                    "description": "Specifies the name of the secret that you want to put in the Apps Settings."
+                }
+            },
+             "Appication.LinuxFxVersion": {
+                "type": "string",
+                "defaultValue": "DOTNETCORE|6.0",
+                "metadata": {
+                    "description": "The Runtime stack of current web app"
+                }
+            },
+            "Release.Name": {
+            "type": "String",
+            "defaultValue": "1.0.0-001"
+            },
+            "Release.RequestedFor": {
+            "type": "String",
+            "defaultValue": "Helena Coppieters"
+            },
+            "Release.SourceCodeBranch": {
+            "type": "String",
+            "defaultValue": "refs/heads/lab-devops"
+            },
+            "Release.TriggerType": {
+            "type": "String",
+            "defaultValue": "Manual"
+            },
+            "Release.Url": {
+            "type": "String",
+            "defaultValue" : "https://dev.azure.com/codit/Training/_build/results?buildId=xxxxx&view=results"
+            }
+    },
+    "variables": {
+        "AppServicePlanName": "[concat(parameters('Application.Name'), 'Plan')]",
+        "AppServiceName": "[parameters('Application.Name')]",
+        "KeyVaultName": "[concat(parameters('Application.Name'), '-vault')]",
+        "StorageAccountName": "[concat(tolower(replace(parameters('Application.Name'),'-','')), 'storage')]",
+        "StorageAccountResourceId": "[resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName'))]",
+        "Tags": {
+            "environment": "[parameters('Application.Environment')]",
+            "version": "[parameters('Application.Version')]",
+            "releaseName": "[parameters('Release.Name')]",
+            "createdBy": "[parameters('Release.Url')]",
+            "branch": "[parameters('Release.SourceCodeBranch')]",
+            "triggeredBy": "[parameters('Release.RequestedFor')]",
+            "triggerType": "[parameters('Release.TriggerType')]"
+      }  
+    },
+    "resources": [
+              {
+        "type": "Microsoft.Resources/tags",
+        "apiVersion": "2019-10-01",
+        "name": "default",
+        "dependsOn": [],
+        "properties": {
+          "tags": "[variables('Tags')]"
+        }
+       },
+       {
+            "name": "[variables('AppServicePlanName')]",
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2020-12-01",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "B1",
+                "capacity": 1
+            },
+            "tags": "[variables('Tags')]",
+            "properties": {
+                "reserved": true
+            }
+        },
+        {
+            "name": "[variables('AppServiceName')]",
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2021-03-01",
+            "kind": "app,linux",
+            "location": "[resourceGroup().location]",
+            "tags": "[variables('Tags')]",
+            "identity": {
+            "type": "SystemAssigned"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]"
+            ],
+            "properties": {
+                "enabled": true,
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
+                "reserved": true,
+                "siteConfig": {
+                    "numberOfWorkers": 1,
+                    "netFrameworkVersion": "v4.0",
+                    "linuxFxVersion": "[parameters('Appication.LinuxFxVersion')]",
+                     "connectionStrings":[
+                        {
+                            "name": "StorageAccount.ConnectionString",
+                            "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountResourceId'), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value, ';EndpointSuffix=core.windows.net')]"
+                        }
+                    ],                   
+                    "appSettings": [
+                        {
+                            "name": "StorageAccount.TableName",
+                            "value": "[parameters('StorageAccountTableName')]"
+                        },
+                        {
+                            "name": "SecretName",
+                            "value": "[parameters('Keyvault.SecretName')]"
+                        },
+                        {
+                            "name": "VaultUri",
+                            "value": "[concat('https://',variables('KeyVaultName'),'.vault.azure.net/')]"
+                        }
+                        ]                
+                },
+                 "keyVaultReferenceIdentity": "SystemAssigned"
+            }
+        }
+    ],
+    "outputs": {}
+}

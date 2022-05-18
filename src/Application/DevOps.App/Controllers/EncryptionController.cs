@@ -76,7 +76,8 @@ namespace DevOps.App.Controllers
         {
             try
             {
-                string secretvalue = await GetKeyVaultSecretAsync("EncryptionKey");
+                string secretName = _configuration["SecretName"];
+                string secretvalue = await GetKeyVaultSecretAsync(secretName);
                 var encryptor = new Encryptor(secretvalue);
                 var encryptedText = encryptor.Encrypt(text);
 
@@ -102,10 +103,10 @@ namespace DevOps.App.Controllers
             {
                 var tableStorageRepository = new EncryptedTableStorageRepository(_configuration);
                 var entity = await tableStorageRepository.GetAsync();
-
-                string secretvalue = await GetKeyVaultSecretAsync("EncryptionKey");
+                string secretName = _configuration["SecretName"];
+                string secretvalue = await GetKeyVaultSecretAsync(secretName);
                 var encryptor = new Encryptor(secretvalue);
-                var decryptedText = encryptor.Decrypt(entity[encryptionKey].ToString());
+                var decryptedText = encryptor.Decrypt((string)entity[encryptionKey]);
 
                 return Ok(decryptedText);
             }
