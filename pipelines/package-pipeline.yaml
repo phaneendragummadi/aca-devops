@@ -39,9 +39,12 @@ variables:
   value: 'DevOps.App.sln'
 - name: appName
   value: 'DevOps.App'
-  dotNetFramework: 'net6.0'
-  dotNetVersion: '6.0.x'
-  targetRuntime: 'linux-x64'
+- name: dotNetFramework
+  value: 'net6.0'
+- name: dotNetVersion
+  value: '6.0.x'
+- name: targetRuntime
+  value: 'linux-x64'
 
 pool:
   vmImage: $(vmImage)
