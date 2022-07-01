@@ -58,11 +58,18 @@ steps:
     deploymentMode: 'Incremental'
     deploymentOutputs: 'ArmOutputs'
  # Deploy web app
-- task: AzureRmWebAppDeployment@4
-  displayName: 'Deploy App'
+ #Publish it to the Azure App Service
+- task: AzureWebApp@1
   inputs:
-    azureSubscription: '$(Azure.ServiceConnection.Name)'
     appType: webAppLinux
-    WebAppName: '$(Api.Name)'
-    RuntimeStack: '$(Api.DotnetVersion)'
-    packageForLinux: '$(Pipeline.Workspace)/**/*.zip'
+    azureSubscription: $(Azure.ServiceConnection.Name) #this is the name of the SPN
+    appName: $(Api.Name) #App Service's unique name
+    package: $(Pipeline.Workspace)/**/*.zip
+#- task: AzureRmWebAppDeployment@4
+#  displayName: 'Deploy App'
+#  inputs:
+#    azureSubscription: '$(Azure.ServiceConnection.Name)'
+#    appType: webAppLinux
+#    WebAppName: '$(Api.Name)'
+#    RuntimeStack: '$(Api.DotnetVersion)'
+#    packageForLinux: '$(Pipeline.Workspace)/**/*.zip'
