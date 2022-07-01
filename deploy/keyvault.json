@@ -1,0 +1,98 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vaults_dev_we_lab_app_vault_name": {
+            "defaultValue": "dev-we-lab-app-vault",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.KeyVault/vaults",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[parameters('vaults_dev_we_lab_app_vault_name')]",
+            "location": "westeurope",
+            "tags": {
+                "createdBy": "https://dev.azure.com/codit/Training/_build/results?buildId=61894&view=results",
+                "releaseName": "1.0.55-001",
+                "triggerType": "Manual",
+                "branch": "refs/heads/lab-devops",
+                "version": "1.0.55",
+                "environment": "dev",
+                "triggeredBy": "Helena Coppieters"
+            },
+            "properties": {
+                "sku": {
+                    "family": "A",
+                    "name": "standard"
+                },
+                "tenantId": "7517bc42-bcf8-4916-a677-b5753051f846",
+                "accessPolicies": [
+                    {
+                        "tenantId": "7517bc42-bcf8-4916-a677-b5753051f846",
+                        "objectId": "93054fe9-1538-442c-96fd-2040f61f3a99",
+                        "permissions": {
+                            "keys": [],
+                            "secrets": [
+                                "Get",
+                                "List",
+                                "Set",
+                                "Delete",
+                                "Recover",
+                                "Backup",
+                                "Restore"
+                            ],
+                            "certificates": [],
+                            "storage": []
+                        }
+                    },
+                    {
+                        "tenantId": "7517bc42-bcf8-4916-a677-b5753051f846",
+                        "objectId": "0d876cc9-1767-4fc7-b562-1d3d31671c8f",
+                        "permissions": {
+                            "keys": [
+                                "Get"
+                            ],
+                            "secrets": [
+                                "Get"
+                            ],
+                            "certificates": [],
+                            "storage": []
+                        }
+                    }
+                ],
+                "enabledForDeployment": false,
+                "enabledForDiskEncryption": false,
+                "enabledForTemplateDeployment": true,
+                "vaultUri": "[concat('https://', parameters('vaults_dev_we_lab_app_vault_name'), '.vault.azure.net/')]",
+                "provisioningState": "Succeeded",
+                "publicNetworkAccess": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.KeyVault/vaults/secrets",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('vaults_dev_we_lab_app_vault_name'), '/EncryptionKey')]",
+            "location": "westeurope",
+            "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_dev_we_lab_app_vault_name'))]"
+            ],
+            "tags": {
+                "environment": "dev",
+                "version": "1.0.55",
+                "releaseName": "1.0.55-001",
+                "createdBy": "https://dev.azure.com/codit/Training/_build/results?buildId=61894&view=results",
+                "branch": "refs/heads/lab-devops",
+                "triggeredBy": "Helena Coppieters",
+                "triggerType": "Manual"
+            },
+            "properties": {
+                "attributes": {
+                    "enabled": true
+                }
+            }
+        }
+    ]
+}
