@@ -111,7 +111,7 @@ stages:
       inputs:
         command: publish
         publishWebProjects: True
-        arguments: '--configuration $(BuildConfiguration) --framework $(dotNetFramework) --runtime $(targetRuntime) --self-contained --output $(Build.ArtifactStagingDirectory)'
+        arguments: '--configuration $(BuildConfiguration) --framework $(dotNetFramework) --runtime $(targetRuntime) --self-contained --output $(System.DefaultWorkingDirectory)/publish_output'
         zipAfterPublish: True
     #- task: DotNetCoreCLI@2
     #  displayName: Publish
@@ -121,14 +121,14 @@ stages:
     #      $(workingDirectory)/$(appName)/$(appName).csproj
     #    arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration $(buildConfiguration) -r linux-x64 
     # Package the file and uploads them as an artifact of the build
-    #- task: ArchiveFiles@2
-    #  displayName: 'Archive files'
-    #  inputs:
-    #    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/publish_output'
-    #    includeRootFolder: false
-    #    archiveType: zip
-    #    archiveFile: $(Build.ArtifactStagingDirectory)/artifact/package/$(Build.BuildId).zip
-    #    replaceExistingArchive: true 
+    - task: ArchiveFiles@2
+      displayName: 'Archive files'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/publish_output'
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/artifact/package/$(Build.BuildId).zip
+        replaceExistingArchive: true 
 
     # Publish
     - task: CopyFiles@2
