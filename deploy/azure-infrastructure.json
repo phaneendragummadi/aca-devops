@@ -166,7 +166,7 @@
             "connectionStrings": [
               {
                 "name": "StorageAccount.ConnectionString",
-                 "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'),';AccountKey=', listKeys(variables('StorageAccountResourceId'), '2019-06-01').key1)]"
+                 "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'),';AccountKey=', listKeys(variables('StorageAccountResourceId'), '2019-06-01').keys[0].value)]"
                }
             ],
             "appSettings": [

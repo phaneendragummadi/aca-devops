@@ -104,7 +104,7 @@ resource AppServiceName 'Microsoft.Web/sites@2020-06-01' = {
       connectionStrings: [
         {
           name: 'StorageAccount.ConnectionString'
-          connectionString: 'DefaultEndpointsProtocol=https;AccountName=${StorageAccountName_var};AccountKey=${listKeys(StorageAccountResourceId, '2019-06-01').key1}'
+          connectionString: 'DefaultEndpointsProtocol=https;AccountName=${StorageAccountName_var};AccountKey=${listKeys(StorageAccountResourceId, '2019-06-01').keys[0].value}'
         }
       ]
       appSettings: [
