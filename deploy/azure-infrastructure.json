@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "Storage.SkuName": {
-      "defaultValue": 0,
+      "defaultValue": "Standard_LRS",
       "allowedValues": [
         "Standard_LRS",
         "Standard_GRS",
@@ -40,7 +40,7 @@
       "type": "String"
     },
     "AppSvcPlan.SkuName": {
-      "defaultValue": "F1",
+      "defaultValue": "D1",
       "allowedValues": [
         "F1",
         "D1",
