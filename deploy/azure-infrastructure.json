@@ -151,12 +151,14 @@
         "name": "[variables('AppServiceName')]",
         "location": "[resourceGroup().location]",
         "dependsOn": [
-          "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]"
+          "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
+          "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
         ],
         "tags": "[variables('Tags')]",
         "identity": {
           "type": "SystemAssigned"
         },
+        "kind": "app",
         "properties": {
           "serverFarmId": "[resourceId('Microsoft.Web/serverFarms', variables('AppServicePlanName'))]",
           "siteConfig": {
@@ -164,8 +166,8 @@
             "connectionStrings": [
               {
                 "name": "StorageAccount.ConnectionString",
-                "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountResourceId'), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value, ';EndpointSuffix=core.windows.net')]"
-              }
+                 "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'),';AccountKey=', listKeys(variables('StorageAccountResourceId'), '2019-06-01').key1)]"
+               }
             ],
             "appSettings": [
               {

@@ -96,6 +96,7 @@ resource AppServiceName 'Microsoft.Web/sites@2020-06-01' = {
   identity: {
     type: 'SystemAssigned'
   }
+  kind: 'app'
   properties: {
     serverFarmId: AppServicePlanName.id
     siteConfig: {
@@ -103,7 +104,7 @@ resource AppServiceName 'Microsoft.Web/sites@2020-06-01' = {
       connectionStrings: [
         {
           name: 'StorageAccount.ConnectionString'
-          connectionString: 'DefaultEndpointsProtocol=https;AccountName=${StorageAccountName_var};AccountKey=${listKeys(StorageAccountResourceId, providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value};EndpointSuffix=core.windows.net'
+          connectionString: 'DefaultEndpointsProtocol=https;AccountName=${StorageAccountName_var};AccountKey=${listKeys(StorageAccountResourceId, '2019-06-01').key1}'
         }
       ]
       appSettings: [
