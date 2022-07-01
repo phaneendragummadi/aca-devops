@@ -3,14 +3,11 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "Storage.SkuName": {
+      "type": "String",
       "defaultValue": "Standard_LRS",
-      "allowedValues": [
-        "Standard_LRS",
-        "Standard_GRS",
-        "Standard_ZRS",
-        "Premium_LRS"
-      ],
-      "type": "String"
+      "metadata": {
+        "description": "Provide the pricing tier of the key vault."
+      }
     },
     "StorageAccountTableName": {
       "type": "String"
@@ -47,12 +44,7 @@
       "type": "String"
     },
     "AppSvcPlan.SkuName": {
-      "defaultValue": "D1",
-      "allowedValues": [
-        "F1",
-        "D1",
-        "B1"
-      ],
+      "defaultValue": "B1",
       "type": "String",
       "metadata": {
         "description": "Provide the pricing tier of the App Service Plan."
@@ -60,10 +52,6 @@
     },
     "Keyvault.SkuName": {
       "defaultValue": "Standard",
-      "allowedValues": [
-        "Standard",
-        "Premium"
-      ],
       "type": "String",
       "metadata": {
         "description": "Provide the pricing tier of the key vault."
@@ -90,13 +78,10 @@
   },
     "variables": {
       "KeyVaultName": "[concat(parameters('Application.Name'), '-vault')]",
-      "KeyVaultResourceId": "[resourceId('Microsoft.KeyVault/vaults', variables('KeyVaultName'))]",
       "AppServicePlanName": "[concat(parameters('Application.Name'), 'Plan')]",
       "AppServiceName": "[parameters('Application.Name')]",
-      "AppServiceResourceId": "[resourceId('Microsoft.Web/sites', variables('AppServiceName'))]",
       "StorageAccountName": "[concat(tolower(replace(parameters('Application.Name'),'-','')), 'storage')]",
       "StorageAccountResourceId": "[resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName'))]",
-      "ApiVersion": "[providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]]",
       "Tags": {
         "environment": "[parameters('Application.Environment')]",
         "version": "[parameters('Application.Version')]",
@@ -124,6 +109,7 @@
         "location": "[resourceGroup().location]",
         "tags": "[variables('Tags')]",
         "sku": {
+          "tier": "Standard",
           "name": "[parameters('Storage.SkuName')]"
         },
         "kind": "StorageV2",
