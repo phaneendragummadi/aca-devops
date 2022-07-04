@@ -34,7 +34,7 @@ stages:
     - task: CopyFiles@2
       displayName: 'Copy scripts'
       inputs:
-        contents: '*.json'
+        contents: '**/deploy/*.json'
         targetFolder: '$(Build.ArtifactStagingDirectory)/arm'
     - task: PublishPipelineArtifact@1
       inputs:
