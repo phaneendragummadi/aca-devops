@@ -27,7 +27,7 @@
       "defaultValue": 0
     },
     "keyvault_name": {
-            "defaultValue": "devops-demo-dev-we-keyvault",
+            "defaultValue": "demo-arcus-keyvault",
             "type": "String"
         }
   },
