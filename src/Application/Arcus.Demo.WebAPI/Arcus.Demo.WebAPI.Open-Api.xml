@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Arcus.Demo.WebAPI</name>
+    </assembly>
+    <members>
+        <member name="T:Arcus.Demo.WebAPI.Controllers.HealthController">
+            <summary>
+            API endpoint to check the health of the application.
+            </summary>
+        </member>
+        <member name="M:Arcus.Demo.WebAPI.Controllers.HealthController.#ctor(Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Arcus.Demo.WebAPI.Controllers.HealthController"/> class.
+            </summary>
+            <param name="healthCheckService">The service to provide the health of the API application.</param>
+        </member>
+        <member name="M:Arcus.Demo.WebAPI.Controllers.HealthController.Get">
+            <summary>
+                Get Health
+            </summary>
+            <remarks>Provides an indication about the health of the API.</remarks>
+            <response code="200">API is healthy</response>
+            <response code="503">API is unhealthy or in degraded state</response>
+        </member>
+        <member name="T:Arcus.Demo.WebAPI.ExampleProviders.HealthReportResponseExampleProvider">
+            <summary>
+            Generates an example response object for the health API endpoint that will be included in the OpenAPI documentation.
+            </summary>
+        </member>
+        <member name="M:Arcus.Demo.WebAPI.ExampleProviders.HealthReportResponseExampleProvider.GetExamples">
+            <summary>
+            Build the <see cref="T:Arcus.Demo.WebAPI.Models.ApiHealthReport"/> response example
+            </summary>
+            <returns>A populated <see cref="T:Arcus.Demo.WebAPI.Models.ApiHealthReport"/> object that acts as the example included in the OpenAPI documentation.</returns>
+        </member>
+        <member name="T:Arcus.Demo.WebAPI.Models.ApiHealthReport">
+            <summary>
+            Represents an alternative <see cref="T:Microsoft.Extensions.Diagnostics.HealthChecks.HealthReport"/> model without the exception details so it can be exposed safely with OpenAPI.
+            </summary>
+            <remarks>
+                This model should not be used within the domain and is just available for the serialization between trust boundaries.
+                Use the <see cref="M:Arcus.Demo.WebAPI.Models.ApiHealthReport.FromHealthReport(Microsoft.Extensions.Diagnostics.HealthChecks.HealthReport)"/> and <see cref="M:Arcus.Demo.WebAPI.Models.ApiHealthReport.ToHealthReport(Arcus.Demo.WebAPI.Models.ApiHealthReport)"/> to switch between the two.
+            </remarks>
+        </member>
+        <member name="P:Arcus.Demo.WebAPI.Models.ApiHealthReport.Entries">
+            <summary>
+            Gets a dictionary containing the results from each health check.
+            </summary>
+        </member>
+        <member name="P:Arcus.Demo.WebAPI.Models.ApiHealthReport.Status">
+            <summary>
+            Gets a <see cref="T:Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus"/> representing the aggregate status of all the health checks.
+            The value of <see cref="P:Arcus.Demo.WebAPI.Models.ApiHealthReport.Status"/> will be the most severe status reported by a health check.
+            If no checks were executed, the value is always <see cref="F:Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Healthy"/>.
+            </summary>
+        </member>
+        <member name="P:Arcus.Demo.WebAPI.Models.ApiHealthReport.TotalDuration">
+            <summary>
+            Gets the time the health check service took to execute.
+            </summary>
+        </member>
+        <member name="M:Arcus.Demo.WebAPI.Models.ApiHealthReport.FromHealthReport(Microsoft.Extensions.Diagnostics.HealthChecks.HealthReport)">
+            <summary>
+            Creates a JSON data-transfer object from the given <paramref name="report"/>.
+            </summary>
+            <param name="report">The finalized health report.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when the <paramref name="report"/> is <c>null</c>.</exception>
+        </member>
+        <member name="M:Arcus.Demo.WebAPI.Models.ApiHealthReport.ToHealthReport(Arcus.Demo.WebAPI.Models.ApiHealthReport)">
+            <summary>
+            Creates a JSON data-transfer object from the given <paramref name="report"/>.
+            </summary>
+            <param name="report">The finalized health report.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when the <paramref name="report"/> is <c>null</c>.</exception>
+        </member>
+        <member name="T:Arcus.Demo.WebAPI.Models.ApiHealthReportEntry">
+            <summary>
+            Represents an entry in a <see cref="T:Arcus.Demo.WebAPI.Models.ApiHealthReport"/>.
+            Corresponds to the result of a single <see cref="T:Microsoft.Extensions.Diagnostics.HealthChecks.IHealthCheck"/>.
+            </summary>
+        </member>
+        <member name="P:Arcus.Demo.WebAPI.Models.ApiHealthReportEntry.Data">
+            <summary>
+            Gets additional key-value pairs describing the health of the component.
+            </summary>
+        </member>
+        <member name="P:Arcus.Demo.WebAPI.Models.ApiHealthReportEntry.Description">
+            <summary>
+            Gets a human-readable description of the status of the component that was checked.
+            </summary>
+        </member>
+        <member name="P:Arcus.Demo.WebAPI.Models.ApiHealthReportEntry.Duration">
+            <summary>
+            Gets the health check execution duration.
+            </summary>
+        </member>
+        <member name="P:Arcus.Demo.WebAPI.Models.ApiHealthReportEntry.Status">
+            <summary>
+            Gets the health status of the component that was checked.
+            </summary>
+        </member>
+        <member name="P:Arcus.Demo.WebAPI.Models.ApiHealthReportEntry.Tags">
+            <summary>
+            Gets the tags associated with the health check.
+            </summary>
+        </member>
+        <member name="M:Arcus.Demo.WebAPI.Models.ApiHealthReportEntry.FromHealthReportEntry(Microsoft.Extensions.Diagnostics.HealthChecks.HealthReportEntry)">
+            <summary>
+            Creates a JSON data-transfer object from the given Microsoft <see cref="T:Microsoft.Extensions.Diagnostics.HealthChecks.HealthReportEntry"/> <paramref name="entry"/>.
+            </summary>
+            <param name="entry">The entry of the created health report, representing a single <see cref="T:Microsoft.Extensions.Diagnostics.HealthChecks.IHealthCheck"/> with exception details.</param>
+        </member>
+        <member name="M:Arcus.Demo.WebAPI.Models.ApiHealthReportEntry.ToHealthReportEntry(Arcus.Demo.WebAPI.Models.ApiHealthReportEntry)">
+            <summary>
+            Creates a Microsoft <see cref="T:Microsoft.Extensions.Diagnostics.HealthChecks.HealthReportEntry"/> from the given JSON data-transfer object <paramref name="entry"/>.
+            </summary>
+            <param name="entry">The JSON data-transfer object, representing a single <see cref="T:Microsoft.Extensions.Diagnostics.HealthChecks.IHealthCheck"/> without the exception details.</param>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile>Arcus.Demo.WebAPI.Open-Api.xml</DocumentationFile>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <UserSecretsId>ee2c04c7-7703-49c8-bfdc-a71bf992c028</UserSecretsId>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <Content Update="appsettings.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="appsettings.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Arcus.Observability.Telemetry.AspNetCore" Version="2.5.0" />
+    <PackageReference Include="Arcus.Observability.Telemetry.Core" Version="2.5.0" />
+    <PackageReference Include="Arcus.Observability.Telemetry.Serilog.Sinks.ApplicationInsights" Version="2.5.0" />
+    <PackageReference Include="Arcus.Security.Core" Version="1.7.0" />
+    <PackageReference Include="Arcus.Security.Providers.AzureKeyVault" Version="1.7.0" />
+    <PackageReference Include="Arcus.WebApi.Hosting" Version="1.5.0" />
+    <PackageReference Include="Arcus.WebApi.Logging" Version="1.5.0" />
+    <PackageReference Include="Guard.NET" Version="2.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.16.1" />
+    <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.3" />
+  </ItemGroup>
+
+</Project>
