@@ -71,7 +71,7 @@ stages:
         resourceGroupName: 'aca-devops'
         location: 'West Europe'
         templateLocation: 'Linked artifact'
-        csmFile: '$(Pipeline.Workspace)/arm/azuredeploy-arcusapi.json'
+        csmFile: '$(Pipeline.Workspace)/arm/**/azuredeploy-arcusapi.json'
         deploymentMode: 'Incremental'
     - task: AzureWebApp@1
       inputs:
