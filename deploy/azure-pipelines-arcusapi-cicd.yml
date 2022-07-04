@@ -65,17 +65,17 @@ stages:
     - task: AzureResourceManagerTemplateDeployment@3
       inputs:
         deploymentScope: 'Resource Group'
-        azureResourceManagerConnection: 'Pay-As-You-Go Dev/Test(d2b96e08-6110-47f7-bc0b-3475ac334617)'
+        azureResourceManagerConnection: 'TrainingAccountSP'
         subscriptionId: '533f6b10-3a70-4c5d-8962-8b51e839a13c'
         action: 'Create Or Update Resource Group'
-        resourceGroupName: 'devops'
+        resourceGroupName: 'aca-devops'
         location: 'West Europe'
         templateLocation: 'Linked artifact'
         csmFile: '$(Pipeline.Workspace)/arm/azuredeploy-arcusapi.json'
         deploymentMode: 'Incremental'
     - task: AzureWebApp@1
       inputs:
-        azureSubscription: 'Pay-As-You-Go Dev/Test(d2b96e08-6110-47f7-bc0b-3475ac334617)'
+        azureSubscription: 'TrainingAccountSP'
         appType: 'webAppLinux'
         appName: 'arcusapi-dev-we-demo'
         package: '$(Pipeline.Workspace)/**/*.zip'
