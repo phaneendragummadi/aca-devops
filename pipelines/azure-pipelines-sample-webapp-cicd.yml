@@ -18,7 +18,7 @@ stages:
       vmImage: 'ubuntu-latest'
     steps:
     - task: UseDotNet@2
-      displayName: 'use dotnet core cli'
+      displayName: 'use dotnet core sdk 3.1'
       inputs:
         packageType: 'sdk'
         version: '3.1.x'
@@ -32,7 +32,7 @@ stages:
         zipAfterPublish: true
 
     - task: CopyFiles@2
-      displayName: 'Copy scripts'
+      displayName: 'Copy arm templates'
       inputs:
         contents: '**/deploy/*.json'
         targetFolder: '$(Build.ArtifactStagingDirectory)/arm'
@@ -41,10 +41,10 @@ stages:
         targetPath: '$(Build.ArtifactStagingDirectory)'
         artifact: 'drop'
         publishLocation: 'pipeline'
-- stage: test
+- stage: deploy
   dependsOn: build
   jobs:
-  - job: run_test
+  - job: run_deploy
     pool:
       vmImage: 'ubuntu-latest'
     steps:

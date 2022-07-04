@@ -27,7 +27,7 @@
       "defaultValue": 0
     },
     "keyvault_name": {
-            "defaultValue": "devops-sample-we-keyvault",
+            "defaultValue": "devops-sample-keyvault",
             "type": "String"
         }
   },
