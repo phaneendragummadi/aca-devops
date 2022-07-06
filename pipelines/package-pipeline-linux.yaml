@@ -61,8 +61,6 @@ stages:
     displayName: Validate & Publish Artifact
     pool:
       vmImage: '$(vmImage)'
-    name: ${{ parameters.major }}.${{ parameters.minor }}$(rev:.r)
-
  
     # Build your app    
   - job: DotNetCore
