@@ -1,10 +1,10 @@
 variables:
   - name: Resource.Prefix
-    value: $(App.Environment.Code)-$(Region.ShortName)
+    value: $(App.Environment.Code)-$(Region.ShortName)-lab
   - name: Azure.ResourceGroup.Name
     value: aca-devops
   - name: Api.Name
-    value: $(Resource.Prefix)-devops-app
+    value: $(Resource.Prefix)-app
   - name: Api.DotnetVersion
     value: DOTNETCORE|3.1
   - name: Keyvault.Name
