@@ -63,7 +63,7 @@ stages:
           - download: 'package_build'
             artifact: 'artifact'
             displayName: Download Artifact
-          - template: ./templates/deploy-arm-template.yaml
+          - template: ./templates/deploy-arm-template-linux.yaml
             parameters:
               azureResourceManagerConnection: $(Azure.ServiceConnection.Name)
               subscriptionId: $(Azure.Subscription.Id)
