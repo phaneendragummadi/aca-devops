@@ -2,7 +2,7 @@ variables:
   - name: Resource.Prefix
     value: $(App.Environment.Code)-$(Region.ShortName)
   - name: Azure.ResourceGroup.Name
-    value: devops-introduction
+    value: aca-devops
   - name: Api.Name
     value: $(Resource.Prefix)-devops-app
   - name: Api.DotnetVersion
