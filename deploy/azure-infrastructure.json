@@ -40,11 +40,12 @@
       "type": "String"
     },
     "AppSvcPlan.SkuName": {
-      "defaultValue": "D1",
+      "defaultValue": "S1",
       "allowedValues": [
         "F1",
         "D1",
-        "B1"
+        "B1",
+        "S1"
       ],
       "type": "String",
       "metadata": {

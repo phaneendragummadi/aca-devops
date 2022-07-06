@@ -18,14 +18,14 @@
             }
         },
         "sku": {
-            "defaultValue": "F1",
+            "defaultValue": "S1",
             "type": "String",
             "metadata": {
                 "description": "The SKU of App Service Plan."
             }
         },
         "linuxFxVersion": {
-            "defaultValue": "DOTNETCORE|3.0",
+            "defaultValue": "DOTNETCORE|3.1",
             "type": "String",
             "metadata": {
                 "description": "The Runtime stack of current web app"

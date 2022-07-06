@@ -364,3 +364,6 @@ MigrationBackup/
 /src/Application/DevOps.App/Properties/serviceDependencies.dev-we-devops-app - Web Deploy4.json
 /src/Application/DevOps.App/Properties
 /src/Application/Arcus.Demo.WebAPI/Properties/ServiceDependencies
+/src/Application/DevOps.App/appsettings.local.json
+/src/Application/DevOpsSample.WebApp/Properties/ServiceDependencies/webapp-dev-we-hco - Zip Deploy
+/src/Application/DevOpsSample.WebApp/Properties/ServiceDependencies/webapp2-dev-we-hco - Zip Deploy

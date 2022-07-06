@@ -14,7 +14,7 @@ variables:
   - name: Keyvault.SecretName
     value: EncryptionKey
   - name: AppSvcPlan.SkuName
-    value: F1
+    value: S1
   - name: StorageAccount.TableName
     value: EncryptionTable
   - name: Release.ObjectId

@@ -9,10 +9,10 @@
             "value": "westeurope"
         },
         "sku": {
-            "value": "F1"
+            "value": "S1"
         },
         "linuxFxVersion": {
-            "value": "DOTNETCORE|3.0"
+            "value": "DOTNETCORE|3.1"
         }
     }
 }
