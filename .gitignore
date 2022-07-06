@@ -355,3 +355,4 @@ MigrationBackup/
 /src/Application/DevOps.App/appsettings - Tst.json
 /src/Application/Arcus.Demo.WebAPI/Properties
 /src/Application/Arcus.Demo.WebAPI/appsettings.Development.json
+/src/Application/DevOpsSample.WebApp/Properties/ServiceDependencies
