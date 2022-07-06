@@ -88,7 +88,7 @@
         "description": "Value of the secret from Key Vault."
       }
     },
-    "linuxFxVersion": {
+    "Application_LinuxFxVersion": {
       "type": "string",
       "defaultValue": "DOTNETCORE|3.1",
       "metadata": {
@@ -99,14 +99,12 @@
   "functions": [],
   "variables": {
     "KeyVaultName_var": "[format('{0}-vault', parameters('Application_Name'))]",
-    "KeyVaultResourceId": "[resourceId('Microsoft.KeyVault/vaults', variables('KeyVaultName_var'))]",
     "AppServicePlanName_var": "[format('{0}Plan', parameters('Application_Name'))]",
     "AppServiceName_var": "[parameters('Application_Name')]",
     "AppServiceResourceId": "[resourceId('Microsoft.Web/sites', variables('AppServiceName_var'))]",
     "StorageAccountName_var": "[format('{0}storage', toLower(replace(parameters('Application_Name'), '-', '')))]",
     "StorageAccountResourceId": "[resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName_var'))]",
-    "ApiVersion": "[providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]]",
-    "Tags": {
+      "Tags": {
       "environment": "[parameters('Application_Environment')]",
       "version": "[parameters('Application_Version')]",
       "releaseName": "[parameters('Release_Name')]",
@@ -179,7 +177,7 @@
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName_var'))]",
         "httpsOnly": false,
         "siteConfig": {
-          "linuxFxVersion": "[parameters('linuxFxVersion')]",
+          "linuxFxVersion": "[parameters('Application_LinuxFxVersion')]",
           "minTlsVersion": "1.2",
           "ftpsState": "FtpsOnly",
           "connectionStrings": [

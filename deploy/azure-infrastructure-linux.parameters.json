@@ -2,55 +2,55 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-08-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "Storage.SkuName": {
+    "Storage_SkuName": {
       "value": "#{Storage.SkuName}#"
     },
     "StorageAccountTableName": {
       "value": "#{StorageAccount.TableName}#"
     },
-    "Application.Name": {
+    "Application_Name": {
       "value": "#{Api.Name}#"
     },
-    "Application.Environment": {
+    "Application_Environment": {
       "value": "#{App.Environment.Code}#"
     },
-    "Appication.LinuxFxVersion": {
+    "Application_LinuxFxVersion": {
       "value": "#{Api.DotnetVersion}#"
     },
-    "Application.Version": {
+    "Application_Version": {
       "value": "#{Artifact.Version}#"
     },
-    "Release.Name": {
+    "Release_Name": {
       "value": "#{Release.ReleaseName}#"
     },
-    "Release.RequestedFor": {
+    "Release_RequestedFor": {
       "value": "#{Release.Deployment.RequestedFor}#"
     },
-    "Release.SourceCodeBranch": {
+    "Release_SourceCodeBranch": {
       "value": "#{Release.SourceCodeBranch}#"
     },
-    "Release.TriggerType": {
+    "Release_TriggerType": {
       "value": "#{Release.Reason}#"
     },
-    "Release.Url": {
+    "Release_Url": {
       "value": "#{Release.ReleaseWebUrl}#"
     },
-    "AppSvcPlan.SkuName": {
+    "AppSvcPlan_SkuName": {
       "value": "#{AppSvcPlan.SkuName}#"
     },
-    "Keyvault.SkuName": {
+    "Keyvault_SkuName": {
       "value": "#{Keyvault.SkuName}#"
     },
-    "Keyvault.ObjectId": {
+    "Keyvault_ObjectId": {
       "value": "#{Release.ObjectId}#"
     },
-    "Keyvault.TenantId": {
+    "Keyvault_TenantId": {
       "value": "#{Release.TenantId}#"
     },
-    "Keyvault.SecretName": {
+    "Keyvault_SecretName": {
       "value": "#{Keyvault.SecretName}#"
     },
-    "Keyvault.SecretValue": {
+    "Keyvault_SecretValue": {
       "reference": {
         "keyVault": {
           "id": "/subscriptions/#{Azure.Subscription.Id}#/resourceGroups/aca-devops/providers/Microsoft.KeyVault/vaults/#{Keyvault.Name}#"
