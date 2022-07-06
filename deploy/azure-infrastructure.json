@@ -48,7 +48,7 @@
     },
     "AppSvcPlan_SkuName": {
       "type": "string",
-      "defaultValue": "D1",
+      "defaultValue": "S1",
       "allowedValues": [
         "F1",
         "D1",
@@ -157,7 +157,8 @@
       "location": "[resourceGroup().location]",
       "tags": "[variables('Tags')]",
       "sku": {
-        "name": "[parameters('AppSvcPlan_SkuName')]"
+        "Name": "[parameters('AppSvcPlan_SkuName')]",
+        "Tier": "Standard"
       },
       "kind": "linux",
       "properties": {
