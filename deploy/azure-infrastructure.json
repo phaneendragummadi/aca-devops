@@ -97,7 +97,6 @@
     "AppServiceResourceId": "[resourceId('Microsoft.Web/sites', variables('AppServiceName'))]",
     "StorageAccountName": "[concat(tolower(replace(parameters('Application.Name'),'-','')), 'storage')]",
     "StorageAccountResourceId": "[resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName'))]",
-    "ApiVersion": "[providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]]",
     "Tags": {
       "environment": "[parameters('Application.Environment')]",
       "version": "[parameters('Application.Version')]",
@@ -182,7 +181,7 @@
           "connectionStrings": [
             {
               "name": "StorageAccount.ConnectionString",
-              "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountResourceId'), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value, ';EndpointSuffix=core.windows.net')]"
+              "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountResourceId'), '2019-06-01').keys[0].value, ';EndpointSuffix=core.windows.net')]"
             }
           ],
           "appSettings": [
