@@ -61,11 +61,7 @@
     },
     "Keyvault_SkuName": {
       "type": "string",
-      "defaultValue": "standard",
-      "allowedValues": [
-        "standard",
-        "premium"
-      ],
+      "defaultValue": "Standard",
       "metadata": {
         "description": "Provide the pricing tier of the key vault."
       }

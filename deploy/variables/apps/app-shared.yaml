@@ -11,7 +11,7 @@ variables:
     value: codit-academy-vault
   - name: Storage.SkuName
     value: Standard_LRS
-  - name: Keyvault.SkuName
+  - name: Keyvault_SkuName
     value: Standard
   - name: Keyvault.SecretName
     value: EncryptionKey
