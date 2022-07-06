@@ -6,7 +6,7 @@
       "value": {
         "environment": {
           "name": "dev",
-          "resourcePrefix": "arm-dev-we"
+          "resourcePrefix": "devops-we"
         }
       }
     },

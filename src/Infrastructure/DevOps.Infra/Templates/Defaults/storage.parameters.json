@@ -6,7 +6,7 @@
             "value": "westeurope"
         },
         "storageAccountName": {
-            "value": "armdevwestorage"
+            "value": "devopswestorage"
         },
         "accountType": {
             "value": "Standard_LRS"

@@ -6,7 +6,7 @@
             "value": "533f6b10-3a70-4c5d-8962-8b51e839a13c"
         },
         "name": {
-            "value": "arm-dev-we-appservice"
+            "value": "devops-we-appservice"
         },
         "location": {
             "value": "West Europe"
@@ -15,10 +15,10 @@
             "value": ""
         },
         "hostingPlanName": {
-            "value": "arm-dev-we-appserviceplan"
+            "value": "devops-we-appserviceplan"
         },
         "serverFarmResourceGroup": {
-            "value": "arm-for-dummies"
+            "value": "devops-xxx"
         },
         "alwaysOn": {
             "value": true

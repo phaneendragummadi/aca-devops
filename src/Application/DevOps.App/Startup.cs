@@ -10,7 +10,7 @@ namespace DevOps.App
 {
     public class Startup
     {
-        private const string ApiName = "Arm Introduction API";
+        private const string ApiName = "DevOps API";
 
         public Startup(IConfiguration configuration)
         {
