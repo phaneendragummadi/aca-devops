@@ -1,0 +1,82 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Release'
+  projectPath: '**/Arcus.Demo.WebAPI'
+
+stages:
+- stage: build
+  jobs:
+  - job: run_build
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: UseDotNet@2
+      displayName: 'use dotnet core sdk 6.0'
+      inputs:
+        packageType: 'sdk'
+        version: '6.0.x'
+
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'publish'
+        publishWebProjects: false
+        projects: '$(projectPath)'
+        arguments: '-r linux-x64 -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/package'
+        zipAfterPublish: true
+
+    - task: CopyFiles@2
+      displayName: 'Copy scripts'
+      inputs:
+        contents: '**/deploy/*.json'
+        targetFolder: '$(Build.ArtifactStagingDirectory)/arm'
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)'
+        artifact: 'drop'
+        publishLocation: 'pipeline'
+- stage: deploy
+  dependsOn: build
+  jobs:
+  - job: run_deploy
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+  #  - download: current
+  #    artifact: drop
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'current'
+        artifactName: 'drop'
+        path: '$(Pipeline.Workspace)'
+#    - powershell: Get-ChildItem $(Pipeline.Workspace) -Recurse
+    - task: Bash@3
+      inputs:
+         targetType: 'inline'
+         script: |
+           # Write your commands here           
+           ls -lha
+    - task: AzureResourceManagerTemplateDeployment@3
+      inputs:
+        deploymentScope: 'Resource Group'
+        azureResourceManagerConnection: 'TrainingAccountSP'
+        subscriptionId: '533f6b10-3a70-4c5d-8962-8b51e839a13c'
+        action: 'Create Or Update Resource Group'
+        resourceGroupName: 'aca-devops'
+        location: 'West Europe'
+        templateLocation: 'Linked artifact'
+        csmFile: '$(Pipeline.Workspace)/arm/**/azuredeploy-arcusapi.json'
+        deploymentMode: 'Incremental'
+    - task: AzureWebApp@1
+      inputs:
+        azureSubscription: 'TrainingAccountSP'
+        appType: 'webAppLinux'
+        appName: 'arcusapi-dev-we-demo'
+        package: '$(Pipeline.Workspace)/**/*.zip'
+        runtimeStack: 'DOTNETCORE|6.0'

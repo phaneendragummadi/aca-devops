@@ -52,7 +52,7 @@
       "tags": {
         "environment": "[parameters('infra').environment.name]",
         "department": "Codit",
-        "application": "Arm-For-Dummies",
+        "application": "DevOps",
         "component": "Storage",
         "displayName": "Storage",
         "version": "[parameters('releaseInfo').version]",

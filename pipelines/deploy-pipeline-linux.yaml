@@ -1,0 +1,165 @@
+name: $(Rev:rrr) # This is not used since we define it during the first stage
+
+pr: none
+
+trigger: none
+
+resources:
+  pipelines:
+    # Name of the pipeline resource inside this workflow. Used to reference the pipeline resources later on (e.g. download artifacts).
+  - pipeline: package_build
+    # Name of the pipeline in Azure Pipelines
+    source: 'aca-devops-linux-CI' 
+    trigger: true
+
+parameters:
+- name: loggingLevel
+  displayName: Logging Level
+  type: string
+  default: Pipeline
+  values:
+  - Pipeline
+  - Debug
+
+variables:
+- template: /deploy/variables/environments/environment-shared.yaml
+- template: /deploy/variables/release-information.yaml
+- template: /deploy/variables/apps/app-shared.yaml
+- name: Pipeline.Version
+  value: $(Artifact.Version)-$(Build.BuildNumber) 
+- name: Artifact.Version
+  value: $(resources.pipeline.package_build.runName)
+- name: VmImage
+  value: 'ubuntu-latest'
+pool:
+  vmImage: $(VmImage)
+
+stages: 
+- stage: preparation
+  displayName: 'Prepare Deployment'
+  jobs:
+    - job: version
+      displayName: Determine Version
+      steps:
+      - powershell: |
+          Write-Host "##vso[build.updatebuildnumber]$(Pipeline.Version)"
+          Write-Host "Pipeline version is '$(Pipeline.Version)'"
+        displayName: 'Change pipeline version $(Pipeline.Version)'
+- stage: deploy_development
+  displayName: 'Deploy to Development'
+  dependsOn: preparation
+  variables:
+    - template: /deploy/variables/environments/environment-dev.yaml
+    - template: /deploy/variables/apps/app-dev.yaml
+#    - group: 'DevOps-Intro-Secrets(DEV)'
+  jobs:
+  - deployment: deploy_to_dev
+    displayName: 'Deploy to DEV'
+    environment: DEV
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: 'package_build'
+            artifact: 'artifact'
+            displayName: Download Artifact
+          - template: ./templates/deploy-arm-template-linux.yaml
+            parameters:
+              azureResourceManagerConnection: $(Azure.ServiceConnection.Name)
+              subscriptionId: $(Azure.Subscription.Id)
+              resourceGroupName: $(Azure.ResourceGroup.Name)
+              location: $(Azure.ResourceGroup.Location)
+              loggingLevel: ${{ parameters.loggingLevel }}
+          - task: AzureRmWebAppDeployment@4
+            displayName: 'Deploy Web App'
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: '$(Azure.ServiceConnection.Name)'
+              appType: 'webApp'
+              WebAppName: '$(Api.Name)'
+              packageForLinux: '$(Pipeline.Workspace)/**/*.zip'
+              enableCustomDeployment: true
+              DeploymentType: 'zipDeploy'
+          
+- stage: deploy_test
+  displayName: 'Deploy to Test'
+  dependsOn: deploy_development
+  variables:
+    - template: /deploy/variables/environments/environment-tst.yaml
+    - template: /deploy/variables/apps/app-tst.yaml
+  jobs:
+  - deployment: deploy_to_tst
+    displayName: 'Deploy to TST'
+    environment: TST
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: 'package_build'
+            artifact: 'artifact'
+            displayName: Download Artifact
+          - template: ./templates/deploy-arm-template-linux.yaml
+            parameters:
+              azureResourceManagerConnection: $(Azure.ServiceConnection.Name)
+              subscriptionId: $(Azure.Subscription.Id)
+              resourceGroupName: $(Azure.ResourceGroup.Name)
+              location: $(Azure.ResourceGroup.Location)
+              loggingLevel: ${{ parameters.loggingLevel }}
+          - task: AzureRmWebAppDeployment@4
+            displayName: 'Deploy Web App'
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: '$(Azure.ServiceConnection.Name)'
+              appType: 'webApp'
+              WebAppName: '$(Api.Name)'
+              packageForLinux: '$(Pipeline.Workspace)/**/*.zip'
+              enableCustomDeployment: true
+              DeploymentType: 'zipDeploy'
+#- stage: deploy_acc
+#  displayName: 'Deploy to Acceptance'
+#  dependsOn: deploy_test
+#  variables:
+#    - template: ./variables/environments/environment-acc.yaml
+#    - template: ./variables/apps/app-acc.yaml
+#  jobs:
+#  - deployment: deploy_to_acc
+#    displayName: 'Deploy to ACC'
+#    environment: ACC
+#    strategy:
+#      runOnce:
+#        deploy:
+#          steps:
+#          - download: 'package_build'
+#            artifact: 'artifact'
+#            displayName: Download Artifact
+#          - template: ./templates/deploy-arm-template.yaml
+#            parameters:
+#              azureResourceManagerConnection: $(Azure.ServiceConnection.Name)
+#              subscriptionId: $(Azure.Subscription.Id)
+#              resourceGroupName: $(Azure.ResourceGroup.Name)
+#              location: $(Azure.ResourceGroup.Location)
+#              loggingLevel: ${{ parameters.loggingLevel }}
+#- stage: deploy_production
+#  displayName: 'Deploy to Production'
+#  dependsOn: deploy_acc
+#  variables:
+#    - template: ./variables/environments/environment-prd.yaml
+#    - template: ./variables/apps/app-prd.yaml
+#  jobs:
+#  - deployment: deploy_to_prd
+#    displayName: 'Deploy to PRD'
+#    environment: PRD
+#    strategy:
+#      runOnce:
+#        deploy:
+#          steps:
+#          - download: 'package_build'
+#            artifact: 'artifact'
+#            displayName: Download Artifact
+#          - template: ./templates/deploy-arm-template.yaml
+#            parameters:
+#              azureResourceManagerConnection: $(Azure.ServiceConnection.Name)
+#              subscriptionId: $(Azure.Subscription.Id)
+#              resourceGroupName: $(Azure.ResourceGroup.Name)
+#              location: $(Azure.ResourceGroup.Location)
+#              loggingLevel: ${{ parameters.loggingLevel }}

@@ -34,7 +34,7 @@
             "name": "[parameters('name')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "microsoft.insights/components/arm-dev-we-appservice"
+                "microsoft.insights/components/devops-we-appservice"
             ],
             "properties": {
                 "name": "[parameters('name')]",
@@ -42,7 +42,7 @@
                     "appSettings": [
                         {
                             "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                            "value": "[reference('microsoft.insights/components/arm-dev-we-appservice', '2015-05-01').InstrumentationKey]"
+                            "value": "[reference('microsoft.insights/components/devops-we-appservice', '2015-05-01').InstrumentationKey]"
                         },
                         {
                             "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
@@ -93,7 +93,7 @@
         {
             "type": "microsoft.insights/components",
             "apiVersion": "2015-05-01",
-            "name": "arm-dev-we-appservice",
+            "name": "devops-we-appservice",
             "location": "westeurope",
             "properties": {
                 "ApplicationId": "[parameters('name')]",

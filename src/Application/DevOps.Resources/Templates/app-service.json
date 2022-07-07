@@ -53,7 +53,7 @@
       "tags": {
         "environment": "[parameters('infra').environment.name]",
         "department": "Codit",
-        "application": "DevOps",
+        "application": "devops-introduction",
         "component": "App Service",
         "displayName": "App Service",
         "version": "[parameters('releaseInfo').version]",
@@ -74,14 +74,14 @@
           "tags": {
             "environment": "[parameters('infra').environment.name]",
             "department": "Codit",
-            "application": "DevOps",
+            "application": "devops-introduction",
             "component": "App Settings",
             "displayName": "App Settings",
             "version": "[parameters('releaseInfo').version]",
             "createdBy": "[parameters('releaseInfo').releaseName]"
           },
           "properties": {
-            "StorageAccount.ConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccount').name, ';AccountKey=', listKeys(parameters('storageAccount').id, providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value, ';EndpointSuffix=core.windows.net')]",
+            "StorageAccount.ConnectionString":  "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccount').name, ';AccountKey=', listKeys(parameters('storageAccount').id, '2018-02-01').keys[0].value, ';EndpointSuffix=core.windows.net')]",
             "StorageAccount.TableName": "[parameters('storageAccount').tableName]",
             "Encryption.Key": "[parameters('encryptionKey')]"
           }
