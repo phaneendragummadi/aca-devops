@@ -29,7 +29,21 @@
                     "azureADOnlyAuthentication": false
                 },
                 "restrictOutboundNetworkAccess": "Disabled"
-            }
+            },
+            "resources": [
+                {
+                    "type": "firewallRules",
+                    "apiVersion": "2021-02-01-preview",
+                    "name": "AllowAzureIps",
+                    "properties": {
+                        "startIpAddress": "188.93.81.154",
+                        "endIpAddress": "188.93.81.154"
+                    },
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Sql/servers', parameters('servers_demo_sqlsvr_training_name'))]"
+                    ]
+                }
+            ]
         },
         {
             "type": "Microsoft.Sql/servers/administrators",
@@ -79,46 +93,6 @@
                 "requestedBackupStorageRedundancy": "Local",
                 "maintenanceConfigurationId": "/subscriptions/533f6b10-3a70-4c5d-8962-8b51e839a13c/providers/Microsoft.Maintenance/publicMaintenanceConfigurations/SQL_Default",
                 "isLedgerOn": false
-            }
-        },
-                {
-            "type": "Microsoft.Sql/servers/firewallRules",
-            "apiVersion": "2021-11-01-preview",
-            "name": "[concat(parameters('servers_demo_sqlsvr_training_name'), '/AllowAzureIps')]",
-            "properties": {
-                        "startIpAddress": "0.0.0.0",
-                        "endIpAddress": "255.255.255.255"
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Sql/servers', parameters('servers_demo_sqlsvr_training_name'))]"
-            ]
-        },
-        {
-            "type": "Microsoft.Sql/servers/firewallRules",
-            "apiVersion": "2021-11-01-preview",
-            "name": "[concat(parameters('servers_demo_sqlsvr_training_name'), '/AllowAllWindowsAzureIps')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Sql/servers', parameters('servers_demo_sqlsvr_training_name'))]"
-            ]
-        },
-        {
-            "type": "Microsoft.Sql/servers/firewallRules",
-            "apiVersion": "2021-11-01-preview",
-            "name": "[concat(parameters('servers_demo_sqlsvr_training_name'), '/query-editor-025531')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Sql/servers', parameters('servers_demo_sqlsvr_training_name'))]"
-            ]
-        },
-        {
-            "type": "Microsoft.Sql/servers/keys",
-            "apiVersion": "2021-11-01-preview",
-            "name": "[concat(parameters('servers_demo_sqlsvr_training_name'), '/ServiceManaged')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Sql/servers', parameters('servers_demo_sqlsvr_training_name'))]"
-            ],
-            "kind": "servicemanaged",
-            "properties": {
-                "serverKeyType": "ServiceManaged"
             }
         }
     ]
