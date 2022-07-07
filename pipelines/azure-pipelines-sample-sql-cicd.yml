@@ -22,6 +22,11 @@ stages:
       inputs:
         contents: '**/deploy/*.json'
         targetFolder: '$(Build.ArtifactStagingDirectory)/arm'
+    - task: CopyFiles@2
+      displayName: 'Copy sql scripts'
+      inputs:
+        contents: '**/deploy/scripts/*.sql'
+        targetFolder: '$(Build.ArtifactStagingDirectory)/scripts'
     - task: PublishPipelineArtifact@1
       inputs:
         targetPath: '$(Build.ArtifactStagingDirectory)'
@@ -56,3 +61,12 @@ stages:
         templateLocation: 'Linked artifact'
         csmFile: '$(Pipeline.Workspace)/arm/**/sql-deploy.json'
         deploymentMode: 'Incremental'
+    - task: SqlDacpacDeploymentOnMachineGroup@0
+      inputs:
+        TaskType: 'sqlQuery'
+        SqlFile: '$(Pipeline.Workspace)/scripts/**/PopulateSqlDb.sql'
+        ServerName: 'demo-sqlsvr-training.database.windows.net'
+        DatabaseName: 'demo-sqldb-training'
+        AuthScheme: 'sqlServerAuthentication'
+        SqlUsername: 'sqladmin'
+        SqlPassword: '$(sqlPwd)'
