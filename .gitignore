@@ -351,3 +351,4 @@ MigrationBackup/
 /src/Application/DevOps.App/Properties/ServiceDependencies/dev-we-lab-app - Zip Deploy
 /src/Application/DevOps.App/Properties
 /src/Application/DevOpsSample.WebApp/Properties/ServiceDependencies
+/src/Application/DevOps.App/appsettings.local.json

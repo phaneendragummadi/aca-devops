@@ -4,7 +4,7 @@ namespace DevOps.App.Models
 {
     public class EncryptionEntity : TableEntity
     {
-        public const string EncryptionEntityPartitionKey = "DevOps";
+        public const string EncryptionEntityPartitionKey = "Arm";
         public const string EncryptionEntityRowKey = "Introduction";
 
         /// <summary>
