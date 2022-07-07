@@ -35,7 +35,7 @@ stages:
 - stage: deploy
   dependsOn: build
   jobs:
-  - job: run_deploy
+  - job: run_deploy_apps
     pool:
       vmImage: 'ubuntu-latest'
     steps:
@@ -50,6 +50,10 @@ stages:
          script: |
            # Write your commands here           
            ls -lha
+  - job: run_deploy_sql
+    pool:
+      vmImage: 'windows-latest'
+    steps:
     - task: AzureResourceManagerTemplateDeployment@3
       inputs:
         deploymentScope: 'Resource Group'
