@@ -1,3 +1,0 @@
-variables:
-  - name: App.Capacity
-    value: 2 

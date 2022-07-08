@@ -1,3 +1,0 @@
-variables:
-  - name: App.Environment.Code
-    value: acc

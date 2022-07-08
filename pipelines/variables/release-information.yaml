@@ -1,0 +1,11 @@
+variables:
+- name: Release.ReleaseName
+  value: $(Build.BuildNumber)
+- name: Release.ReleaseWebUrl
+  value: $(System.TeamFoundationCollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)&view=results
+- name: Release.SourceCodeBranch
+  value: $(Build.SourceBranch)
+- name: Release.Deployment.RequestedFor
+  value: $(Build.RequestedFor)
+- name: Release.Reason
+  value: $(Build.Reason)

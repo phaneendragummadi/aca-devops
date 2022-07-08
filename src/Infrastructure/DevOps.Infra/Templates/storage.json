@@ -52,7 +52,7 @@
       "tags": {
         "environment": "[parameters('infra').environment.name]",
         "department": "Codit",
-        "application": "DevOps",
+        "application": "DevOps-Introduction",
         "component": "Storage",
         "displayName": "Storage",
         "version": "[parameters('releaseInfo').version]",

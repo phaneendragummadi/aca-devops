@@ -1,0 +1,12 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "sites_dev_we_lab_appnet6_name": {
+            "value": null
+        },
+        "serverfarms_dev_we_lab_appPlan_externalid": {
+            "value": null
+        }
+    }
+}

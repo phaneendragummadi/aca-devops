@@ -76,7 +76,7 @@
       "tags": {
         "environment": "[parameters('infra').environment.name]",
         "department": "Codit",
-        "application": "DevOps",
+        "application": "DevOps-Introduction",
         "component": "App Service Plan",
         "displayName": "App Service Plan",
         "version": "[parameters('releaseInfo').version]",

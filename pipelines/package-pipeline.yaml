@@ -1,0 +1,121 @@
+name: ${{ parameters.major }}.${{ parameters.minor }}$(rev:.r)
+
+pr: none
+trigger:
+  branches:
+    include:
+    - lab-devops
+  paths:
+    include:
+    # REQUIRED : suppose we are releasing the sample-app
+    - /deploy/
+    - /src/
+
+parameters:
+- name: major
+  displayName: Major Version
+  type: string
+  default: 1
+- name: minor
+  displayName: Minor Version
+  type: string
+  default: 0
+- name: loggingLevel
+  displayName: Logging Level
+  type: string
+  default: Pipeline
+  values:
+  - Pipeline
+  - Debug
+
+variables:
+- name: vmImage
+  value: 'ubuntu-latest'
+- name: buildConfiguration
+  value: 'Release'
+- name: workingDirectory
+  value: '$(System.DefaultWorkingDirectory)/src/Application'
+- name: solutionFile  
+  value: 'DevOps.App.sln'
+- name: appName
+  value: 'DevOps.App'
+
+pool:
+  vmImage: $(vmImage)
+
+stages:
+- stage: Package
+  displayName: Package
+  dependsOn: []
+  jobs:
+  - job: validate_and_publish
+    displayName: Validate & Publish Artifact
+    steps:
+    # Validation    
+    - task: CmdLine@2
+      condition: eq('${{parameters['loggingLevel']}}', 'Debug')
+      displayName: "[Debug]"
+      inputs:
+        script: 'ls -R $(Pipeline.Workspace)'
+    - task: CmdLine@2
+      displayName: Install jsonlint
+      inputs:
+        script: 'sudo npm install -g jsonlint-cli'
+    - task: CmdLine@2
+      displayName: Lint JSON files
+      inputs:
+        script: 'jsonlint-cli $(Pipeline.Workspace)/s/deploy/**.json'
+    
+    # Build your app  
+    - task: UseDotNet@2 
+      displayName: "Use .NET Core sdk"
+      inputs:
+        version: 3.1.x
+        packageType: sdk 
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore Dependencies'
+      inputs:
+        command: 'restore'
+        projects: '$(workingDirectory)/$(solutionFile)'
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'build'
+        projects: '$(workingDirectory)/$(appName)/$(appName).csproj'
+        arguments: '--no-restore --configuration $(buildConfiguration)'
+    #- task: DotNetCoreCLI@2  
+    #  displayName: 'Test'  
+    #  inputs:
+    #    command: test
+    #    projects: '**/Test/*Tests/*.csproj'
+    #    arguments: '--configuration $(buildConfiguration)'
+    - task: DotNetCoreCLI@2
+      displayName: Publish
+      inputs:
+        command: 'publish'
+        projects: |
+          $(workingDirectory)/$(appName)/$(appName).csproj
+        arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration $(buildConfiguration) -r linux-x64 
+    - task: ArchiveFiles@2
+      displayName: 'Archive files'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/publish_output'
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/artifact/package/$(Build.BuildId).zip
+        replaceExistingArchive: true 
+
+    # Publish
+    - task: CopyFiles@2
+      displayName: Copy ARM templates
+      inputs:
+        SourceFolder: deploy
+        Contents: |
+          azure-infrastructure.json
+          azure-infrastructure.parameters.json
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/artifact/arm'
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish artifact'
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)/artifact'
+        artifact: 'artifact'
+        publishLocation: 'pipeline'

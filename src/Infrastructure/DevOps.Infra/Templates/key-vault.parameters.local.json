@@ -6,10 +6,10 @@
       "value": {
         "environment": {
           "name": "dev",
-          "resourcePrefix": "devops-we"
+          "resourcePrefix": "devops-dev-we"
         },
         "devOps": {
-          "objectId": "7e3303b1-5566-4e7c-bf35-e7142c30b5ec"
+          "objectId": "0d876cc9-1767-4fc7-b562-1d3d31671c8f"
         }
       }
     },

@@ -81,7 +81,7 @@
             "createdBy": "[parameters('releaseInfo').releaseName]"
           },
           "properties": {
-            "StorageAccount.ConnectionString":  "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccount').name, ';AccountKey=', listKeys(parameters('storageAccount').id, '2018-02-01').keys[0].value, ';EndpointSuffix=core.windows.net')]",
+            "StorageAccount.ConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccount').name, ';AccountKey=', listKeys(parameters('storageAccount').id, providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value, ';EndpointSuffix=core.windows.net')]",
             "StorageAccount.TableName": "[parameters('storageAccount').tableName]",
             "Encryption.Key": "[parameters('encryptionKey')]"
           }
