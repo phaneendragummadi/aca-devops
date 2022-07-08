@@ -77,17 +77,12 @@ stages:
       inputs:
         command: 'restore'
         projects: '$(workingDirectory)/$(solutionFile)'
-    - task: DotNetCoreCLI@2
+    - task: DotNetCoreCLI@2  
+      displayName: 'Test'  
       inputs:
-        command: 'build'
-        projects: '$(workingDirectory)/$(appName)/$(appName).csproj'
-        arguments: '--no-restore --configuration $(buildConfiguration)'
-    #- task: DotNetCoreCLI@2  
-    #  displayName: 'Test'  
-    #  inputs:
-    #    command: test
-    #    projects: '**/Test/*Tests/*.csproj'
-    #    arguments: '--configuration $(buildConfiguration)'
+        command: test
+        projects: '**/Test/*Tests/*.csproj'
+        arguments: '--configuration $(buildConfiguration)'
     - task: DotNetCoreCLI@2
       displayName: Publish
       inputs:
