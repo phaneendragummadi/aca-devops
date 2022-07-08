@@ -352,3 +352,6 @@ MigrationBackup/
 /src/Application/DevOps.App/Properties
 /src/Application/Arcus.Demo.WebAPI/Properties/ServiceDependencies/ArcusDemoWebAPI - Zip Deploy
 /src/Application/Arcus.Demo.WebAPI/Properties/ServiceDependencies
+/src/Application/DevOps.App/appsettings.local.json
+/src/Application/DevOpsSample.WebApp/Properties/ServiceDependencies/webapp-dev-we-hco - Zip Deploy
+*.json
