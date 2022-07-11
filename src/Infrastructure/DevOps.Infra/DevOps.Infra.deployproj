@@ -48,8 +48,13 @@
     <Content Include="Templates\app-service-plan.parameters.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Templates\app-service.json" />
+    <None Include="Templates\app-service.parameters.json" />
+    <None Include="Templates\app-service.parameters.local.json" />
     <None Include="Templates\Defaults\app-service-plan.json" />
     <None Include="Templates\Defaults\app-service-plan.parameters.json" />
+    <None Include="Templates\Defaults\app-service.json" />
+    <None Include="Templates\Defaults\app-service.parameters.json" />
     <None Include="Templates\Defaults\key-vault.json" />
     <None Include="Templates\Defaults\key-vault.parameters.json" />
     <None Include="Templates\Defaults\storage.json" />

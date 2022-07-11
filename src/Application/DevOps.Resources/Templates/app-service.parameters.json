@@ -6,19 +6,19 @@
             "value": "533f6b10-3a70-4c5d-8962-8b51e839a13c"
         },
         "name": {
-            "value": "arm-dev-we-evi"
+            "value": "devops-we-appservice"
         },
         "location": {
             "value": "West Europe"
         },
         "hostingEnvironment": {
-            "value": "windows"
+            "value": ""
         },
         "hostingPlanName": {
-            "value": "my-azure-serviceplan-evi"
+            "value": "devops-we-appserviceplan"
         },
         "serverFarmResourceGroup": {
-            "value": "arm-introduction-evi"
+            "value": "devops-xxx"
         },
         "alwaysOn": {
             "value": true
