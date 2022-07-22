@@ -2,9 +2,8 @@
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using ConfigurationProvider = DevOps.App.Configuration.ConfigurationProvider;
 
-namespace DevOps.App.Encryption
+namespace DevOps.App.Models
 {
     // Based on https://stackoverflow.com/questions/10168240/encrypting-decrypting-a-string-in-c-sharp
     public class Encryptor
@@ -12,11 +11,10 @@ namespace DevOps.App.Encryption
         private readonly string encryptionKey;
         private readonly byte[] salt = {0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76};
 
-        public Encryptor()
+        public Encryptor(string encryptionKey)
         {
-            encryptionKey = ConfigurationProvider.Get<string>("Encryption.Key");
+            this.encryptionKey = encryptionKey;
         }
-        
         public string Decrypt(string encryptedText)
         {
             encryptedText = encryptedText.Replace(" ", "+");

@@ -9,7 +9,7 @@ resources:
     # Name of the pipeline resource inside this workflow. Used to reference the pipeline resources later on (e.g. download artifacts).
   - pipeline: package_build
     # Name of the pipeline in Azure Pipelines
-    source: 'aca-devops-CI' 
+    source: 'aca-devops-win-CI' 
     trigger: true
 
 parameters:
@@ -63,7 +63,7 @@ stages:
           - download: 'package_build'
             artifact: 'artifact'
             displayName: Download Artifact
-          - template: ./templates/deploy-arm-template.yaml
+          - template: ./templates/deploy-arm-template-win.yaml
             parameters:
               azureResourceManagerConnection: $(Azure.ServiceConnection.Name)
               subscriptionId: $(Azure.Subscription.Id)
