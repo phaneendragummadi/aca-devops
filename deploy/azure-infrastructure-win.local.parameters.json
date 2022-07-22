@@ -1,0 +1,62 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-08-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Storage_SkuName": {
+      "value": "Standard_LRS"
+    },
+    "StorageAccountTableName": {
+      "value": "EncryptionTable"
+    },
+    "Application_Name": {
+      "value": "dev-we-win-app"
+    },
+    "Application_Environment": {
+      "value": "dev"
+    },
+    "Application_DotNetVersion": {
+      "value": "DOTNETCORE|6.0"
+    },
+    "Application_Version": {
+      "value": "1"
+    },
+    "Release_Name": {
+      "value": "1"
+    },
+    "Release_RequestedFor": {
+      "value": "hco"
+    },
+    "Release_SourceCodeBranch": {
+      "value": "upgrade-net6"
+    },
+    "Release_TriggerType": {
+      "value": "Manual"
+    },
+    "Release_Url": {
+      "value": "url"
+    },
+    "AppSvcPlan_SkuName": {
+      "value": "S1"
+    },
+    "Keyvault_SkuName": {
+      "value": "Standard"
+    },
+    "Keyvault_ObjectId": {
+      "value": "0d876cc9-1767-4fc7-b562-1d3d31671c8f"
+    },
+    "Keyvault_TenantId": {
+      "value": "7517bc42-bcf8-4916-a677-b5753051f846"
+    },
+    "Keyvault_SecretName": {
+      "value": "EncryptionKey"
+    },
+    "Keyvault_SecretValue": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/533f6b10-3a70-4c5d-8962-8b51e839a13c/resourceGroups/aca-devops/providers/Microsoft.KeyVault/vaults/codit-academy-vault"
+        },
+        "secretName": "EncryptionKey"
+      }
+    }
+  }
+}

@@ -1,14 +1,37 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>DevOps.App</RootNamespace>
-    <AssemblyName>DevOps.App</AssemblyName>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile>DevOps.App.Open-Api.xml</DocumentationFile>
+    <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
+    <StartupObject>DevOps.App.Program</StartupObject>
   </PropertyGroup>
 
+
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
-    <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Arcus.Observability.Telemetry.AspNetCore" Version="2.4.0" />
+    <PackageReference Include="Arcus.Observability.Telemetry.Core" Version="2.4.0" />
+    <PackageReference Include="Arcus.Observability.Telemetry.Serilog.Sinks.ApplicationInsights" Version="2.4.0" />
+    <PackageReference Include="Arcus.Security.Core" Version="1.7.0" />
+    <PackageReference Include="Arcus.Security.Providers.AzureKeyVault" Version="1.7.0" />
+    <PackageReference Include="Arcus.WebApi.Hosting" Version="1.5.0" />
+    <PackageReference Include="Arcus.WebApi.Logging" Version="1.5.0" />
+    <PackageReference Include="Azure.Data.Tables" Version="12.6.1" />
+    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.0.0" />
+    <PackageReference Include="Azure.Identity" Version="1.4.0" />
+    <PackageReference Include="Guard.NET" Version="2.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.1" />
+    <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.3" />
   </ItemGroup>
 
 </Project>

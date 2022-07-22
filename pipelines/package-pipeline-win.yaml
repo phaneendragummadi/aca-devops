@@ -4,7 +4,7 @@ pr: none
 trigger:
   branches:
     include:
-    - netcore31
+    - upgrade-dotnet6
   paths:
     include:
     # REQUIRED : suppose we are releasing the sample-app
@@ -32,11 +32,11 @@ parameters:
   default: Release
 - name: dotNetVersion
   type: string
-  default: 3.x
+  default: 6.x
 - name: targetFramework
   displayName: Target Framework
   type: string
-  default: netcoreapp3.1
+  default: netcore
 variables:
 - name: vmImage
   value: 'windows-latest'
