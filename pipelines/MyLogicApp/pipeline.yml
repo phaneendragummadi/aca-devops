@@ -20,6 +20,11 @@ steps:
     targetPath: '$(build.artifactstagingdirectory)\Templates'
     artifact: 'Resources'
     publishLocation: 'pipeline'
+- task: DownloadPipelineArtifact@2
+  inputs:
+    buildType: 'current'
+    artifactName: 'Resources'
+    targetPath: '$(Pipeline.Workspace)/Resources'
 - task: AzureResourceManagerTemplateDeployment@3
   inputs:
     deploymentScope: 'Resource Group'
