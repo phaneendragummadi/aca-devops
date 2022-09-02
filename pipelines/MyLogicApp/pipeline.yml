@@ -12,12 +12,12 @@ pool:
 steps:
 - task: CopyFiles@2
   inputs:
-    SourceFolder: 'src\MyLogicApp\Templates'
+    SourceFolder: 'src/MyLogicApp/Templates'
     Contents: '*.json'
-    TargetFolder: '$(build.artifactstagingdirectory)\Templates'
+    TargetFolder: '$(build.artifactstagingdirectory)/Templates'
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: '$(build.artifactstagingdirectory)\Templates'
+    targetPath: '$(build.artifactstagingdirectory)/Templates'
     artifact: 'Resources'
     publishLocation: 'pipeline'
 - task: DownloadPipelineArtifact@2
