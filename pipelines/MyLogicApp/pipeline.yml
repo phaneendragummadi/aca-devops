@@ -18,7 +18,7 @@ steps:
 - task: PublishPipelineArtifact@1
   inputs:
     targetPath: '$(build.artifactstagingdirectory)\Templates'
-    artifact: 'Resource'
+    artifact: 'Resources'
     publishLocation: 'pipeline'
 - task: AzureResourceManagerTemplateDeployment@3
   inputs:
