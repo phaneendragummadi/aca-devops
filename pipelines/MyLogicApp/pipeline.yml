@@ -36,4 +36,4 @@ steps:
     templateLocation: 'Linked artifact'
     csmFile: '$(Pipeline.Workspace)/Resources/LogicApp.json'
     csmParametersFile: '$(Pipeline.Workspace)/Resources/LogicApp.parameters.json'
-    deploymentMode: 'Complete'
+    deploymentMode: 'Incremental'
