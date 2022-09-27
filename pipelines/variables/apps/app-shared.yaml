@@ -1,6 +1,6 @@
 variables:
   - name: Resource.Prefix
-    value: $(App.Environment.Code)-$(Region.ShortName)-lab
+    value: $(App.Environment.Code)-$(Region.ShortName)-dbo
   - name: Azure.ResourceGroup.Name
     value: aca-devops
   - name: Api.Name

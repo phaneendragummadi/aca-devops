@@ -4,7 +4,7 @@ pr: none
 trigger:
   branches:
     include:
-    - lab-devops-solution
+    - lab-dbo
   paths:
     include:
     # REQUIRED : suppose we are releasing the sample-app
