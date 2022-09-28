@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Azure.Identity;
 
 namespace DevOps.App
 {
@@ -26,6 +27,8 @@ namespace DevOps.App
                                                    optional: true,
                                                    reloadOnChange: true);
                                 config.AddEnvironmentVariables();
+                                var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri"));
+                                config.AddAzureKeyVault(keyVaultEndpoint, new DefaultAzureCredential());
                             })
                             .ConfigureWebHostDefaults(webBuilder =>
                             {
