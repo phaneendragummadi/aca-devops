@@ -1,8 +1,8 @@
 variables:
   - name: Resource.Prefix
-    value: $(App.Environment.Code)-$(Region.ShortName)-dbo
+    value: $(App.Environment.Code)-$(Region.ShortName)-psr
   - name: Azure.ResourceGroup.Name
-    value: devops-training-dbo
+    value: devops-training-psr
   - name: Api.Name
     value: $(Resource.Prefix)-app
   - name: Api.DotnetVersion
@@ -10,7 +10,7 @@ variables:
   - name: Api.SDK
     value: 3.1.x
   - name: Keyvault.Name
-    value: devops-vault-dbo
+    value: devops-vault-psr
   - name: Storage.SkuName
     value: Standard_LRS
   - name: Keyvault.SkuName
