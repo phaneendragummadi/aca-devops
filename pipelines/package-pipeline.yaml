@@ -4,7 +4,7 @@ pr: none
 trigger:
   branches:
     include:
-    - lab-dbo
+    - lab-pgu
   paths:
     include:
     # REQUIRED : suppose we are releasing the sample-app
