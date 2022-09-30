@@ -4,7 +4,7 @@
 # https://aka.ms/yaml
 
 trigger:
-- lab-{your initials}
+- lab-ake
 
 pool:
   vmImage: windows-latest
@@ -31,7 +31,7 @@ steps:
     azureResourceManagerConnection: 'TrainingAccountSP'
     subscriptionId: '533f6b10-3a70-4c5d-8962-8b51e839a13c'
     action: 'Create Or Update Resource Group'
-    resourceGroupName: 'aca-devops'
+    resourceGroupName: 'devops-training-ake'
     location: 'West Europe'
     templateLocation: 'Linked artifact'
     csmFile: '$(Pipeline.Workspace)/Resources/LogicApp.json'
