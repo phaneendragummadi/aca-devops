@@ -1,0 +1,37 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Write your commands here
+      
+      echo 'Devops starter from Helena'
+- script: |
+    echo Add other tasks to build, test, and deploy your project.
+    echo See https://aka.ms/yaml
+  displayName: 'Run a multi-line script'
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: 'TrainingAccountSP'
+    subscriptionId: '533f6b10-3a70-4c5d-8962-8b51e839a13c'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: 'devops-training-dbo'
+    location: 'West Europe'
+    templateLocation: 'Linked artifact'
+    csmFile: 'src/MyLogicApp/Templates/LogicApp.json'
+    csmParametersFile: 'src/MyLogicApp/Templates/LogicApp.parameters.json'
+    deploymentMode: 'Incremental'
